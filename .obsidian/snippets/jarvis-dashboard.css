@@ -1,0 +1,110 @@
+/* ═══════════════════════════════════════════════════════════════
+   J.A.R.V.I.S. Dashboard — Blue Topaz 호환 CSS Snippet
+   Obsidian 설정 → 외모 → CSS snippets 에서 활성화
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Abstract callout: 헤더/KPI 강조 ── */
+.callout[data-callout="abstract"] {
+  --callout-color: 124, 77, 255;
+  border-left-width: 4px;
+}
+.callout[data-callout="abstract"] .callout-title {
+  font-size: 1.1em;
+  font-weight: 700;
+}
+
+/* ── Example callout: 재무 섹션 구분색 ── */
+.callout[data-callout="example"] {
+  --callout-color: 100, 120, 200;
+}
+
+/* ── Tip callout: 뉴스/하이라이트 강조 ── */
+.callout[data-callout="tip"] {
+  --callout-color: 46, 160, 67;
+}
+
+/* ── Todo callout: 액션 아이템 ── */
+.callout[data-callout="todo"] {
+  --callout-color: 245, 166, 35;
+}
+
+/* ── Chart in callout: 가운데 정렬 + 패딩 ── */
+.callout-content .block-language-chart {
+  margin: 0.5em auto;
+  padding: 0.5em 0;
+}
+
+/* ── 테이블 스타일링 ── */
+.callout-content table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.callout-content th {
+  background-color: var(--background-secondary);
+  font-weight: 600;
+  text-align: left;
+  padding: 6px 10px;
+}
+.callout-content td {
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+.callout-content tr:hover td {
+  background-color: var(--background-secondary-alt);
+}
+
+/* ── 프로그레스 바 (텍스트 기반 █░) 가독성 ── */
+.callout-content code:has(+ code) {
+  font-family: var(--font-monospace);
+  letter-spacing: 0.5px;
+}
+
+/* ── Footer quote: 반투명, 작은 글씨 ── */
+.callout[data-callout="quote"] {
+  opacity: 0.6;
+  font-size: 0.82em;
+  margin-top: 1.5em;
+}
+
+/* ── 내부 링크: 밑줄 점선 ── */
+.callout .internal-link {
+  text-decoration: none;
+  border-bottom: 1px dotted var(--text-muted);
+  transition: border-bottom-style 0.15s ease;
+}
+.callout .internal-link:hover {
+  border-bottom-style: solid;
+  color: var(--text-accent);
+}
+
+/* ── 접힌 callout: 시각적 힌트 ── */
+.callout.is-collapsed .callout-title {
+  opacity: 0.85;
+}
+.callout.is-collapsed:hover .callout-title {
+  opacity: 1;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   다크 모드 보정
+   ══════════════════════════════════════════════════════════════ */
+.theme-dark .callout[data-callout="abstract"] {
+  --callout-color: 150, 110, 255;
+}
+.theme-dark .callout[data-callout="example"] {
+  --callout-color: 130, 150, 230;
+}
+.theme-dark .callout[data-callout="quote"] {
+  opacity: 0.5;
+}
+.theme-dark .callout-content th {
+  background-color: var(--background-primary-alt);
+}
+.theme-dark .callout-content tr:hover td {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* ── 다크 모드 태그 가독성 ── */
+.theme-dark .tag {
+  opacity: 0.9;
+}

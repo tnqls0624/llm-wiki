@@ -1,0 +1,44 @@
+# macOS
+.DS_Store
+
+# Obsidian — 워크스페이스/캐시 (기기별, 추적 불필요)
+.obsidian/workspace*
+.obsidian/cache
+# 서드파티 플러그인 코드·데이터 (재설치 가능, 지식 아님 — community-plugins.json만 추적해 복원)
+.obsidian/plugins/
+
+# make-md 플러그인 캐시 (바이너리 .mdb, 매 편집마다 변동)
+.makemd/
+.Tags/
+.space/
+
+# 서드파티 테마 (재설치 가능)
+.obsidian/themes/
+
+# Playwright MCP 산출물 (세션 로그·스냅샷)
+.playwright-mcp/
+
+# Obsidian 휴지통
+.trash/
+
+# Claude Code — 로컬 권한 설정 (기기별)
+.claude/settings.local.json
+
+# AI 런타임 산출물 (기기별, 매 실행 변동 — hot.md만 추적)
+.claude/runtime/weekly-lint.log
+# auto-commit이 push 발산 감지 시 남기는 기기-로컬 경고 마커 (session-context가 부팅 시 표면화)
+.claude/runtime/sync-status.txt
+
+# Python 바이트코드 캐시 (py_compile/import 시 생성, 기기별 — 포터블 프레임워크 패키지 오염 방지)
+__pycache__/
+*.pyc
+
+# Google Drive 동기화가 가끔 만드는 0바이트 점-정크 (auto-commit 가드·lint.sh 섹션5도 방어)
+....md
+
+# Passive capture 큐 (capture-candidate.py가 적재 — 로컬 스크래치, transcript 경로가 기기-로컬).
+# /process-inbox로 판단·승격하면 wiki/로 박제되므로 큐 자체는 동기화 불필요.
+inbox/_capture-candidates.md
+
+# 지식 콘텐츠(sources/ wiki/ hot.md index.md log.md CLAUDE.md)와
+# 공유 설정(.claude/ — settings.local.json 제외)은 모두 추적한다.
