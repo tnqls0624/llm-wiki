@@ -50,6 +50,18 @@ NOISE = re.compile(
 # Anthropic release-notes overview.md 는 Claude Platform 전체를 다루므로 CC 관련 섹션만 추린다.
 CC_CHANGELOG_RE = re.compile(r"claude code|claude\.com/docs|subagent|slash|/plugin|hook|skill", re.I)
 
+# AI-Infra 학습 토픽 소스 (source에 'AI-infra:' prefix → 큐 분류가 AI-Infra/ KB로 라우팅).
+AIINFRA_RELEASES = [
+    ("vLLM", "https://github.com/vllm-project/vllm/releases.atom"),
+    ("KServe", "https://github.com/kserve/kserve/releases.atom"),
+    ("Karpenter", "https://github.com/aws/karpenter-provider-aws/releases.atom"),
+]
+AIINFRA_HN_KW = re.compile(
+    r"vllm|sglang|kserve|karpenter|kueue|mlops|mlflow|\bgpu\b|inference|kubernetes|"
+    r"tensorrt|triton|quantiz|sagemaker|bedrock|trainium|inferentia|ray serve|kubeflow|flyte",
+    re.I,
+)
+
 
 def today():
     return datetime.date.today().isoformat()
@@ -315,6 +327,58 @@ def fetch_devto():
     return items
 
 
+def fetch_aiinfra_releases():
+    """AI-Infra 토픽: vLLM·KServe·Karpenter 릴리스 Atom 피드(학습 추적)."""
+    items = []
+    for name, url in AIINFRA_RELEASES:
+        raw = http_get(url)
+        if not raw:
+            continue
+        for e in _atom_entries(raw)[:5]:
+            title = _text(e, "title")
+            eid = _text(e, "id")
+            tag = eid.split("/")[-1][:24] if eid else title[:24]
+            content = re.sub(r"<[^>]+>", " ", _text(e, "content"))
+            items.append({
+                "key": f"airel:{name}:{tag}",
+                "type_hint": "kb-ingest",
+                "source": f"AI-infra: {name} releases",
+                "title": f"{name} {title}"[:200],
+                "url": _link(e, url),
+                "date": _text(e, "updated")[:10],
+                "extra": re.sub(r"\s+", " ", content).strip()[:300],
+            })
+    return items
+
+
+def fetch_aiinfra_hn(since_ts):
+    """AI-Infra 토픽: HN에서 MLOps/추론/K8s-GPU 관련 신규 story."""
+    url = ("https://hn.algolia.com/api/v1/search_by_date?query="
+           "MLOps%20OR%20vLLM%20OR%20KServe%20OR%20Karpenter%20OR%20SageMaker%20OR%20%22LLM%20inference%22"
+           f"&tags=story&numericFilters=created_at_i%3E{since_ts}&hitsPerPage=30")
+    d = http_json(url)
+    if not d:
+        return []
+    items = []
+    for h in d.get("hits", []):
+        title = h.get("title") or ""
+        if not AIINFRA_HN_KW.search(title):
+            continue
+        oid = h.get("objectID")
+        u = h.get("url") or f"https://news.ycombinator.com/item?id={oid}"
+        pts = h.get("points", 0) or 0
+        items.append({
+            "key": f"aihn:{oid}",
+            "type_hint": "kb-ingest",
+            "source": "AI-infra: Hacker News",
+            "title": title[:200],
+            "url": u,
+            "date": (h.get("created_at") or "")[:10],
+            "extra": f"{pts}pt/{h.get('num_comments', 0)}cm",
+        })
+    return items
+
+
 def fetch_npm():
     items = []
     for text in ("claude-code mcp", "claude-code skill", "claude-code agent"):
@@ -398,6 +462,8 @@ def main():
     sources = [
         lambda: fetch_hn(since_ts), fetch_gh_releases, fetch_gh_repos, fetch_awesome,
         fetch_geeknews, fetch_anthropic_changelog, fetch_devto, fetch_npm,
+        # AI-Infra 학습 토픽
+        fetch_aiinfra_releases, lambda: fetch_aiinfra_hn(since_ts),
     ]
     for fn in sources:
         try:

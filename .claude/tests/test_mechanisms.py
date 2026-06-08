@@ -581,6 +581,20 @@ class TestRadarCollect(unittest.TestCase):
         pruned = self.m.prune({"a": old, "b": new})
         self.assertEqual(list(pruned), ["b"], "PRUNE_DAYS 초과 항목 제거")
 
+    def test_aiinfra_hn_keyword(self):
+        # AI-Infra 토픽 HN 필터 — 인프라 신호는 통과, 무관은 차단(라우팅 기반 회귀 가드)
+        kw = self.m.AIINFRA_HN_KW
+        self.assertTrue(kw.search("Deploying vLLM on Kubernetes with KServe"))
+        self.assertTrue(kw.search("MLOps best practices for model registry"))
+        self.assertFalse(kw.search("My favorite sourdough bread recipe"))
+
+    def test_aiinfra_releases_config(self):
+        # 릴리스 소스가 source에 'AI-infra:' prefix를 달아야 큐 분류가 AI-Infra/로 라우팅
+        names = [n for n, _ in self.m.AIINFRA_RELEASES]
+        self.assertIn("vLLM", names)
+        self.assertIn("KServe", names)
+        self.assertTrue(all(u.endswith(".atom") for _, u in self.m.AIINFRA_RELEASES))
+
 
 class TestRadarInjection(VaultTest):
     """session-context.py의 claude-radar 큐 주입 + 외부 제목 중립화(프롬프트 인젝션 방어)."""

@@ -18,6 +18,9 @@ obsidian_sync/
 ├── Claude/                      # 콘텐츠: Claude Code 공식문서 KB (26 노트 + MOC)
 │   ├── 01 시작하기.md … 26 변경 이력과 용어집.md
 │   └── Claude.md                # MOC 허브 (학습 경로 + 전체 지도)
+├── AI-Infra/                    # 콘텐츠: 백엔드→AI인프라 학습 KB (6 노트 + MOC)
+│   ├── 00 로드맵.md · 01 LLM 서빙 · 02 K8s GPU · 03 MLOps · 99 리소스
+│   └── AI-Infra.md              # MOC 허브
 ├── .claude/                     # 메커니즘: 포터블 프레임워크
 │   ├── commands/                # 슬래시 커맨드 7개
 │   ├── agents/                  # 서브에이전트 2개
@@ -62,7 +65,7 @@ obsidian_sync/
 
 ## 📡 claude-radar — 매일 Claude 생태계 레이더 (핵심 자동화)
 
-GeekNews·GitHub·Hacker News·Anthropic 공식·dev.to·npm 등 **10개 채널**에서 Claude Code 활용 정보(새 skill·agent·MCP·기능·패턴)를 매일 자동 수집해, "우리 프레임워크에 더하면 좋을 것"과 "KB에 박제할 지식"을 추천한다.
+두 토픽을 매일 자동 수집한다 — **① Claude Code 활용**(GeekNews·GitHub·HN·Anthropic 공식·dev.to·npm)과 **② AI 인프라 학습**(vLLM·KServe·Karpenter releases + HN AI-infra 키워드). 수집물은 "우리 프레임워크에 더하면 좋을 것(skill/agent/...)"과 "KB에 박제할 지식"으로 추천되며, `AI-infra:` 태그 항목은 `AI-Infra/` KB로 라우팅된다.
 
 ### 동작 (2단계 — "동의 후 추가"를 구조로 보장)
 ```
@@ -75,7 +78,7 @@ GeekNews·GitHub·Hacker News·Anthropic 공식·dev.to·npm 등 **10개 채널*
         → /claude-radar review → 항목 검토 → 동의한 것만 생성·박제
           · skill   → skill-creator
           · agent/command/rule → .claude/ 아래 파일 생성
-          · kb-ingest → /kb-ingest 로 KB 박제
+          · kb-ingest → /kb-ingest 로 KB 박제 (Claude/ 또는 AI-Infra/, 토픽에 따라)
 ```
 
 ### 안전 설계

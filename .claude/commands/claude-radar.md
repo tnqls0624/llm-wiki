@@ -26,7 +26,7 @@ GeekNews·GitHub·Hacker News·Anthropic 공식·dev.to·npm 등에서 Claude Co
 ### A2. 분류 (LLM 판단)
 각 신규 항목을 다음 중 하나로 분류한다. `type_hint`는 참고일 뿐 — 제목·url·extra를 보고 직접 판단한다:
 - **skill / agent / command / rule** — 우리 `.claude/`에 새로 만들거나 기존 것을 개선하면 가치 있는 활용 아이디어 (유용한 워크플로우 패턴, 새 hook 활용, 자주 하는 작업의 자동화 등).
-- **kb-ingest** — Claude Code 사용법·개념 지식으로 `Claude/` KB에 박제할 가치가 있는 자료 (공식 기능 출시, 심층 글, 베스트 프랙티스).
+- **kb-ingest** — 개념·사용법 지식으로 KB에 박제할 가치가 있는 자료. **박제 위치는 source로 라우팅**한다: source가 `AI-infra:`로 시작하면 **AI 인프라 학습 토픽**이므로 `AI-Infra/` KB로, 그 외 Claude Code 관련은 `Claude/` KB로. (제안에 어느 KB인지 명시.)
 - **drop** — 노이즈/무관/단순 홍보, 또는 **이미 우리 vault에 있는 것**. 큐에 넣지 않는다(이미 seen 처리되어 재출현하지 않음).
 
 판단 기준: 우리 vault는 이미 `kb-*` 커맨드/에이전트/스킬과 Claude Code 공식 문서 한국어 KB(`Claude/`)를 갖췄다. **중복이거나 이미 가진 것**은 과감히 drop하고, 정말 새로운 활용 가치가 있는 것만 추천한다.
@@ -55,7 +55,7 @@ GeekNews·GitHub·Hacker News·Anthropic 공식·dev.to·npm 등에서 Claude Co
 - **agent** → `.claude/agents/<name>.md`를 만든다. frontmatter 4필드(`name`/`description`/`tools`/`model`), 기존 `.claude/agents/kb-updater.md`·`kb-guide.md` 포맷을 따른다. description에 "언제 쓰는가 + 하지 않는 것(경계)"을 명시한다.
 - **command** → `.claude/commands/<name>.md`를 만든다. frontmatter(`description`/`argument-hint`), 본문은 `$ARGUMENTS` + 단계 번호(`## 1.` …) 구조로 `kb-sync.md` 스타일을 따른다.
 - **rule** → `.claude/rules/<name>-rules.md`를 만든다. **frontmatter 없는 순수 마크다운**(`# <Title>` 헤더로 시작 — skill/agent/command와 달리 frontmatter를 붙이지 않는다, `vault-rules.md`와 동일 형식). 영어 본문, canonical 섹션 패턴. 신규 rule은 `vault-rules.md`와 충돌 시 우선순위를 첫 단락에 명시한다.
-- **kb-ingest** → 해당 url을 `/kb-ingest` 절차로 KB에 박제한다(스크럽 → 주제 판별 → 노트 생성/갱신 → 갱신 의무 3단계). 분량이 크면 `kb-updater` 서브에이전트(Agent tool, `subagent_type: kb-updater`)에 위임한다.
+- **kb-ingest** → 해당 url을 `/kb-ingest` 절차로 KB에 박제한다(스크럽 → 주제 판별 → 노트 생성/갱신 → 갱신 의무 3단계). 박제 위치: `AI-infra:` 소스는 `AI-Infra/`(MOC는 `AI-Infra/AI-Infra.md`), 그 외는 `Claude/`. 분량이 크면 `kb-updater` 서브에이전트(Agent tool, `subagent_type: kb-updater`)에 위임한다.
 
 ### B4. 큐 갱신
 - 생성/박제를 마친 항목은 `[pending]`→`[done]`으로, 사용자가 거절한 항목은 `[dismissed]`로 상태만 바꾼다(텍스트 치환). 항목을 삭제하지 말고 이력을 남긴다.
