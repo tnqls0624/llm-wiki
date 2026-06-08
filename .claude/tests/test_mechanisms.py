@@ -619,5 +619,33 @@ class TestRadarInjection(VaultTest):
         self.assertNotIn("📡 claude-radar", c)
 
 
+# ── auto-commit.py vault 마커 (CLAUDE.md OR .claude/) ─────────────────
+class TestAutoCommitMarker(unittest.TestCase):
+    """vault 마커 판정 — 루트 CLAUDE.md가 없어도 `.claude/`만으로 커밋해야 한다.
+    (CLAUDE.md 단독 마커였을 때 히스토리 리셋 후 커밋이 영구 no-op 되던 버그 회귀 가드.)"""
+    def _repo(self, marker):
+        d = tempfile.mkdtemp(prefix="acm_")
+        self.addCleanup(shutil.rmtree, d, ignore_errors=True)
+        git(d, "init", "-q")
+        if marker == "claude_md":
+            _write(os.path.join(d, "CLAUDE.md"), "# marker")
+        elif marker == "dot_claude":
+            _write(os.path.join(d, ".claude", "x.txt"), "x")   # CLAUDE.md 없이 .claude/ 만
+        _write(os.path.join(d, "note.md"), "커밋할 변경 내용")
+        return d
+
+    def test_dot_claude_marker_commits(self):
+        d = self._repo("dot_claude")
+        run_py("auto-commit.py", {"hook_event_name": "Stop"}, d)
+        self.assertIn("auto:", git(d, "log", "--oneline").stdout,
+                      ".claude/ 마커만으로도 커밋돼야(루트 CLAUDE.md 부재 시 no-op 버그 회귀 가드)")
+
+    def test_no_marker_noop(self):
+        d = self._repo("none")
+        run_py("auto-commit.py", {"hook_event_name": "Stop"}, d)
+        self.assertNotIn("auto:", git(d, "log", "--oneline").stdout,
+                         "마커 둘 다 없으면 커밋 안 함(엉뚱한 repo 오염 방지)")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
