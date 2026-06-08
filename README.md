@@ -7,7 +7,7 @@ Obsidian vault 하나에 **두 가지**가 들어 있다:
 
 > 이 README는 **Claude Code 기본 기능이 아닌, 이 프로젝트가 추가한 것**의 사용법만 정리한다. 기본 CLI 사용법은 `Claude/` KB를 참고한다.
 
-핵심 원칙(메커니즘 vs 콘텐츠 분리, 갱신 의무 등)의 정본은 `.claude/rules/vault-rules.md`이며 매 세션 자동 로드된다.
+핵심 원칙(메커니즘 vs 콘텐츠 분리, 갱신 의무 등)의 정본은 `.claude/rules/vault-rules.md`이고, **변경 동기화 의무**(무언가 추가·수정하면 관련 문서도 같은 변경에서 갱신)는 루트 `CLAUDE.md`가 정의한다. 셋 다 매 세션 자동 로드된다(`CLAUDE.md`는 프로젝트 메모리, 충돌 시 우선).
 
 ---
 
@@ -24,10 +24,11 @@ obsidian_sync/
 │   ├── skills/                  # 스킬 (kb-assistant)
 │   ├── rules/                   # 자동 로드 룰 2개
 │   ├── hooks/                   # 이벤트 훅 4개
-│   ├── tests/                   # 계약 테스트 (51 케이스)
+│   ├── tests/                   # 계약 테스트 (55 케이스)
 │   ├── runtime/                 # 휘발성 상태 (hot.md, 큐, ledger, 로그)
 │   ├── *.py / *.sh              # 스크립트 + cron 래퍼/설치기
 │   └── settings.json            # 훅 등록
+├── CLAUDE.md                    # 프로젝트 메모리 — 변경 동기화 의무 (충돌 시 우선)
 └── README.md
 ```
 

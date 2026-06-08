@@ -1,6 +1,6 @@
 # Vault — core operating rules
 
-Auto-loaded every session. Compact, imperative rule set for the AI hot path. A root `CLAUDE.md` (human-owned narrative rationale, Korean) does not currently exist — when the vault is reorganized that is its slot; on conflict it wins, so flag the mismatch instead of silently diverging.
+Auto-loaded every session. Compact, imperative rule set for the AI hot path. The root `CLAUDE.md` (human-owned narrative rationale, Korean) holds the top-level **change-sync duty** (what-changed → what-docs-to-update) and **wins on conflict** — flag the mismatch instead of silently diverging.
 
 ## Structure (mechanism vs content)
 - `Claude/` — Claude Code official-docs KB: 26 Korean notes (`01 시작하기` … `26 변경 이력과 용어집`) + `Claude/Claude.md` MOC hub. This is **content (data)**.
