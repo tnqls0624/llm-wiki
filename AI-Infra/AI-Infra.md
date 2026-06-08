@@ -16,6 +16,9 @@ sources: []
 - **[[02 쿠버네티스 GPU 오케스트레이션]]** — KServe·KEDA·Kueue·Karpenter, GPU 스케줄링(device plugin→DRA), GitOps, Terraform EKS.
 - **[[03 MLOps 파이프라인과 관측성]]** — MLflow·Flyte/Airflow, OpenTelemetry GenAI·드리프트, CI/CD for ML.
 
+## 핸즈온
+- **[[10 핸즈온 vLLM 스팟 서빙 벤치마크]]** — 0-3개월 첫 산출물 step-by-step (스팟 GPU 확보·vLLM 서빙·부하테스트·리포 구조·비용 안전).
+
 ## 자료
 - **[[99 학습 리소스와 추적 소스]]** — 공식 docs·강의·랩·자격증 + `claude-radar`에 등록한 매일 추적 소스.
 
