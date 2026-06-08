@@ -1,6 +1,6 @@
 ---
 title: Claude Code 사용법
-updated: 2026-06-07
+updated: 2026-06-08
 type: moc
 ---
 
@@ -64,7 +64,7 @@ type: moc
 ### 확장 (스킬·훅·MCP·플러그인·서브에이전트)
 - [[06 내장 도구 레퍼런스]] — 내장 도구 42종과 슬래시 커맨드 전체, 도구 권한 규칙 포맷(ToolName(specifier)), 도구별 동작·제약, 워크플로우 단계별 커맨드 활용.
 - [[07 스킬]] — SKILL.md frontmatter 전체, 동적 컨텍스트 주입(!`cmd`), context:fork 서브에이전트 실행, 호출 제어(skillOverrides), 콘텐츠 생명주기와 토큰 예산.
-- [[08 서브에이전트와 에이전트 팀]] — 4가지 병렬 실행 방식(서브에이전트·agent view·에이전트 팀·다이내믹 워크플로우)의 정의·조율·선택 기준과 fork·worktree 격리.
+- [[08 서브에이전트와 에이전트 팀]] — 4가지 병렬 실행 방식(서브에이전트·agent view·에이전트 팀·다이내믹 워크플로우)의 정의·조율·선택 기준과 fork·worktree 격리; Anthropic API Claude Managed Agents 공개 베타(webhooks·멀티에이전트 세션·샌드박스).
 - [[09 훅]] — 28개 훅 이벤트와 5가지 핸들러 타입, matcher/if 필터·종료 코드·JSON 출력 제어, 자동 포맷·파일 보호 등 실전 패턴, 보안 고려사항.
 - [[10 MCP]] — MCP 서버 추가·관리, 4가지 transport·설치 스코프, 원격 OAuth 인증, Tool Search, managed-mcp.json·allowlist/denylist 조직 통제.
 - [[11 플러그인]] — 플러그인 생성(매니페스트·컴포넌트), 마켓플레이스 발견/설치, plugin.json·marketplace.json 스키마, CLI 명령, 의존성 제약·관리형 제한.
@@ -87,7 +87,7 @@ type: moc
 - [[24 Agent SDK — 고급과 레퍼런스]] — 입력/출력 스트리밍, 구조화 출력, 시스템 프롬프트 커스터마이징, 관측성·비용 추적, 자체 호스팅·보안 배포, TypeScript/Python API 레퍼런스.
 
 ### 레퍼런스
-- [[20 베스트 프랙티스와 워크플로우]] — 컨텍스트 관리·검증 루프, Explore→Plan→Code, SDLC 5단계 프롬프트 라이브러리, git worktree 격리, ultraplan/ultrareview, /goal 자동 진행.
+- [[20 베스트 프랙티스와 워크플로우]] — 컨텍스트 관리·검증 루프, Explore→Plan→Code, SDLC 5단계 프롬프트 라이브러리, git worktree 격리, ultraplan/ultrareview, /goal 자동 진행; harness vs 프롬프트 레이어 진단법, 디자인·프로토타이핑 워크플로우(Jane Street 사례).
 - [[21 브라우저와 컴퓨터 사용]] — Chrome 통합(--chrome)으로 웹 앱 테스트·디버깅, computer-use MCP로 macOS 네이티브 GUI 제어, 권한·안전 가드레일·도구 우선순위.
 - [[25 트러블슈팅]] — 성능·검색·설치·로그인·런타임 에러 진단·복구, 증상별 라우팅 표, 자동 재시도 튜닝, /doctor·/rewind·/compact 등 핵심 진단 명령.
 - [[26 변경 이력과 용어집]] — 용어집 전체, 최근 3개월 changelog, 주간 What's New(w13~w22), 팀 도입용 챔피언 킷·커뮤니케이션 킷.

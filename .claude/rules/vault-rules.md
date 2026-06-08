@@ -34,6 +34,9 @@ On case-insensitive APFS, `Claude/Claude.md` collides with the `CLAUDE.md` memor
 - Machine lint: `python3 .claude/kb-lint.py` — checks frontmatter fields, date format, and `[[wikilink]]` targets across the vault. Add `--online` to diff the `sources` slugs against the official `llms.txt` index.
 - The `kb-lint-check` PostToolUse hook gives the same checks per-edit, on a single file, as you save it.
 
+## claude-radar (daily ecosystem radar)
+A daily launchd cron runs `/claude-radar collect` headless: `radar-collect.py` scrapes ~8 public sources (HN · GitHub · GeekNews · Anthropic release-notes · dev.to · npm) → dedups via `runtime/radar-seen.json` → the session appends recommendations to `runtime/radar-queue.md`. **Safety invariant: the unattended collect step writes ONLY the queue + ledger — it MUST never create skills/agents/commands/rules or ingest KB notes.** Generation happens only in `/claude-radar review` (interactive) after explicit user consent, using official tools (skill-creator for skills; `.claude/{agents,commands,rules}/*.md` for the rest; `/kb-ingest` for KB). Pending queue items surface at SessionStart via the `session-context` hook. The collect↔review split is what keeps "ask before adding" true — do not collapse it.
+
 ## Contradictions
 Never delete conflicting claims — mark them:
 ```

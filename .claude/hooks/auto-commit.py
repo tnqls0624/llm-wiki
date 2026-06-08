@@ -70,8 +70,11 @@ def sync_push():
 try:
     if not os.path.isdir(os.path.join(root, ".git")):
         sys.exit(0)  # git repo 아님 — 조용히 종료
-    # vault 마커 확인 — root가 엉뚱한 repo면 커밋하지 않는다(오염 방지)
-    if not os.path.isfile(os.path.join(root, "CLAUDE.md")):
+    # vault 마커 확인 — root가 엉뚱한 repo면 커밋하지 않는다(오염 방지).
+    # 루트 CLAUDE.md는 이 vault엔 없을 수 있으므로(vault-rules: 미래 슬롯, 현재 부재) `.claude/`
+    # 프레임워크 디렉터리도 마커로 인정한다 — 둘 중 하나라도 있으면 이 vault다.
+    # (CLAUDE.md 단독 마커였을 때 리셋 후 커밋이 영구 no-op 되던 버그 수정, 2026-06-08.)
+    if not (os.path.isfile(os.path.join(root, "CLAUDE.md")) or os.path.isdir(os.path.join(root, ".claude"))):
         sys.exit(0)
 
     # identity 없는 환경(fresh/CI)에서도 commit이 silent-fail 하지 않게 fallback.

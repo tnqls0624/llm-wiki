@@ -28,6 +28,10 @@
 .claude/runtime/weekly-lint.log
 # auto-commit이 push 발산 감지 시 남기는 기기-로컬 경고 마커 (session-context가 부팅 시 표면화)
 .claude/runtime/sync-status.txt
+# claude-radar cron 로그·anacron stamp (기기-로컬 운영 부산물 — 추적 시 멀티맥 stamp 충돌→슬롯 누락).
+# 큐(radar-queue.md)와 dedup ledger(radar-seen.json)는 공유 콘텐츠이므로 추적한다.
+.claude/runtime/radar-cron.log
+.claude/runtime/radar-last-run
 
 # Python 바이트코드 캐시 (py_compile/import 시 생성, 기기별 — 포터블 프레임워크 패키지 오염 방지)
 __pycache__/

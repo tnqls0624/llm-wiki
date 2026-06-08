@@ -29,7 +29,7 @@ import urllib.request
 
 LLMS_TXT_URL = "https://code.claude.com/docs/llms.txt"
 FALLBACK_REQUIRED = ["title", "updated", "sources"]
-EXCLUDE_DIR_NAMES = {".claude", ".codex", ".obsidian", ".git", ".agents"}
+EXCLUDE_DIR_NAMES = {".claude", ".codex", ".obsidian", ".git", ".agents", ".trash"}
 MIN_BODY_CHARS = 50
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
@@ -51,14 +51,19 @@ def is_excluded(rel_parts):
 
 
 def collect_notes(root):
-    """vault 아래 콘텐츠 .md 전부 (제외 디렉터리 빼고)."""
+    """vault 아래 콘텐츠 .md 전부 (제외 디렉터리 + 루트 직속 메타 문서 빼고)."""
     notes = []
+    root_abs = os.path.abspath(root)
     for dirpath, dirnames, filenames in os.walk(root):
         # 디렉터리 가지치기 — 제외 디렉터리는 내려가지 않는다.
         dirnames[:] = [
             d for d in dirnames
             if d not in EXCLUDE_DIR_NAMES and not d.endswith(".space")
         ]
+        # 루트 직속 .md(README.md·CLAUDE.md 등 프로젝트 메타 문서)는 KB 노트가 아니다.
+        # KB 노트는 항상 <Topic>/ 서브디렉터리 안에 있다(vault-rules: topic dir 패턴).
+        if os.path.abspath(dirpath) == root_abs:
+            continue
         for fn in filenames:
             if fn.endswith(".md"):
                 notes.append(os.path.join(dirpath, fn))

@@ -23,7 +23,7 @@ norm = fp.replace("\\", "/")
 # (.agents 는 .claude 와 마찬가지로 메커니즘 — 스킬/에이전트 정의 SKILL.md, frontmatter가 name/description).
 if not fp or not norm.endswith(".md"):
     sys.exit(0)
-if any(seg in norm for seg in ("/.claude/", "/.agents/", "/.codex/", "/.obsidian/", "/.space/", "/.git/")):
+if any(seg in norm for seg in ("/.claude/", "/.agents/", "/.codex/", "/.obsidian/", "/.space/", "/.git/", "/.trash/")):
     sys.exit(0)
 if not os.path.isfile(fp):
     sys.exit(0)
@@ -51,6 +51,11 @@ if not vault_root:
 abs_fp = os.path.abspath(fp)
 root_prefix = os.path.abspath(vault_root) + os.sep
 if not abs_fp.startswith(root_prefix):
+    sys.exit(0)
+
+# 대상 필터 3: 루트 직속 .md(README.md·CLAUDE.md 등 프로젝트 메타 문서)는 KB 노트가 아니므로 제외.
+# KB 노트는 항상 <Topic>/ 서브디렉터리 안에 있다(vault-rules: topic dir 패턴). 배치 린터 kb-lint.py 와 일치.
+if os.path.dirname(abs_fp) == os.path.abspath(vault_root):
     sys.exit(0)
 
 try:
@@ -92,7 +97,7 @@ stripped = re.sub(r"`[^`\n]*`", "", stripped)
 pages = set()
 for p in glob.glob(os.path.join(vault_root, "**", "*.md"), recursive=True):
     pn = p.replace("\\", "/")
-    if any(seg in pn for seg in ("/.claude/", "/.agents/", "/.codex/", "/.obsidian/", "/.space/", "/.git/")):
+    if any(seg in pn for seg in ("/.claude/", "/.agents/", "/.codex/", "/.obsidian/", "/.space/", "/.git/", "/.trash/")):
         continue
     pages.add(os.path.splitext(os.path.basename(p))[0])
 for raw in re.findall(r"\[\[([^\]]+)\]\]", stripped):
