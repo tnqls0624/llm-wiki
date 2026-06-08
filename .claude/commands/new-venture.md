@@ -21,6 +21,7 @@ argument-hint: <아이디어 한 줄>
 - `Projects/Projects.md` MOC의 "활성" 표에 `[[<slug>]] — 한 줄 요약` 줄을 추가한다.
 
 ## 2. 1회차 회의 (fan-out → 비판 → 종합)
+- **사풍 주입**: 직원을 호출하기 전 `Projects/_company/charter.md`(창업자 프로필·자산·부트스트랩 4대 잣대·운영 원칙)를 읽어, 각 직원 프롬프트에 그 맥락을 포함한다 — 직원이 "이 창업자가 누구고 뭘 가졌는지" 위에서 일하도록.
 - **리서치**: `market-researcher` 서브에이전트(Agent tool, `subagent_type: market-researcher`)에 아이디어를 넘겨 수요·경쟁·타깃·진입점·가장 강한 반증을 조사하고 `Projects/<slug>/research/`에 박제하게 한다.
 - **비판**: 리서치 결과를 `red-team-critic`(`subagent_type: red-team-critic`)에 넘겨 4대 잣대로 채점하고 킬샷·빌드 전 검증 실험을 받는다.
 - **종합**: 리서치 + 비판을 묶어, 채택/조건부/탈락 권고와 근거를 한 화면에 정리한다. (선택: `founder-chief-of-staff`에 종합 판단을 맡길 수 있다.)

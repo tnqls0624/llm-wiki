@@ -10,6 +10,7 @@ argument-hint: <프로젝트 slug> | <안건>
 되돌리기 비싼 결정(아이디어 채택, MVP 스코프, 피벗, 프로젝트 중단)에만 쓴다. 일상 작업(리서치 한 건, 카피 초안)은 회의 없이 해당 직원에게 바로 위임하라 — 이 커맨드는 과설계 방지를 위해 "비싼 결정" 전용이다. **결정은 사람이 한다 — 회의는 권고까지.**
 
 ## 1. 안건·맥락 로드
+- **사풍 주입**: `Projects/_company/charter.md`(창업자 프로필·자산·부트스트랩 4대 잣대·운영 원칙)를 읽어 회사 기준을 잡고, 이후 직원 호출 프롬프트에 그 맥락을 포함한다.
 - `$ARGUMENTS`에서 프로젝트 slug와 안건을 분리한다. `Projects/<slug>/`의 `plan.md`·`decisions.md`·`progress.md`·`research/`를 읽어 현재 상태·과거 결정·열린 질문을 파악한다.
 - (선택) `founder-chief-of-staff`(`subagent_type: founder-chief-of-staff`)에 "이 안건에 누구를 부를지" 라우팅 판단을 받는다.
 

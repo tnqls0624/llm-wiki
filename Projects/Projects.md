@@ -20,6 +20,7 @@
 (없음)
 
 ## 회사 단위
+- [[_company/charter]] — **사풍 정본**: 창업자 프로필·자산·부트스트랩 4대 잣대·운영 원칙 (직원이 일하기 전 읽음)
 - [[_company/runway]] — 비용·런웨이·단위경제 (ops-finance 유지)
 - [[_company/decisions]] — 회사 차원 ADR (도메인 선정 등)
 
