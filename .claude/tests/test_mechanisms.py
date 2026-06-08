@@ -1019,5 +1019,103 @@ class TestStudyBrief(unittest.TestCase):
         self.assertNotIn("지난날항목", ctx, "지난 날짜 브리핑은 주입 안 함")
 
 
+# ── Projects/ 제외 (사업 운영 작업공간은 KB 콘텐츠가 아님) ─────────────
+class TestKbLintProjectsExclusion(TestKbLint):
+    """Projects/ 아래 운영 문서(frontmatter 없는 plan/progress 등)는 kb-lint가 검사하지 않는다.
+    positive control: 같은 vault의 Claude/ 깨진 노트는 여전히 잡혀(제외가 전체를 끄지 않음)."""
+
+    def test_projects_excluded_claude_still_checked(self):
+        # Projects/ 운영 문서 — frontmatter 없고 끊긴 위키링크까지 있어도 무시돼야
+        _write(os.path.join(self.d, "Projects", "Projects.md"),
+               "# 운영 허브\n[[geo-citation-report]] 참조 (frontmatter 없음).")
+        _write(os.path.join(self.d, "Projects", "geo-citation-report", "plan.md"),
+               "# 기획\n프론트매터 없는 운영 문서. 충분히 긴 본문이라 빈 노트도 아니다.")
+        # positive control: Claude/ 깨진 노트(sources 누락)는 여전히 잡혀야
+        _write(os.path.join(self.d, "Claude", "bad.md"),
+               "---\ntitle: bad\nupdated: 2026-01-01\n---\n본문이 충분히 길다.")
+        rc, data = self.lint()
+        self.assertEqual(rc, 1, "Claude/ 깨진 노트 때문에 rc=1이어야(제외가 전체 검사를 끄지 않음)")
+        self.assertIsNone(self.issues_for(data, "Projects.md"), "Projects/ MOC는 검사 제외")
+        self.assertIsNone(self.issues_for(data, "plan.md"), "Projects/ 운영 문서는 검사 제외")
+        self.assertIsNotNone(self.issues_for(data, "bad.md"), "Claude/ 깨진 노트는 여전히 검출(positive control)")
+
+
+class TestKbLintCheckProjects(TestKbLintCheck):
+    """PostToolUse 훅도 Projects/ 파일을 건너뛴다(배치 린터 EXCLUDE와 일치)."""
+
+    def test_projects_file_skipped(self):
+        _write(os.path.join(self.d, "Projects", "geo-citation-report", "plan.md"),
+               "# 기획\n프론트매터 없는 운영 문서.")
+        rc, _, err = self.fire("Projects/geo-citation-report/plan.md")
+        self.assertEqual(rc, 0, f"Projects/ 운영 문서는 훅 검사 제외돼야: {err}")
+
+    def test_claude_note_still_warns(self):
+        # positive control: 같은 결함을 Claude/ 노트가 가지면 여전히 경고(제외가 과하지 않음)
+        _write(os.path.join(self.d, "Claude", "bad.md"), "# 프론트매터 없음\n본문")
+        rc, _, err = self.fire("Claude/bad.md")
+        self.assertEqual(rc, 2, "Claude/ 노트는 여전히 검사돼야(positive control)")
+
+
+# ── 에이전트 직원 조직 (Projects/ 운영 체계)의 정적 계약 ───────────────
+class TestFounderOrg(unittest.TestCase):
+    """1인 사업 운영 조직: 직원 에이전트 7명 + 회의 커맨드 3개의 정적 계약.
+    실제 REPO 파일을 검사(임시 vault 아님) — 모델 티어·읽기전용 경계·사람결정 게이트가
+    automation-safety(durable 변경은 사람 동의 후)를 충족하는지 회귀 가드로 고정한다."""
+    AGENTS_DIR = os.path.join(CLAUDE, "agents")
+    CMDS_DIR = os.path.join(CLAUDE, "commands")
+    EMPLOYEES = ["founder-chief-of-staff", "market-researcher", "product-pm",
+                 "builder", "growth-marketer", "ops-finance", "red-team-critic"]
+    COUNCIL_CMDS = ["new-venture", "council", "weekly-review"]
+
+    def _fm(self, path):
+        """파일에서 (frontmatter 텍스트, 전체 텍스트) 반환."""
+        txt = _read(path)
+        m = re.match(r"^---\n(.*?)\n---", txt, re.S)
+        return (m.group(1) if m else ""), txt
+
+    def test_all_employee_agents_exist_with_frontmatter(self):
+        for name in self.EMPLOYEES:
+            p = os.path.join(self.AGENTS_DIR, name + ".md")
+            self.assertTrue(os.path.isfile(p), f"직원 에이전트 누락: {name}")
+            fm, _ = self._fm(p)
+            for field in ("name", "description", "tools", "model"):
+                self.assertRegex(fm, rf"(?m)^{field}:", f"{name} frontmatter에 {field} 필요")
+            self.assertRegex(fm, rf"(?m)^name:\s*{re.escape(name)}\s*$",
+                             f"{name}: frontmatter name이 파일명과 일치해야")
+
+    def test_all_council_commands_exist(self):
+        for name in self.COUNCIL_CMDS:
+            p = os.path.join(self.CMDS_DIR, name + ".md")
+            self.assertTrue(os.path.isfile(p), f"회의 커맨드 누락: {name}")
+            fm, _ = self._fm(p)
+            self.assertRegex(fm, r"(?m)^description:", f"{name}: description 필요")
+
+    def test_model_tiers(self):
+        # 전략 판단(라우팅·비판)은 opus, 단순 집계는 haiku — 비용/오판 트레이드오프 계약
+        def model_of(name):
+            fm, _ = self._fm(os.path.join(self.AGENTS_DIR, name + ".md"))
+            m = re.search(r"(?m)^model:\s*(\S+)", fm)
+            return m.group(1) if m else None
+        self.assertEqual(model_of("red-team-critic"), "opus", "비판가는 opus(오판 비용 큼)")
+        self.assertEqual(model_of("founder-chief-of-staff"), "opus", "참모장은 opus(라우팅=전략)")
+        self.assertEqual(model_of("ops-finance"), "haiku", "운영재무는 haiku(단순 집계, 상시비용 절감)")
+
+    def test_critic_and_cos_read_only(self):
+        # 경계 계약: 비판가·참모장은 읽기 전용(Write/Edit 없음) — 깨기/라우팅만 하고 산출물은 안 만든다
+        for name in ("red-team-critic", "founder-chief-of-staff"):
+            fm, _ = self._fm(os.path.join(self.AGENTS_DIR, name + ".md"))
+            tools = re.search(r"(?m)^tools:\s*(.+)$", fm).group(1)
+            self.assertNotIn("Write", tools, f"{name}는 읽기 전용이어야(Write 금지)")
+            self.assertNotIn("Edit", tools, f"{name}는 읽기 전용이어야(Edit 금지)")
+
+    def test_human_decision_gate(self):
+        # 안전 계약: durable 기록(decisions.md)을 만드는 커맨드는 AskUserQuestion 사람 동의 게이트를
+        # 명시해야 한다(automation-safety: durable 변경은 사람 동의 후). prompt 문구를 기계적으로 고정.
+        for name in ("new-venture", "council"):
+            _, txt = self._fm(os.path.join(self.CMDS_DIR, name + ".md"))
+            self.assertIn("AskUserQuestion", txt, f"{name}: 사람 결정 게이트(AskUserQuestion) 명시 필요")
+            self.assertIn("decisions.md", txt, f"{name}: decisions.md 기록 절차 필요")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

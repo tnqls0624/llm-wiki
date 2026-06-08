@@ -28,9 +28,13 @@ obsidian_sync/
 ├── Meta/                        # 콘텐츠: vault 자기진단 (아키텍처·OKF 대비 + MOC)
 │   ├── 00 LLM Wiki 아키텍처와 OKF 자기진단.md
 │   └── Meta.md                  # MOC 허브
+├── Projects/                    # 운영: 1인 + AI 직원 사업 작업공간 (kb-lint 제외)
+│   ├── Projects.md              # 운영 허브 MOC + 발굴 이력
+│   ├── _company/                # 회사 단위 (runway·decisions)
+│   └── <slug>/                  # 프로젝트별 plan·decisions·progress·growth·ops·research/
 ├── .claude/                     # 메커니즘: 포터블 프레임워크
-│   ├── commands/                # 슬래시 커맨드 7개
-│   ├── agents/                  # 서브에이전트 2개
+│   ├── commands/                # 슬래시 커맨드 10개 (KB 5 + 생태계 2 + 사업운영 3)
+│   ├── agents/                  # 서브에이전트 9개 (KB 2 + 사업 직원 7)
 │   ├── skills/                  # 스킬 (kb-assistant)
 │   ├── rules/                   # 자동 로드 룰 2개
 │   ├── hooks/                   # 이벤트 훅 4개
@@ -45,9 +49,9 @@ obsidian_sync/
 
 ---
 
-## ⌨️ 슬래시 커맨드 (7개)
+## ⌨️ 슬래시 커맨드 (10개)
 
-세션에서 `/<이름>`으로 호출한다. KB 관련 5개 + 생태계 자동화 2개.
+세션에서 `/<이름>`으로 호출한다. KB 5개 + 생태계 자동화 2개 + 사업 운영 3개.
 
 | 커맨드 | 인자 | 용도 |
 |---|---|---|
@@ -59,6 +63,9 @@ obsidian_sync/
 | `/claude-radar` | `[collect\|review]` | Claude 생태계 정보 수집·추천(collect) / 큐 검토·동의 후 생성(review) |
 | `/study-coach` | `[review\|brief\|plan]` | AI Infra 학습 코치 — 어제 산출물(별도 `ai-infra-lab` repo)을 LLM이 검토·채점하고(review) 오늘 할 것을 브리핑(brief). 진도는 `runtime/study-state.md`(git 공유) |
 | `/skill-audit` | `[--global] [--plugins]` | 설치된 skill의 description 토큰 풋프린트(매 세션 상시 비용) 점검 |
+| `/new-venture` | `<아이디어>` | 새 사업 프로젝트 스캐폴드 + 1회차 회의(리서치→비판→종합)로 부트스트랩 4대 잣대 검증 |
+| `/council` | `<slug> \| <안건>` | 중대 결정 회의: 직원 병렬 의견 → 비판가 → 종합 → **사람 결정** → decisions.md 기록 |
+| `/weekly-review` | (없음) | 활성 프로젝트 진척·블로커·다음 1순위 점검 + 각 progress.md에 주차 기록 |
 
 ### 자주 쓰는 흐름
 ```bash
@@ -68,6 +75,9 @@ obsidian_sync/
 /kb-lint --online                    # 커버리지 검증
 /claude-radar review                 # 오늘 쌓인 생태계 추천 검토
 /skill-audit --plugins               # skill 상시 토큰 비용 점검
+/new-venture GEO 인용 진단 리포트     # 새 사업 시작 + 1회차 회의 → 사람 결정
+/council geo-citation-report | 유료 전환할까?   # 중대 결정 회의
+/weekly-review                       # 주간 리듬(활성 프로젝트 점검)
 ```
 
 ---
@@ -99,14 +109,28 @@ obsidian_sync/
 
 ---
 
-## 🤖 서브에이전트 (2개)
+## 🤖 서브에이전트 (9개)
 
-격리 컨텍스트에서 도는 위임용 에이전트. `Agent` 도구의 `subagent_type`으로 호출되거나, 커맨드가 무거운 작업을 위임한다. 둘 다 비용 레버로 **sonnet**.
+격리 컨텍스트에서 도는 위임용 에이전트. `Agent` 도구의 `subagent_type`으로 호출되거나, 커맨드가 작업을 위임한다. 모델 티어는 비용/오판 트레이드오프로 고른다(단순 집계 haiku · 일반 작업 sonnet · 전략 판단 opus).
 
-| 에이전트 | 도구 | 용도 |
+### KB 운영 (2)
+| 에이전트 | 도구 (모델) | 용도 |
 |---|---|---|
-| `kb-guide` | Read·Grep·Glob (**읽기 전용**) | 여러 KB 노트에 흩어진 답을 격리 컨텍스트에서 모아 답변 + 근거 노트명만 반환 (메인 컨텍스트 오염 방지) |
-| `kb-updater` | Read·Write·Edit·Glob·Grep·Bash·WebFetch | 공식 문서 변경 반영·다중 노트 동시 갱신 등 무거운 KB 쓰기. 갱신 의무 ①(updated)·②(MOC)는 자기가 수행하되 **hot.md는 건드리지 않는다**(메인 세션 몫) |
+| `kb-guide` | Read·Grep·Glob (sonnet, **읽기 전용**) | 여러 KB 노트에 흩어진 답을 격리 컨텍스트에서 모아 답변 + 근거 노트명만 반환 |
+| `kb-updater` | Read·Write·Edit·Glob·Grep·Bash·WebFetch (sonnet) | 공식 문서 변경 반영·다중 노트 갱신 등 무거운 KB 쓰기. 갱신 의무 ①②는 수행하되 **hot.md는 안 건드림** |
+
+### 사업 직원 (7) — 1인 회사를 굴리는 "AI 직원" 팀
+| 에이전트 | 도구 (모델) | 용도 |
+|---|---|---|
+| `founder-chief-of-staff` | Read·Grep·Glob (opus, **읽기 전용**) | 참모장 — 운영 단일 진입점·라우터. 회의/위임 판단 + 맥락 정리 (결정은 사람) |
+| `market-researcher` | Read·Write·Edit·Web·Bash (sonnet) | 수요·경쟁·타깃을 출처 인용으로 조사 → `research/` 박제. 적대적 검증 |
+| `product-pm` | Read·Write·Edit (sonnet) | 검증 가능한 최소 실험/MVP 정의 → `plan.md`. 빌드보다 검증 우선 |
+| `builder` | Read·Write·Edit·Bash (sonnet) | MVP·자동화 구현(만들고-검증-커밋). `/test`·`/review`·`/commit` 재사용 |
+| `growth-marketer` | Read·Write·Edit·Web (sonnet) | 무료 채널 유통·론칭 카피 → `growth.md`. 유료광고 금지(부트스트랩) |
+| `ops-finance` | Read·Write·Edit·Bash (haiku) | 비용·런웨이·단위경제 추적 → `ops.md`·`runway.md`. 자본 상한 수문장 |
+| `red-team-critic` | Read·Grep·Glob (opus, **읽기 전용**) | 비판가 — 부트스트랩 4대 잣대로 적대적 검증. 깨기만, 종합은 사람 |
+
+> **회의(council) 흐름**: `/council`이 관련 직원을 병렬 호출 → 각자 입장문 → `red-team-critic`이 단일 패스로 깸 → 종합 → `AskUserQuestion`으로 **사람이 결정** → `decisions.md` 기록. 의견수렴↔비판 분리로 자기검증 편향을 차단(claude-radar의 collect↔review와 같은 사상). 운영 정본은 `Projects/Projects.md`.
 
 ---
 

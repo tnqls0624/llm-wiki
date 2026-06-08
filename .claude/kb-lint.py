@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """KB(Claude Code 지식 베이스) 기계 검증 — stdlib only, LLM 없이 돌리는 1차 게이트.
 
-검사 대상: vault 루트 아래 콘텐츠 노트 전부 (.claude/ .codex/ .obsidian/ .git/ .agents/ 및
+검사 대상: vault 루트 아래 콘텐츠 노트 전부 (.claude/ .codex/ .obsidian/ .git/ .agents/ Projects/ 및
 모든 .space/ 디렉터리 제외한 **/*.md). .agents/ 는 .claude/ 와 마찬가지로 메커니즘
 (스킬 정의 SKILL.md, frontmatter가 name/description) — KB 콘텐츠가 아니므로 제외한다.
+Projects/ 는 사업 운영 작업공간(운영 문서)이라 KB 콘텐츠가 아니므로 제외한다.
 
 검사 항목:
   a. 프론트매터 필수 필드 — .claude/kb-required-fields.txt 를 런타임에 읽고
@@ -32,7 +33,8 @@ import urllib.error
 LLMS_TXT_URL = "https://code.claude.com/docs/llms.txt"
 FALLBACK_REQUIRED = ["title", "updated", "sources", "type"]
 FALLBACK_TYPES = ["reference", "explanation", "how-to", "tutorial", "moc"]
-EXCLUDE_DIR_NAMES = {".claude", ".codex", ".obsidian", ".git", ".agents", ".trash"}
+# Projects/ 는 1인 사업 운영 작업공간(KB 콘텐츠 아님) — plan/decisions/progress 등 운영 문서라 KB frontmatter를 강제하지 않는다.
+EXCLUDE_DIR_NAMES = {".claude", ".codex", ".obsidian", ".git", ".agents", ".trash", "Projects"}
 MIN_BODY_CHARS = 50
 AGE_WARN_DAYS = 90  # updated가 이보다 오래되면 stale 후보(정보성 — exit code 미반영)
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
