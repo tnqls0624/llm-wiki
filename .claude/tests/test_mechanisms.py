@@ -1117,5 +1117,6 @@ class TestFounderOrg(unittest.TestCase):
             self.assertIn("decisions.md", txt, f"{name}: decisions.md 기록 절차 필요")
 
 
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
