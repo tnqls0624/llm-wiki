@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-06-13T09:24:27",
+ "updated": "2026-06-14T09:21:29",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -222,6 +222,26 @@
   "devto:3852287": "2026-06-13",
   "devto:3837751": "2026-06-13",
   "devto:3724056": "2026-06-13",
-  "devto:3832456": "2026-06-13"
+  "devto:3832456": "2026-06-13",
+  "gh:JSONbored/awesome-claude": "2026-06-14",
+  "gh:skzv/ccmux": "2026-06-14",
+  "gh:starbaser/ccproxy": "2026-06-14",
+  "hn:48522449": "2026-06-14",
+  "hn:48516486": "2026-06-14",
+  "ghrel:v2.1.177": "2026-06-14",
+  "gh:Belkins/ai-dive-deep": "2026-06-14",
+  "gh:ConfabulousDev/confab-web": "2026-06-14",
+  "gh:askalf/dario": "2026-06-14",
+  "gh:yurukusa/cc-safe-setup": "2026-06-14",
+  "gh:gtapps/claude-code-hermit": "2026-06-14",
+  "gn:https://news.hada.io/topic?id=30446": "2026-06-14",
+  "devto:3891059": "2026-06-14",
+  "devto:3891164": "2026-06-14",
+  "devto:3866643": "2026-06-14",
+  "devto:3866671": "2026-06-14",
+  "devto:3866579": "2026-06-14",
+  "npm:@ads-repo/meta-ads-dashboard": "2026-06-14",
+  "npm:@onebullex-group/skill": "2026-06-14",
+  "hn:48043007": "2026-06-14"
  }
 }
