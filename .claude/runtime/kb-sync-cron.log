@@ -8,3 +8,4 @@ MOCK-CLAUDE invoked: -p /kb-sync — 변경이 없으면 아무 파일도 만들
 API Error: The socket connection was closed unexpectedly. For more information, pass `verbose: true` in the second argument to fetch()
 === [2026-06-11 11:53:19] exit=1 ===
 === [2026-06-15 09:20:53] kb-sync run start ===
+You've hit your session limit · resets 2:10pm (Asia/Seoul)
