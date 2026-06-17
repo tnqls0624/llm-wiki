@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-06-16T10:59:08",
+ "updated": "2026-06-17T09:25:18",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -276,6 +276,30 @@
   "devto:3890795": "2026-06-16",
   "devto:3881277": "2026-06-16",
   "npm:@veyralabs/shopify-store": "2026-06-16",
-  "npm:@tmustier/pi-agent-teams": "2026-06-16"
+  "npm:@tmustier/pi-agent-teams": "2026-06-16",
+  "gh:kgraph57/mckinsey-style-visualization-skill": "2026-06-17",
+  "gh:griddynamics/rosetta": "2026-06-17",
+  "gh:anthony-chaudhary/dos-kernel": "2026-06-17",
+  "gh:zhitongblog/unterm": "2026-06-17",
+  "gh:existential-birds/beagle": "2026-06-17",
+  "gh:egorfedorov/claude-context-optimizer": "2026-06-17",
+  "hn:48564001": "2026-06-17",
+  "hn:48561870": "2026-06-17",
+  "hn:48561284": "2026-06-17",
+  "hn:48559521": "2026-06-17",
+  "hn:48557095": "2026-06-17",
+  "hn:48556174": "2026-06-17",
+  "hn:48555644": "2026-06-17",
+  "hn:48555431": "2026-06-17",
+  "ghrel:v2.1.179": "2026-06-17",
+  "gh:sipyourdrink-ltd/bernstein": "2026-06-17",
+  "gh:MakFly/superpowers-symfony": "2026-06-17",
+  "gh:dcellison/kai": "2026-06-17",
+  "devto:3915085": "2026-06-17",
+  "devto:3910156": "2026-06-17",
+  "devto:3917776": "2026-06-17",
+  "npm:@rosvetic/conclave-mcp": "2026-06-17",
+  "npm:claude-skill-3d-animation-landing": "2026-06-17",
+  "npm:@beehive-xr/xr-skill": "2026-06-17"
  }
 }
