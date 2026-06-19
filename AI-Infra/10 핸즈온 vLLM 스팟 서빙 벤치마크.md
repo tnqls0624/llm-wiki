@@ -1,6 +1,7 @@
 ---
 title: 10 핸즈온 vLLM 스팟 서빙 벤치마크
 updated: 2026-06-08
+type: how-to
 sources:
   - https://docs.vllm.ai/en/stable/
   - https://docs.runpod.io/serverless/vllm/overview

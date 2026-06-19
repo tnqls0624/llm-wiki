@@ -1,6 +1,7 @@
 ---
 title: 02 CLI 레퍼런스
 updated: 2026-06-07
+type: reference
 sources: [cli-reference, interactive-mode, keybindings, terminal-config, fullscreen, voice-dictation]
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: 14 IDE와 데스크톱
 updated: 2026-06-07
+type: reference
 sources: [vs-code, jetbrains, desktop, desktop-quickstart, platforms]
 ---
 

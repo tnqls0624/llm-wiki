@@ -1,6 +1,7 @@
 ---
 title: 24 Agent SDK — 고급과 레퍼런스
 updated: 2026-06-07
+type: reference
 sources: [agent-sdk/streaming-output, agent-sdk/streaming-vs-single-mode, agent-sdk/structured-outputs, agent-sdk/modifying-system-prompts, agent-sdk/observability, agent-sdk/cost-tracking, agent-sdk/hosting, agent-sdk/secure-deployment, agent-sdk/typescript, agent-sdk/typescript-v2-preview, agent-sdk/python]
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: 16 CI-CD와 팀 통합
 updated: 2026-06-07
+type: reference
 sources: [github-actions, github-enterprise-server, gitlab-ci-cd, code-review, slack]
 ---
 

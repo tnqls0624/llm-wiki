@@ -75,13 +75,23 @@ cd "$VAULT" || exit 0
 {
   echo "=== [$(date '+%F %T')] kb-sync run start ==="
   # sonnet: 주기 diff 반영은 중간 티어로 충분(비용 레버). acceptEdits + 최소 도구 allowlist로 무인 실행.
+  # allowlist 정밀화(least-authority): curl은 공식 docs 호스트로, python3는 정확 스크립트로 고정 —
+  # 임의 `python3 -c`·임의 curl POST(데이터 유출 표면)를 무인 런에서 차단(radar collect와 권한 위생 통일).
   "$CLAUDE_BIN" -p "/kb-sync — 변경이 없으면 아무 파일도 만들지 말고 '변경 없음'만 보고하고 종료하라." \
     --model sonnet \
     --permission-mode acceptEdits \
-    --allowedTools "Bash(curl:*),Bash(python3:*),Read,Write,Edit,Glob,Grep" \
+    --allowedTools "Bash(curl -s https://code.claude.com/docs/*),Bash(python3 .claude/kb-lint.py:*),Bash(python3 .claude/kb-source-hashes.py:*),Read,Write,Edit,Glob,Grep" \
     2>&1
   rc=$?
   echo "=== [$(date '+%F %T')] exit=$rc ==="
+
+  # 안전 불변식의 기계적 강제(2차 방어선): kb-sync는 KB 노트(토픽 디렉터리)와 .claude/runtime/ 을
+  # durable하게 쓰는 것이 설계 의도다. 그러나 .claude/ 의 **메커니즘**(skills/agents/commands/rules/
+  # hooks/scripts/tests 등 runtime 외)을 자기수정하는 것은 범위 밖 — 프롬프트 오판으로 훅/룰을 고쳐
+  # auto-commit/push로 다른 머신에 전파되지 않게, 커밋 경계 이전에 되돌린다. KB 쓰기는 허용하므로
+  # radar처럼 전부 되돌리지 않고 '.claude/ 메커니즘 경로'만 STRAY 처리한다(kb 모드 = 블랙리스트).
+  bash "$VAULT/.claude/stray-guard.sh" kb
+
   # 성공 시에만 스탬프 갱신 — 실패하면 다음 로그인/슬롯에서 재시도됨
   [ "$rc" -eq 0 ] && date +%s > "$STAMP"
 } >> "$LOG" 2>&1

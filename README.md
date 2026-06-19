@@ -2,7 +2,7 @@
 
 Obsidian vault 하나에 **두 가지**가 들어 있다:
 
-1. **`Claude/` — 지식 베이스(콘텐츠)**: Claude Code 공식 문서(code.claude.com/docs, 145페이지)를 한국어로 종합한 26개 노트 + `Claude/Claude.md` MOC 허브.
+1. **토픽 디렉토리 — 지식 베이스(콘텐츠)**: 각 `<Topic>/`는 한국어 노트 + `<Topic>/<Topic>.md` MOC 허브. `Claude/`(Claude Code 공식문서 26) · `AI-Infra/`(6) · `Infra/`(10) · `Meta/`(vault 자기진단). 노트 frontmatter는 4필드 `title`/`updated`/`sources`/`type`(닫힌 enum).
 2. **`.claude/` — 포터블 프레임워크 패키지(메커니즘)**: KB를 묻고·갱신·점검·박제하고, Claude 생태계를 매일 자동 수집하는 커스텀 커맨드·에이전트·스킬·룰·훅·cron. 다른 vault로 그대로 복사 가능.
 
 > 이 README는 **Claude Code 기본 기능이 아닌, 이 프로젝트가 추가한 것**의 사용법만 정리한다. 기본 CLI 사용법은 `Claude/` KB를 참고한다.
@@ -25,15 +25,19 @@ obsidian_sync/
 │   ├── 00 학습 로드맵 · 01 프로세스 · 02 메모리 · 03 파일시스템 · 04 네트워킹
 │   ├── 05 커널/syscall · 06 컨테이너 내부 · 07 커맨드 사전 · 08 트러블슈팅 · 99 리소스
 │   └── Infra.md                 # MOC 허브
+├── Meta/                        # 콘텐츠: vault 자기진단 (아키텍처·OKF 대비 + MOC)
+│   ├── 00 LLM Wiki 아키텍처와 OKF 자기진단.md
+│   └── Meta.md                  # MOC 허브
 ├── .claude/                     # 메커니즘: 포터블 프레임워크
 │   ├── commands/                # 슬래시 커맨드 7개
 │   ├── agents/                  # 서브에이전트 2개
 │   ├── skills/                  # 스킬 (kb-assistant)
 │   ├── rules/                   # 자동 로드 룰 2개
 │   ├── hooks/                   # 이벤트 훅 4개
-│   ├── tests/                   # 계약 테스트 (55 케이스)
+│   ├── tests/                   # 계약 테스트 (79 케이스)
 │   ├── runtime/                 # 휘발성 상태 (hot.md, 큐, ledger, 로그)
-│   ├── *.py / *.sh              # 스크립트 + cron 래퍼/설치기
+│   ├── kb-required-fields.txt · kb-allowed-types.txt   # frontmatter 스키마 정본
+│   ├── *.py / *.sh              # 스크립트 + cron 래퍼/설치기 + stray-guard.sh
 │   └── settings.json            # 훅 등록
 ├── CLAUDE.md                    # 프로젝트 메모리 — 변경 동기화 의무 (충돌 시 우선)
 └── README.md
@@ -143,9 +147,11 @@ obsidian_sync/
 ### 스크립트
 | 파일 | 용도 |
 |---|---|
-| `kb-lint.py` | 전 vault 기계 린트(frontmatter·날짜·위키링크). `--online`은 공식 llms.txt와 슬러그 비교 |
+| `kb-lint.py` | 전 vault 기계 린트(frontmatter·날짜·위키링크·`type` enum·MOC 백링크). `--online`은 공식 llms.txt와 슬러그 비교, `--links`는 외부 URL 생존 점검(정보성), 거버넌스 메트릭(type 커버리지·모순·신선도) 집계 |
+| `kb-source-hashes.py` | 출처 원문 sha256을 추적해 **같은 슬러그 내 본문 변경**(슬러그 diff가 못 잡는) 감지. 변경 의심분을 review 큐에 적재만(노트 자동수정 X). kb-sync 흐름에서 호출 |
 | `scrub-secrets.py` | 크리덴셜 탐지·마스킹 코어(GitHub PAT·AWS·OpenAI·Anthropic 등). ingest 시 1차 방어 |
 | `radar-collect.py` | claude-radar 수집 엔진(0-LLM, 결정론적). 10개 채널 → dedup → JSON |
+| `stray-guard.sh` | 무인 cron 런이 허용 범위 밖 파일을 건드리면 커밋 경계 이전에 되돌림(radar=`runtime` 모드 / kb-sync=`kb` 모드). 안전 2차 방어선 |
 
 ### cron 자동화 (launchd)
 | 작업 | 스케줄 | 설치 |
@@ -162,7 +168,7 @@ obsidian_sync/
 ## ✅ 테스트
 
 ```bash
-bash .claude/tests/run-tests.sh      # 51개 계약 테스트 (표준 라이브러리만, 의존성 0)
+bash .claude/tests/run-tests.sh      # 79개 계약 테스트 (표준 라이브러리만, 의존성 0)
 ```
 
 격리 임시 vault에서 모든 훅·스크립트를 실제 호출해 계약을 검증한다(silent-fail 회귀 방지). 새 메커니즘을 추가하면 `test_mechanisms.py`에 케이스를 더하는 것이 규칙이다.

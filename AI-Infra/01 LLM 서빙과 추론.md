@@ -1,6 +1,7 @@
 ---
 title: 01 LLM 서빙과 추론
 updated: 2026-06-08
+type: explanation
 sources:
   - https://docs.vllm.ai/en/stable/
   - https://docs.sglang.ai/
@@ -10,7 +11,7 @@ sources:
 
 # LLM 서빙과 추론 인프라
 
-허브: [[AI-Infra]]
+허브: [[AI-Infra]] · 함께: [[02 쿠버네티스 GPU 오케스트레이션]](서빙을 K8s에 올림)·[[03 MLOps 파이프라인과 관측성]](서빙 메트릭→관측성) · 토대(Infra): [[02 메모리 관리]](KV cache·PagedAttention=메모리 풀)·[[06 컨테이너 내부 구조]](GPU 디바이스 주입)
 
 6년차 백엔드 자산이 **가장 강하게 전이**되는 영역. 추론 엔진은 본질적으로 "고처리량·저지연 stateful 서비스"이고, PagedAttention=메모리 풀, continuous batching=요청 배치 큐, KV cache=캐시 계층의 GPU 버전이다. API·p99·로드밸런싱·캐시 운영 직관이 그대로 옮겨간다.
 

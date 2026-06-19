@@ -1,6 +1,7 @@
 ---
 title: 23 Agent SDK — 핵심 기능
 updated: 2026-06-07
+type: reference
 sources: [agent-sdk/permissions, agent-sdk/sessions, agent-sdk/session-storage, agent-sdk/hooks, agent-sdk/mcp, agent-sdk/custom-tools, agent-sdk/subagents, agent-sdk/skills, agent-sdk/slash-commands, agent-sdk/plugins, agent-sdk/user-input, agent-sdk/todo-tracking, agent-sdk/tool-search, agent-sdk/file-checkpointing]
 ---
 

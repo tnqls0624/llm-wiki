@@ -38,8 +38,11 @@ def _write(p, s):
 
 
 def note(slug, updated="2026-01-01", sources="[]", body="본문 내용이 충분히 길어서 빈 노트로 잡히지 않는다.", extra_fm=""):
-    """KB 노트 frontmatter(3필드: title/updated/sources) + 본문 생성."""
+    """KB 노트 frontmatter(title/updated/sources/type) + 본문 생성.
+    extra_fm에 'type:'이 있으면(예: MOC) 기본 type을 생략하고 그것을 쓴다."""
     fm = f"title: {slug}\nupdated: {updated}\nsources: {sources}"
+    if "type:" not in extra_fm:
+        fm += "\ntype: reference"  # 기본 type (extra_fm이 type을 주면 그쪽 우선)
     if extra_fm:
         fm += "\n" + extra_fm
     return f"---\n{fm}\n---\n{body}\n"
@@ -99,7 +102,13 @@ class TestKbLint(VaultTest):
         if os.path.exists(src_fields):
             shutil.copy(src_fields, os.path.join(self.d, ".claude", "kb-required-fields.txt"))
         else:
-            _write(os.path.join(self.d, ".claude", "kb-required-fields.txt"), "title\nupdated\nsources\n")
+            _write(os.path.join(self.d, ".claude", "kb-required-fields.txt"), "title\nupdated\nsources\ntype\n")
+        # type enum 정본 파일도 복사 — 없으면 fallback이지만 정본 경로를 테스트.
+        src_types = os.path.join(CLAUDE, "kb-allowed-types.txt")
+        if os.path.exists(src_types):
+            shutil.copy(src_types, os.path.join(self.d, ".claude", "kb-allowed-types.txt"))
+        else:
+            _write(os.path.join(self.d, ".claude", "kb-allowed-types.txt"), "reference\nexplanation\nhow-to\ntutorial\nmoc\n")
 
     def lint(self, *extra):
         """격리 vault의 kb-lint.py 를 --json 으로 실행 → (rc, parsed_json)."""
@@ -119,9 +128,10 @@ class TestKbLint(VaultTest):
         return None
 
     def test_clean_vault_passes(self):
-        # 상호 링크가 모두 해소되는 정상 노트 2개 + MOC 허브
-        self.kbnote("a", body="정상 노트 A. [[b]] 참조.")
-        self.kbnote("b", body="정상 노트 B. [[a]] 참조.")
+        # 상호 링크가 모두 해소되는 정상 노트 2개 + MOC 허브.
+        # 콘텐츠 노트는 자기 토픽 MOC([[Claude]])를 백링크해야 한다(update duty ② 기계 강제).
+        self.kbnote("a", body="정상 노트 A. 허브: [[Claude]] · [[b]] 참조.")
+        self.kbnote("b", body="정상 노트 B. 허브: [[Claude]] · [[a]] 참조.")
         self.kbnote("Claude", sources="", body="허브. [[a]] [[b]]", extra_fm="type: moc")
         rc, data = self.lint()
         self.assertEqual(rc, 0, f"정상 vault는 통과해야: {data['files_with_issues']}")
@@ -200,6 +210,71 @@ class TestKbLint(VaultTest):
         rc, data = self.lint()
         self.assertEqual(rc, 0, f".space/ 는 제외돼야: {data['files_with_issues']}")
 
+    # ── type 닫힌 enum (OKF 유일 필수 필드 + Diátaxis) ──
+    def test_type_missing_detected(self):
+        # type 필수 — 누락 시 검출 (note() 기본은 type 포함이므로 직접 작성)
+        _write(os.path.join(self.d, "Claude", "notype.md"),
+               "---\ntitle: notype\nupdated: 2026-01-01\nsources: []\n---\n허브: [[Claude]] 본문 충분히 김.")
+        self.kbnote("Claude", sources="", body="허브 [[notype]]", extra_fm="type: moc")
+        rc, data = self.lint()
+        self.assertEqual(rc, 1)
+        iss = self.issues_for(data, "notype.md")
+        self.assertTrue(any("type" in x for x in iss), f"type 누락 검출: {iss}")
+
+    def test_type_enum_invalid_detected(self):
+        # 허용 enum 밖 type 값은 어휘 드리프트로 검출 (positive control: 유효 type은 통과)
+        self.kbnote("good", body="허브: [[Claude]] 유효 type.", extra_fm="type: explanation")
+        _write(os.path.join(self.d, "Claude", "bogus.md"),
+               "---\ntitle: bogus\nupdated: 2026-01-01\nsources: []\ntype: BigQuery Table\n---\n허브: [[Claude]] 본문.")
+        self.kbnote("Claude", sources="", body="허브 [[good]] [[bogus]]", extra_fm="type: moc")
+        rc, data = self.lint()
+        self.assertEqual(rc, 1)
+        self.assertIsNone(self.issues_for(data, "good.md"), "유효 type(explanation)은 통과해야")
+        iss = self.issues_for(data, "bogus.md")
+        self.assertTrue(any("enum" in x for x in iss), f"허용값 밖 type 검출: {iss}")
+
+    # ── MOC 백링크 (update duty ② 기계 강제) ──
+    def test_moc_backlink_missing_detected(self):
+        # 콘텐츠 노트가 자기 토픽 MOC를 백링크 안 하면 검출 (positive control: 백링크 있으면 통과)
+        self.kbnote("linked", body="허브: [[Claude]] 백링크 있음.")
+        _write(os.path.join(self.d, "Claude", "orphan.md"),
+               "---\ntitle: orphan\nupdated: 2026-01-01\nsources: []\ntype: reference\n---\nMOC 백링크 없는 본문.")
+        self.kbnote("Claude", sources="", body="허브 [[linked]] [[orphan]]", extra_fm="type: moc")
+        rc, data = self.lint()
+        self.assertEqual(rc, 1)
+        self.assertIsNone(self.issues_for(data, "linked.md"), "MOC 백링크 있으면 통과")
+        iss = self.issues_for(data, "orphan.md")
+        self.assertTrue(any("MOC 백링크" in x for x in iss), f"MOC 백링크 누락 검출: {iss}")
+
+    def test_moc_itself_exempt_from_backlink(self):
+        # MOC 자신은 자기를 백링크할 필요 없음(면제)
+        self.kbnote("a", body="허브: [[Claude]] 본문.")
+        self.kbnote("Claude", sources="", body="허브 [[a]]", extra_fm="type: moc")
+        rc, data = self.lint()
+        self.assertEqual(rc, 0, f"MOC 자신은 백링크 면제: {data['files_with_issues']}")
+
+    # ── 신선도(age) 정보성 경고 (governance.stale, exit code 미반영) ──
+    def test_stale_note_surfaced_but_not_failing(self):
+        # 오래된 updated는 governance.stale에 올라오되 exit code는 0(정보성)
+        self.kbnote("old", updated="2020-01-01", body="허브: [[Claude]] 오래된 노트.")
+        self.kbnote("fresh", updated="2099-01-01", body="허브: [[Claude]] 신선한 노트.")
+        self.kbnote("Claude", sources="", body="허브 [[old]] [[fresh]]", extra_fm="type: moc")
+        rc, data = self.lint()
+        self.assertEqual(rc, 0, "신선도는 정보성 — exit code 미반영")
+        stale_notes = [s["note"] for s in data["governance"]["stale"]]
+        self.assertTrue(any("old.md" in n for n in stale_notes), f"오래된 노트는 stale: {stale_notes}")
+        self.assertFalse(any("fresh.md" in n for n in stale_notes), "신선 노트는 stale 아님(positive control)")
+
+    def test_governance_metrics_present(self):
+        # 거버넌스 집계: type coverage + 모순 콜아웃 카운트
+        self.kbnote("a", body="허브: [[Claude]] 본문.")
+        self.kbnote("conf", body="허브: [[Claude]]\n\n> [!warning] 모순\n> [[a]]는 X, [[a]]는 Y.")
+        self.kbnote("Claude", sources="", body="허브 [[a]] [[conf]]", extra_fm="type: moc")
+        rc, data = self.lint()
+        gov = data["governance"]
+        self.assertEqual(gov["with_type"], gov["total"], "모든 노트 type 보유")
+        self.assertTrue(any("conf.md" in c for c in gov["conflicts"]), f"모순 콜아웃 집계: {gov['conflicts']}")
+
 
 # ── kb-lint-check.py (PostToolUse 단일파일 훅) ────────────────────────
 class TestKbLintCheck(VaultTest):
@@ -272,6 +347,21 @@ class TestKbLintCheck(VaultTest):
         rc, _, err = self.fire("Claude/f.md")
         self.assertEqual(rc, 2)
         self.assertIn("코드펜스", err)
+
+    def test_type_enum_invalid_warns(self):
+        # 훅도 배치 린터와 동일하게 type 닫힌 enum을 검증(어휘 드리프트 차단).
+        _write(os.path.join(self.d, "Claude", "bog.md"),
+               "---\ntitle: bog\nupdated: 2026-01-01\nsources: []\ntype: Weird Type\n---\n본문 충분히 김.")
+        rc, _, err = self.fire("Claude/bog.md")
+        self.assertEqual(rc, 2)
+        self.assertIn("enum", err, f"허용값 밖 type 경고: {err}")
+
+    def test_type_enum_valid_silent(self):
+        # positive control: 유효 type(reference)은 통과.
+        _write(os.path.join(self.d, "Claude", "okk.md"),
+               "---\ntitle: okk\nupdated: 2026-01-01\nsources: []\ntype: reference\n---\n본문 충분히 김.")
+        rc, _, err = self.fire("Claude/okk.md")
+        self.assertEqual(rc, 0, f"유효 type은 통과: {err}")
 
     def test_outside_vault_skipped(self):
         # vault 밖 파일은 대상 아님 → 조용히 통과 (env 미설정으로 .git 역산 경로 사용)
@@ -419,12 +509,12 @@ class TestSessionContext(VaultTest):
         self.assertIn("Vault state", c)
         self.assertNotIn("휘발성", c, "INJECT 블록 밖(Recent sessions)은 주입 안 함")
 
-    def test_no_hot_falls_back(self):
-        # hot.md 없으면 index.md 발췌, 둘 다 없으면 안내 — crash 없이 exit 0
+    def test_no_hot_clear_warning(self):
+        # hot.md 없으면 명확한 경고만(은퇴한 index.md fallback은 참조하지 않음) — crash 없이 exit 0.
         os.remove(os.path.join(self.d, ".claude", "runtime", "hot.md"))
-        _write(os.path.join(self.d, "index.md"), "# Index\n인덱스 발췌 내용\n")
         c = self.ctx()
-        self.assertIn("인덱스 발췌 내용", c, "hot.md 부재 시 index.md fallback")
+        self.assertIn("hot.md", c, "hot.md 부재 시 명확한 경고")
+        self.assertNotIn("index.md", c, "은퇴한 index.md를 언급하면 안 됨(dead code 제거)")
 
     def test_sync_warning_surfaced(self):
         _write(os.path.join(self.d, ".claude", "runtime", "sync-status.txt"), "⚠ 발산 경고")
@@ -659,6 +749,144 @@ class TestAutoCommitMarker(unittest.TestCase):
         run_py("auto-commit.py", {"hook_event_name": "Stop"}, d)
         self.assertNotIn("auto:", git(d, "log", "--oneline").stdout,
                          "마커 둘 다 없으면 커밋 안 함(엉뚱한 repo 오염 방지)")
+
+
+# ── kb-lint.parse_frontmatter (block-style YAML 파싱 버그 회귀 가드) ──
+def _load_kblint():
+    spec = _ilu.spec_from_file_location("kblint", KB_LINT)
+    m = _ilu.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
+
+
+class TestParseFrontmatter(unittest.TestCase):
+    """parse_frontmatter의 리스트 파싱 계약. block-style(`sources:` 다음 줄 `  - …`)이
+    빈 문자열로 silent drop되던 P0 버그의 회귀 가드 — AI-Infra/Infra 노트의 출처가 여기 의존."""
+    def setUp(self):
+        self.m = _load_kblint()
+
+    def test_block_style_list_parsed(self):
+        c = ("---\ntitle: t\nupdated: 2026-01-01\ntype: explanation\n"
+             "sources:\n  - https://a.com/\n  - https://b.com/\n---\n본문")
+        _, fm = self.m.parse_frontmatter(c)
+        self.assertEqual(fm["sources"], ["https://a.com/", "https://b.com/"],
+                         "block-style sources를 리스트로 파싱해야(P0 버그 회귀 가드)")
+
+    def test_inline_list_still_parsed(self):
+        # positive control: inline 배열도 여전히 정상
+        c = "---\ntitle: t\nupdated: 2026-01-01\ntype: reference\nsources: [a, b]\n---\n본문"
+        _, fm = self.m.parse_frontmatter(c)
+        self.assertEqual(fm["sources"], ["a", "b"])
+
+    def test_empty_value_then_no_list_is_empty(self):
+        # 값이 비고 후속 리스트도 없으면 빈 리스트(MOC sources: 면제와 호환)
+        c = "---\ntitle: t\nupdated: 2026-01-01\ntype: moc\nsources:\n---\n본문"
+        _, fm = self.m.parse_frontmatter(c)
+        self.assertEqual(fm["sources"], [])
+
+    def test_block_list_stops_at_next_key(self):
+        # 블록 리스트가 다음 키를 먹지 않아야
+        c = ("---\ntitle: t\nupdated: 2026-01-01\nsources:\n  - https://a.com/\n"
+             "type: reference\n---\n본문")
+        _, fm = self.m.parse_frontmatter(c)
+        self.assertEqual(fm["sources"], ["https://a.com/"])
+        self.assertEqual(fm["type"], "reference", "다음 키(type)는 리스트에 흡수되면 안 됨")
+
+
+# ── kb-source-hashes.py (콘텐츠 드리프트 해시 — core 순수 함수) ──
+class TestSourceHashes(unittest.TestCase):
+    """출처 URL 변환·해시 diff의 순수 함수 계약(네트워크 fetch 제외)."""
+    def setUp(self):
+        spec = _ilu.spec_from_file_location("ksh", os.path.join(CLAUDE, "kb-source-hashes.py"))
+        self.m = _ilu.module_from_spec(spec)
+        spec.loader.exec_module(self.m)
+
+    def test_source_to_url_slug(self):
+        self.assertEqual(self.m.source_to_url("overview"),
+                         "https://code.claude.com/docs/en/overview.md")
+        self.assertEqual(self.m.source_to_url("whats-new/2026-w13"),
+                         "https://code.claude.com/docs/en/whats-new/2026-w13.md")
+
+    def test_source_to_url_passthrough(self):
+        # http(s)면 그대로 (AI-Infra/Infra의 외부 URL)
+        self.assertEqual(self.m.source_to_url("https://docs.vllm.ai/"), "https://docs.vllm.ai/")
+
+    def test_diff_hashes(self):
+        ch, ad, rm = self.m.diff_hashes({"a": "1", "b": "2"}, {"a": "1", "b": "9", "c": "3"})
+        self.assertEqual((ch, ad, rm), (["b"], ["c"], []), "변경(b)·신규(c)·사라짐(없음) 분류")
+
+    def test_diff_hashes_removed(self):
+        ch, ad, rm = self.m.diff_hashes({"x": "1"}, {})
+        self.assertEqual((ch, ad, rm), ([], [], ["x"]))
+
+
+# ── stray-guard.sh (무인 cron STRAY 되돌림 — vault 최후 방어선) ──
+class TestStrayGuard(unittest.TestCase):
+    """STRAY 가드의 계약을 라이브 스크립트로 직접 검증(positive control 포함).
+    가드가 깨져도 cron은 exit 0이라 회귀가 숨는다 — automation-safety V축이 명시적으로 금지하는 안티패턴."""
+    GUARD = os.path.join(CLAUDE, "stray-guard.sh")
+
+    def _repo(self):
+        d = tempfile.mkdtemp(prefix="stray_")
+        self.addCleanup(shutil.rmtree, d, ignore_errors=True)
+        git(d, "init", "-q")
+        # 베이스라인 커밋: runtime 파일 + 메커니즘 파일 + KB 노트를 추적 상태로
+        _write(os.path.join(d, ".claude", "runtime", "queue.md"), "baseline\n")
+        _write(os.path.join(d, ".claude", "hooks", "h.py"), "# baseline hook\n")
+        _write(os.path.join(d, "Claude", "n.md"), "baseline note\n")
+        git(d, "add", "-A"); git(d, "commit", "-q", "-m", "base")
+        return d
+
+    def _run(self, d, mode):
+        return subprocess.run(["bash", self.GUARD, mode], cwd=d, capture_output=True, text=True)
+
+    def test_runtime_mode_preserves_runtime(self):
+        # radar(runtime 모드): .claude/runtime/ 변경은 보존
+        d = self._repo()
+        _write(os.path.join(d, ".claude", "runtime", "queue.md"), "new queue content\n")
+        self._run(d, "runtime")
+        self.assertIn("new queue content", _read(os.path.join(d, ".claude", "runtime", "queue.md")),
+                      "runtime 변경은 보존돼야")
+
+    def test_runtime_mode_reverts_tracked_mechanism(self):
+        # 범위 밖 추적 파일(메커니즘 hook)은 git checkout으로 원복
+        d = self._repo()
+        _write(os.path.join(d, ".claude", "hooks", "h.py"), "# EVIL self-modification\n")
+        self._run(d, "runtime")
+        self.assertEqual(_read(os.path.join(d, ".claude", "hooks", "h.py")), "# baseline hook\n",
+                         "범위 밖 추적 파일은 원복돼야")
+
+    def test_runtime_mode_removes_untracked(self):
+        # 범위 밖 미추적 신규 파일(동의 없는 생성물)은 rm으로 삭제
+        d = self._repo()
+        _write(os.path.join(d, ".claude", "skills", "evil", "SKILL.md"), "동의 없는 스킬\n")
+        self._run(d, "runtime")
+        self.assertFalse(os.path.exists(os.path.join(d, ".claude", "skills", "evil", "SKILL.md")),
+                         "범위 밖 미추적 파일은 삭제돼야")
+
+    def test_runtime_mode_reverts_kb_note(self):
+        # runtime 모드(radar)는 KB 노트 변경도 범위 밖 → 원복(collect는 durable 생성 0)
+        d = self._repo()
+        _write(os.path.join(d, "Claude", "n.md"), "radar가 KB를 건드림(범위 밖)\n")
+        self._run(d, "runtime")
+        self.assertEqual(_read(os.path.join(d, "Claude", "n.md")), "baseline note\n",
+                         "runtime 모드는 KB 노트도 원복(radar는 KB 안 씀)")
+
+    def test_kb_mode_allows_kb_note(self):
+        # kb 모드(kb-sync): KB 노트 변경은 허용(durable 쓰기가 설계 의도) → 보존
+        d = self._repo()
+        _write(os.path.join(d, "Claude", "n.md"), "kb-sync가 정상적으로 KB 갱신\n")
+        self._run(d, "kb")
+        self.assertIn("정상적으로", _read(os.path.join(d, "Claude", "n.md")),
+                      "kb 모드는 KB 노트 쓰기 허용")
+
+    def test_kb_mode_reverts_mechanism_self_edit(self):
+        # kb 모드라도 .claude/ 메커니즘(runtime 외) 자기수정은 범위 밖 → 원복
+        d = self._repo()
+        _write(os.path.join(d, ".claude", "hooks", "h.py"), "# kb-sync가 훅을 자기수정(범위 밖)\n")
+        self._run(d, "kb")
+        self.assertEqual(_read(os.path.join(d, ".claude", "hooks", "h.py")), "# baseline hook\n",
+                         "kb 모드도 메커니즘 자기수정은 차단")
 
 
 if __name__ == "__main__":

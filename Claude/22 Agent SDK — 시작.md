@@ -1,6 +1,7 @@
 ---
 title: 22 Agent SDK — 시작
 updated: 2026-06-07
+type: reference
 sources: [agent-sdk/overview, agent-sdk/quickstart, agent-sdk/agent-loop, agent-sdk/claude-code-features, agent-sdk/migration-guide]
 ---
 

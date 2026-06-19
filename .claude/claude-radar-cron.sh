@@ -84,20 +84,8 @@ cd "$VAULT" || exit 0
   # 안전 불변식의 기계적 강제(2차 방어선): collect는 .claude/runtime/ 만 변경해야 한다.
   # 프롬프트 오판으로 큐 밖(skill/agent/KB 등)을 건드렸으면 auto-commit/push 전에 되돌린다 —
   # 동의 없는 생성물이 조용히 커밋·push되지 않게. (1차 방어선은 command §A + allowlist)
-  STRAY=$(git -c core.quotepath=false status --porcelain --untracked-files=all 2>/dev/null \
-            | sed 's/^...//' | grep -vE '^\.claude/runtime/' || true)
-  if [ -n "$STRAY" ]; then
-    echo "WARN: collect touched files outside .claude/runtime/ — reverting (safety invariant):"
-    printf '%s\n' "$STRAY"
-    printf '%s\n' "$STRAY" | while IFS= read -r f; do
-      [ -z "$f" ] && continue
-      if git ls-files --error-unmatch "$f" >/dev/null 2>&1; then
-        git checkout -- "$f" 2>/dev/null      # 추적 파일: 원복
-      else
-        rm -f "$f" 2>/dev/null                 # 미추적 신규 파일: 삭제
-      fi
-    done
-  fi
+  # 가드 로직은 stray-guard.sh로 추출(kb-sync와 공유 + 계약 테스트 대상). runtime 모드 = .claude/runtime/만 허용.
+  bash "$VAULT/.claude/stray-guard.sh" runtime
 
   # 성공 시에만 스탬프 갱신 — 실패하면 다음 로그인/슬롯에서 재시도됨
   [ "$rc" -eq 0 ] && date +%s > "$STAMP"

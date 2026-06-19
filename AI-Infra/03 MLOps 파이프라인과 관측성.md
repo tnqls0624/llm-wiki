@@ -1,6 +1,7 @@
 ---
 title: 03 MLOps 파이프라인과 관측성
 updated: 2026-06-08
+type: explanation
 sources:
   - https://mlflow.org/docs/latest/
   - https://docs.flyte.org/
@@ -11,7 +12,7 @@ sources:
 
 # MLOps 파이프라인과 관측성
 
-허브: [[AI-Infra]]
+허브: [[AI-Infra]] · 함께: [[01 LLM 서빙과 추론]](관측 대상 서빙 메트릭)·[[02 쿠버네티스 GPU 오케스트레이션]](배포 플랫폼) · 연계: Claude Code로 CI/CD 자동화는 [[16 CI-CD와 팀 통합]]
 
 MLOps는 본질적으로 **"데이터+모델 버전까지 포함한 CI/CD"** 다. 백엔드의 아티팩트 버저닝·릴리스 파이프라인·롤백·관측성 경험이 1:1 전이된다 — "Git=설정, S3=모델 blob, ArgoCD=조정"의 분리 원칙을 체득하는 게 백엔드→플랫폼 사고 전환점.
 

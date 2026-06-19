@@ -1,6 +1,7 @@
 ---
 title: 10 MCP
 updated: 2026-06-07
+type: reference
 sources: [mcp, mcp-quickstart, managed-mcp]
 ---
 

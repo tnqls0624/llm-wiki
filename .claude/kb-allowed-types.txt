@@ -1,0 +1,16 @@
+# KB 노트 frontmatter `type` 허용값 — 닫힌 enum의 정본(canonical).
+# kb-lint.py와 hooks/kb-lint-check.py가 런타임에 읽는다(없으면 하드코딩 fallback).
+# OKF v0.1의 유일 필수 필드 `type` + Diátaxis 문서 4분류를 차용한 것.
+# 닫힌 집합이라야 린터가 어휘 드리프트('table' vs 'BigQuery Table')를 기계 차단한다.
+# 한 줄에 한 값. '#' 주석·빈 줄 무시. 새 값은 사용자 합의 후에만 추가(vault-rules 동기화).
+#
+# reference   — 레퍼런스(찾아보는 사실·API·옵션 종합). Claude/ 대부분.
+# explanation — 개념·배경·이유 설명(왜 그런가). Infra/AI-Infra 개념 노트.
+# how-to      — 목적 지향 절차(이걸 하려면 이렇게). 핸즈온·워크플로우.
+# tutorial    — 학습 경로·로드맵(처음부터 따라가며 익히는). 00 로드맵류.
+# moc         — Map of Content 허브. sources 면제.
+reference
+explanation
+how-to
+tutorial
+moc

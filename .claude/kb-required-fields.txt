@@ -1,7 +1,9 @@
 # KB 노트 필수 frontmatter 필드 — 기계 점검의 정본(canonical).
-# hooks/kb-lint-check.py(편집 직후 단일 파일)가 이 파일을 런타임에 읽는다.
-# 여기만 고치면 린터가 자동 반영(파일이 없으면 하드코딩 fallback [title, updated, sources] 사용).
+# kb-lint.py(전 vault)와 hooks/kb-lint-check.py(편집 직후 단일 파일)가 이 파일을 런타임에 읽는다.
+# 여기만 고치면 린터가 자동 반영(파일이 없으면 하드코딩 fallback [title, updated, sources, type] 사용).
 # 한 줄에 한 필드. '#' 주석·빈 줄 무시.
+# type 허용값(닫힌 enum)은 kb-allowed-types.txt가 정본 — 린터가 거기서 읽는다.
 title
 updated
 sources
+type

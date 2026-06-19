@@ -2,7 +2,7 @@
 """SessionStart hook — 위키 부팅 컨텍스트 주입.
 hot.md(.claude/runtime/, AI 런타임 캐시·영어)의 INJECT 마커 블록만 주입한다
 (고정 헤더 → prompt cache 친화·완결). 마커가 없으면 앞 2000자 fallback.
-hot.md가 없으면 index.md 발췌. 컨텍스트 계층화(L1 hot → L2 index)의 진입점."""
+hot.md가 없으면 명확한 경고만 낸다(index.md는 vault-rules 4-step 폐지로 은퇴 — 참조하지 않는다)."""
 import json, sys, os, re, datetime
 
 root = os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
@@ -29,16 +29,12 @@ def injected(text):
     return m.group(1).strip() if m else text[:2000].strip()
 
 hot = os.path.join(root, ".claude", "runtime", "hot.md")
-idx = os.path.join(root, "index.md")
 parts = []
 
 if os.path.exists(hot):
     parts.append("## 최근 컨텍스트 (hot.md L1)\n" + injected(read(hot)))
-elif os.path.exists(idx):
-    parts.append("## LLM Wiki 인덱스 (index.md 발췌)\n" + read(idx, 1500))
-    parts.append("\n(hot.md 미도입 — 로드맵 1단계. 도입 시 세션 부팅이 더 가벼워집니다.)")
 else:
-    parts.append("LLM Wiki vault이지만 index.md/hot.md가 없습니다. ingest로 시작하세요.")
+    parts.append("LLM Wiki vault이지만 .claude/runtime/hot.md가 없습니다 — L1 부팅 컨텍스트 없음.")
 
 # auto-commit이 push 발산 시 남긴 경고를 부팅 시 최상단에 표면화(성공 push 시 자동 제거).
 sync = read(os.path.join(root, ".claude", "runtime", "sync-status.txt")).strip()

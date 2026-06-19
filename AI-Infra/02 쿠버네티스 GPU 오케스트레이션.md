@@ -1,6 +1,7 @@
 ---
 title: 02 쿠버네티스 GPU 오케스트레이션
 updated: 2026-06-08
+type: explanation
 sources:
   - https://kserve.github.io/website/
   - https://keda.sh/docs/
@@ -11,7 +12,7 @@ sources:
 
 # 쿠버네티스 GPU 오케스트레이션
 
-허브: [[AI-Infra]]
+허브: [[AI-Infra]] · 함께: [[01 LLM 서빙과 추론]](여기 올릴 추론 워크로드)·[[03 MLOps 파이프라인과 관측성]](배포 후 관측·드리프트) · 토대(Infra): [[06 컨테이너 내부 구조]](cgroups·namespaces·GPU 주입)
 
 K8s는 2026년 "AI 워크로드의 기본 컨트롤 플레인"으로 수렴했다(CNCF). Docker·CI/CD·무중단 배포 경험이 직결되며, 새로 배울 것은 **GPU 스케줄링 계층**과 **선언적 모델 서빙 CR**이다. "맛본 수준" K8s를 GPU-aware 운영 수준으로 끌어올리는 게 이 직무의 핵심 차별점.
 

@@ -3,16 +3,16 @@
 Auto-loaded every session. Compact, imperative rule set for the AI hot path. The root `CLAUDE.md` (human-owned narrative rationale, Korean) holds the top-level **change-sync duty** (what-changed → what-docs-to-update) and **wins on conflict** — flag the mismatch instead of silently diverging.
 
 ## Structure (mechanism vs content)
-- `Claude/` — Claude Code official-docs KB: 26 Korean notes (`01 시작하기` … `26 변경 이력과 용어집`) + `Claude/Claude.md` MOC hub. This is **content (data)**.
-- Future topics follow the same pattern: a `<Topic>/` directory holding notes plus a `<Topic>/<Topic>.md` MOC hub.
+- Content lives in **topic directories**, each `<Topic>/` holding notes + a `<Topic>/<Topic>.md` MOC hub. Current topics: `Claude/` (Claude Code official-docs KB, 26 notes) · `AI-Infra/` (backend→AI-infra learning, 6 notes) · `Infra/` (CS/Linux/kernel fundamentals, 10 notes) · `Meta/` (vault's own architecture self-diagnosis). This is **content (data)**.
 - `.claude/` — the **portable framework package** (rules, runtime, hooks, scripts, tests, commands, agents, skills). Copyable to another vault as-is.
-- Keep the split when adding files: mechanism → `.claude/`; knowledge → a topic dir.
+- Keep the split when adding files: mechanism → `.claude/`; knowledge → a topic dir. Adding a new topic → follow the checklist in root `CLAUDE.md`'s change-sync table.
 
 ## Note format
-Frontmatter, three fields only:
+Frontmatter, four fields (canonical list in `.claude/kb-required-fields.txt`):
 - `title` — note title.
-- `updated` — `YYYY-MM-DD`.
-- `sources` — array of official-doc slugs the note synthesizes (MOC hubs use `[]`).
+- `updated` — `YYYY-MM-DD`. The note's last **content** revision (a pure schema migration like adding `type` does not bump it — freshness signal stays meaningful).
+- `sources` — array of official-doc slugs/URLs the note synthesizes (MOC hubs use `[]`). Block-style YAML lists (`sources:` then `  - …`) and inline (`[a, b]`) both parse — kb-lint reads both.
+- `type` — closed enum, canonical values in `.claude/kb-allowed-types.txt`: `reference` (look-up facts/API/options) · `explanation` (concept/why) · `how-to` (goal-oriented procedure) · `tutorial` (learning path/roadmap) · `moc` (Map of Content hub; exempt from `sources`). This is OKF v0.1's one required field + Diátaxis's axis; kb-lint blocks any value outside the enum. Don't split a note just to fit one type — heading hierarchy carries atomic sub-concepts (a deliberately-synthesized reference note may span many doc pages by design).
 
 Body is Korean prose. Commands, flags, config keys, env vars, and code stay **English** (verbatim from the docs). Use `[[wikilinks]]` **only to notes that already exist**. End each note with a `## 원본 문서` section listing the source URLs.
 
@@ -24,8 +24,8 @@ Single source of truth for the update obligation. Commands and agents **referenc
 
 (The old four-step duty that touched `index.md` / `log.md` is retired — do not reference it.)
 
-## Navigation order (context layering)
-L1 `.claude/runtime/hot.md` (auto-injected by the `session-context` hook) → L2 the relevant MOC (`Claude/Claude.md`) → L3 individual notes. Read the cheapest layer that answers the question first.
+## Navigation order (context layering, multi-topic)
+L1 `.claude/runtime/hot.md` (auto-injected by `session-context`) → **L1.5 topic router** (hot.md's `Content` line already lists every topic + one-line description — use it to pick which topic the query falls under) → L2 that topic's `<Topic>/<Topic>.md` MOC → L3 individual notes. Read the cheapest layer that answers the question first. (Do not hardcode `Claude/Claude.md` — there are multiple topics; route via L1.5.)
 
 ## macOS caveat — keep the MOC lean
 On case-insensitive APFS, `Claude/Claude.md` collides with the `CLAUDE.md` memory filename, so it is **auto-injected as context** whenever you work under `Claude/`. Keep the MOC hub lean — it is paid for on every such session.
@@ -43,3 +43,10 @@ Never delete conflicting claims — mark them:
 > [!warning] 모순
 > [[A]]는 X라 하지만 [[B]](2026-05)는 Y라고 함. 출처 확인 필요.
 ```
+
+## Explicit non-goals (do NOT add these without a real trigger)
+The vault's strength is partly in what it deliberately does **not** build. At ~45 notes with a hand-curated MOC + wikilink graph (already a GraphRAG community-summary equivalent), the cold-start cost of these exceeds their value. Recording the decision here stops it being re-litigated every `/claude-radar review`.
+- **Embeddings / vector search / RAG index** — MOC + `[[wikilink]]` navigation covers global/relational queries at zero token cost. Reconsider only if "find a concept by meaning when its name is unknown" queries become frequent AND the vault grows past ~100 notes; then add a local opt-in `SQLite FTS5 (BM25) + multilingual ONNX embedding + RRF` as an **L2.5 fallback** (MOC-first stays primary), read-only, never per-query.
+- **RDF / JSON-LD / OWL ontology** — the semantic-web lesson is that the operational cost (hand annotation, ontology consensus) sinks it. Markdown + frontmatter + wikilink is the right altitude.
+- **Typed relation frontmatter** (`related` / `up` / `part-of`) — body `[[wikilink]]` already carries relations (Claude/ averages ~37/note); a relation field would be double-entry that kb-lint must then dangling-check too. `type` is the only frontmatter axis we add.
+- **OKF export script / AGENTS.md** — deferred until external publishing or other-agent (Cursor/Codex) interop is a real need. See `.claude/EXTENSIBILITY.md`. The vault stays source-of-truth; wikilink→standard-md-link is an export-boundary concern, not an internal conversion.

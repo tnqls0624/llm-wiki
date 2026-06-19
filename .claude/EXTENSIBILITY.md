@@ -9,11 +9,11 @@
 
 | 종류 | 개수 | 항목 |
 |------|------|------|
-| commands | 5 | `.claude/commands/*.md` |
+| commands | 7 | `.claude/commands/*.md` (`kb-query`·`kb-sync`·`kb-lint`·`kb-ingest`·`kb-save`·`claude-radar`·`skill-audit`) |
 | agents | 2 | `.claude/agents/*.md` |
 | skills | 1 | `.claude/skills/<name>/SKILL.md` |
 | hooks | 4 | `session-context`(SessionStart) · `auto-commit`(Stop+SessionEnd) · `secret-scan`(PostToolUse) · `kb-lint-check`(PostToolUse) |
-| scripts | 2 | `kb-lint.py`(머신 린트) · `scrub-secrets.py`(크리덴셜 마스킹 core+CLI) |
+| scripts | 5 | `kb-lint.py`(머신 린트+type enum+거버넌스) · `kb-source-hashes.py`(출처 콘텐츠 해시 드리프트) · `scrub-secrets.py`(크리덴셜 마스킹 core+CLI) · `radar-collect.py`(0-LLM 레이더 수집기) · `stray-guard.sh`(cron STRAY 되돌림, radar+kb-sync 공유) |
 | tests | 1 | `.claude/tests/test_mechanisms.py` (러너: `bash .claude/tests/run-tests.sh`) |
 
 ## 공통 절차 — 무엇을 추가하든
@@ -56,7 +56,7 @@
 2. 절대경로 하드코딩이 없어야 한다 — 훅·스크립트 모두 `$CLAUDE_PROJECT_DIR`/`$0` 기준.
 3. git이 없으면 `git init`(`auto-commit` 훅이 세션마다 fetch-guarded 커밋·push).
 
-## `.codex/` 어댑터 — STALE, 동기화 보류
-- `.codex/`·`.agents/`·`AGENTS.md`(Codex 런타임 어댑터)는 **구 wiki 체계 기준으로 작성되어 현재 stale**하다. 새 KB 체계(`Claude/` + 3필드 프론트매터 + 3단계 update duty)를 반영하지 않는다.
-- **재구축 전까지 동기화하지 마라.** 새 커맨드/에이전트/훅을 추가할 때 `.codex/` 어댑터를 함께 갱신하지 않는다 — 어댑터가 이미 정합이 깨져 있어 부분 갱신은 혼란만 키운다.
-- 어댑터를 새 체계로 재구축할 때 이 절을 정본으로 다시 작성한다(빌드 스크립트로 `.claude/`에서 생성하는 방식이면 drift가 원천 차단된다 — 권장).
+## 멀티 런타임 어댑터(Codex/Cursor 등) — 현재 없음
+- 한때 `.codex/`·`.agents/`·`AGENTS.md`(Codex 런타임 어댑터)가 있었으나 **2026-06-19 제거**되었다. 구 wiki 체계 기준이라 stale했고, settings.json에 등록되지도 않아 사문(死文)이었다(`.codex/`는 `__pycache__`만 잔존했고 git 추적 대상도 아니었다).
+- 현재 1차 소비자는 Claude Code 단일이다. 다른 에이전트(Codex/Cursor 등) 호환이 **실제 요구로 등장하면**, 루트에 짧은 `AGENTS.md`(20-30줄, 빌드/테스트 명령 + mechanism/content 분리 + update duty 포인터)를 두고 `CLAUDE.md` 최상단에서 `@AGENTS.md` import로 단일 출처화한다(Claude Code는 AGENTS.md를 직접 읽지 않고 CLAUDE.md만 읽는다). README 본문은 복제하지 않는다.
+- 수요가 실재하기 전에 어댑터를 만들지 않는다 — 또 하나의 동기화 부채(CLAUDE.md/README/AGENTS.md 3중 관리)가 될 뿐이다.

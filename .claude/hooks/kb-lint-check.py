@@ -83,12 +83,25 @@ else:
     # type: moc 노트는 sources 면제 — MOC는 원본을 가리키지 않는 허브.
     # 배치 린터 kb-lint.py(is_moc 로직)와 동일하게 맞춘다.
     tm = re.search(r"^type:\s*(.+)$", fm, re.M)
-    is_moc = bool(tm) and tm.group(1).strip().strip("'\"") == "moc"
+    type_val = tm.group(1).strip().strip("'\"") if tm else None
+    is_moc = type_val == "moc"
     for field in required:
         if field == "sources" and is_moc:
             continue
         if not re.search(rf"^{re.escape(field)}:", fm, re.M):
             warnings.append(f"프론트매터 필수 필드 누락: {field}")
+    # type 닫힌 enum 검증 — kb-allowed-types.txt 런타임 로드(없으면 fallback). kb-lint.py와 동일.
+    if type_val is not None:
+        allowed = ("reference", "explanation", "how-to", "tutorial", "moc")
+        try:
+            with open(os.path.join(vault_root, ".claude", "kb-allowed-types.txt"), encoding="utf-8") as tf:
+                loaded = [ln.strip() for ln in tf if ln.strip() and not ln.lstrip().startswith("#")]
+            if loaded:
+                allowed = tuple(loaded)
+        except Exception:
+            pass
+        if type_val not in allowed:
+            warnings.append(f"type 값이 허용 enum 밖: {type_val!r} (허용: {', '.join(allowed)})")
 
 # 2) 끊긴 [[위키링크]] — 코드펜스(```...```)·인라인코드(`...`) 제거 후 검사(코드 속 [[..]] 오탐 방지).
 stripped = re.sub(r"```.*?```", "", content, flags=re.S)
