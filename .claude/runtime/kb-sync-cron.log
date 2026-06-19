@@ -11,3 +11,5 @@ API Error: The socket connection was closed unexpectedly. For more information, 
 You've hit your session limit · resets 2:10pm (Asia/Seoul)
 === [2026-06-15 13:35:59] exit=1 ===
 === [2026-06-18 09:19:21] kb-sync run start ===
+API Error: The socket connection was closed unexpectedly. For more information, pass `verbose: true` in the second argument to fetch()
+=== [2026-06-18 11:39:20] exit=1 ===
