@@ -57,6 +57,7 @@ obsidian_sync/
 | `/kb-sync` | `[--deep <노트번호>]` | 공식 문서(llms.txt) 변경분을 슬러그 diff로 잡아 KB에 반영 |
 | `/kb-lint` | `[--online]` | KB 무결성 점검(+`--online`은 공식 인덱스와 비교) 후 직접 수정 |
 | `/claude-radar` | `[collect\|review]` | Claude 생태계 정보 수집·추천(collect) / 큐 검토·동의 후 생성(review) |
+| `/study-coach` | `[review\|brief\|plan]` | AI Infra 학습 코치 — 어제 산출물(별도 `ai-infra-lab` repo)을 LLM이 검토·채점하고(review) 오늘 할 것을 브리핑(brief). 진도는 `runtime/study-state.md`(git 공유) |
 | `/skill-audit` | `[--global] [--plugins]` | 설치된 skill의 description 토큰 풋프린트(매 세션 상시 비용) 점검 |
 
 ### 자주 쓰는 흐름
@@ -151,16 +152,19 @@ obsidian_sync/
 | `kb-source-hashes.py` | 출처 원문 sha256을 추적해 **같은 슬러그 내 본문 변경**(슬러그 diff가 못 잡는) 감지. 변경 의심분을 review 큐에 적재만(노트 자동수정 X). kb-sync 흐름에서 호출 |
 | `scrub-secrets.py` | 크리덴셜 탐지·마스킹 코어(GitHub PAT·AWS·OpenAI·Anthropic 등). ingest 시 1차 방어 |
 | `radar-collect.py` | claude-radar 수집 엔진(0-LLM, 결정론적). 10개 채널 → dedup → JSON |
-| `stray-guard.sh` | 무인 cron 런이 허용 범위 밖 파일을 건드리면 커밋 경계 이전에 되돌림(radar=`runtime` 모드 / kb-sync=`kb` 모드). 안전 2차 방어선 |
+| `study-brief.py` | study-coach 아침 브리핑 엔진(0-LLM, 결정론적). `study-state.md` 읽어 요일별 다음 미완료 항목 → `study-today.md`. 날짜 멱등(`--check`/`--dry-run`/`--force`) |
+| `stray-guard.sh` | 무인 cron 런이 허용 범위 밖 파일을 건드리면 커밋 경계 이전에 되돌림(radar/study=`runtime` 모드 / kb-sync=`kb` 모드). 안전 2차 방어선 |
 
 ### cron 자동화 (launchd)
 | 작업 | 스케줄 | 설치 |
 |---|---|---|
 | `kb-sync` | 월·목 09:07 | `bash .claude/install-kb-sync-cron.sh` |
 | `claude-radar` | 매일 09:17 | `bash .claude/install-claude-radar-cron.sh` |
+| `study-coach` | 매일 08:07 | `bash .claude/install-study-coach-cron.sh` |
 
-- 둘 다 **anacron 패턴**(전원 꺼짐으로 놓친 슬롯을 로그인 시 보충) + 락 + 로그 로테이션.
+- 모두 **anacron 패턴**(전원 꺼짐으로 놓친 슬롯을 로그인 시 보충) + 락 + 로그 로테이션.
 - 헤드리스 실행이라 **sonnet** 티어 사용(비용 레버).
+- `study-coach`는 멀티 머신용: 시작 시 vault를 `git pull --ff-only`하고, `study-state.md`의 `last_brief_date`로 두 Mac 중복 검토를 막는다(stamp는 기기별). 회사 Mac에서 무인 검토를 원치 않으면 그 Mac엔 설치하지 말고 `/study-coach review`를 수동 실행하면 된다.
 - 제거: `launchctl bootout "gui/$(id -u)/com.$(id -un).<작업명>"` + plist 삭제.
 
 ---

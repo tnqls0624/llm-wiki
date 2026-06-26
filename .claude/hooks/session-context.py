@@ -81,5 +81,20 @@ try:
 except Exception:
     pass
 
+# study-coach: 무인 아침 cron이 만든 '오늘의 학습' 브리핑을 부팅 시 노출.
+# study-today.md는 우리 cron(LLM 검토+0-LLM brief)이 생성한 내부 콘텐츠라 radar 큐 같은
+# untrusted 처리는 불필요(ai-infra-lab 코드 인용은 LLM이 요약을 거침). 그날 것만 보이도록 날짜 검증.
+try:
+    today_md = read(os.path.join(root, ".claude", "runtime", "study-today.md"))
+    gen = re.search(r"date=(\d{4}-\d{2}-\d{2})", today_md)
+    if gen and gen.group(1) == datetime.date.today().isoformat():
+        # 본문에서 '## 오늘 할 것' 섹션과 맨 위 검토 요약(있으면)만 발췌 — 부팅 컨텍스트는 간결하게.
+        sec = re.search(r"##\s*오늘 할 것.*?(?=\n##\s|\Z)", today_md, re.S)
+        brief = sec.group(0).strip() if sec else today_md[:400].strip()
+        parts.append("## 📚 오늘의 학습 (study-coach)\n" + brief
+                     + "\n\n어제 산출물 재검토·채점은 `/study-coach review`, 빠른 오늘 항목만은 `/study-coach brief`.")
+except Exception:
+    pass
+
 ctx = "\n".join(parts).strip()
 print(json.dumps({"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": ctx}}))
