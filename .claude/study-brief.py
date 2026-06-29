@@ -58,16 +58,26 @@ def resolve_repo_path(meta):
 
 
 def next_item(text, want_tag):
-    """want_tag('평일'/'주말')의 첫 미완료 `- [ ]` 항목을 (week, text)로 반환. 없으면 None."""
+    """want_tag('평일'/'주말')의 첫 미완료 `- [ ]` 항목을 (week, text, details)로 반환. 없으면 None.
+    details = 항목 바로 아래 들여쓴 학습 가이드 불릿들(개념·자료·완료·막히면). 다음 항목/헤더 전까지."""
+    lines = text.splitlines()
     week = "?"
-    for line in text.splitlines():
+    for i, line in enumerate(lines):
         hm = WEEK_HDR_RE.match(line)
         if hm:
             week = hm.group(1)
             continue
         im = ITEM_RE.match(line)
         if im and im.group(1) == " " and im.group(2) == want_tag:
-            return week, im.group(3).strip()
+            details = []
+            for nxt in lines[i + 1:]:
+                if not nxt.strip():
+                    continue
+                # 다음 체크박스 항목·헤더·비들여쓰기 라인을 만나면 이 항목 영역 끝.
+                if ITEM_RE.match(nxt) or nxt.lstrip().startswith("#") or not nxt.startswith((" ", "\t")):
+                    break
+                details.append(nxt.strip().lstrip("-").strip())
+            return week, im.group(3).strip(), details
     return None
 
 
@@ -79,7 +89,7 @@ def set_last_brief(text, date_str):
     return META_RE.sub(repl, text, count=1)
 
 
-def build_today(date, week, item, tag, repo_path):
+def build_today(date, week, item, tag, repo_path, details=None):
     dow = WEEKDAY_KR[date.weekday()]
     budget = "평일 · 20~40분" if tag == "평일" else "주말 · 2~3시간 통합 실습"
     lines = [
@@ -90,6 +100,8 @@ def build_today(date, week, item, tag, repo_path):
         f"**{week}** · {item}",
         "",
     ]
+    if details:
+        lines += ["### 학습 가이드"] + [f"- {d}" for d in details] + [""]
     if tag == "평일":
         lines += [
             "> 피곤하면 10분 대안: 어제 셀/스크립트 1개 다시 실행 + 변수 1개 바꿔 결과 비교 후 커밋. 연속성만 유지.",
@@ -162,8 +174,8 @@ def main():
             tag = "주말" if tag == "평일" else "평일"
 
     if found:
-        week, item = found
-        content = build_today(today, week, item, tag, repo_path)
+        week, item, details = found
+        content = build_today(today, week, item, tag, repo_path, details)
         notify = f"오늘 학습: {week} — {item[:48]}"
     else:
         content = build_done_message(today)

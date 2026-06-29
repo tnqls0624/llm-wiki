@@ -902,7 +902,10 @@ class TestStudyBrief(unittest.TestCase):
         "# 진도\n\n"
         "## W1 — 환경\n"
         "- [ ] [평일] D1: 첫 평일 항목\n"
+        "  - 🎯 개념: 평일 가이드 테스트\n"
+        "  - ✅ 완료: 완료조건\n"
         "- [ ] [주말] 첫 주말 항목\n"
+        "  - 🎯 개념: 주말 가이드 테스트\n"
         "## W2 — 다음\n"
         "- [ ] [평일] D1: 둘째 평일 항목\n"
     )
@@ -943,6 +946,14 @@ class TestStudyBrief(unittest.TestCase):
         body = _read(self._today(d))
         self.assertTrue("첫 평일 항목" in body or "첫 주말 항목" in body,
                         "미완료 항목이 브리핑에 나와야")
+
+    def test_learning_guide_included(self):
+        # 항목 바로 아래 들여쓴 가이드 불릿(개념·완료·막히면)이 그날 브리핑에 함께 출력돼야.
+        d = self._vault(self.STATE_FIXTURE)
+        self._run(d, "--force")
+        body = _read(self._today(d))
+        self.assertIn("학습 가이드", body, "항목 하위 가이드 섹션이 브리핑에 포함돼야")
+        self.assertIn("가이드 테스트", body, "개념 불릿 본문이 출력돼야")
 
     def test_idempotent_same_day(self):
         d = self._vault(self.STATE_FIXTURE)

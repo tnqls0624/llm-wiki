@@ -152,7 +152,7 @@ obsidian_sync/
 | `kb-source-hashes.py` | 출처 원문 sha256을 추적해 **같은 슬러그 내 본문 변경**(슬러그 diff가 못 잡는) 감지. 변경 의심분을 review 큐에 적재만(노트 자동수정 X). kb-sync 흐름에서 호출 |
 | `scrub-secrets.py` | 크리덴셜 탐지·마스킹 코어(GitHub PAT·AWS·OpenAI·Anthropic 등). ingest 시 1차 방어 |
 | `radar-collect.py` | claude-radar 수집 엔진(0-LLM, 결정론적). 10개 채널 → dedup → JSON |
-| `study-brief.py` | study-coach 아침 브리핑 엔진(0-LLM, 결정론적). `study-state.md` 읽어 요일별 다음 미완료 항목 → `study-today.md`. 날짜 멱등(`--check`/`--dry-run`/`--force`) |
+| `study-brief.py` | study-coach 아침 브리핑 엔진(0-LLM, 결정론적). `study-state.md` 읽어 요일별 다음 미완료 항목 **+ 항목 하위 학습 가이드(개념·자료·완료기준·막히면)** → `study-today.md`. 날짜 멱등(`--check`/`--dry-run`/`--force`) |
 | `stray-guard.sh` | 무인 cron 런이 허용 범위 밖 파일을 건드리면 커밋 경계 이전에 되돌림(radar/study=`runtime` 모드 / kb-sync=`kb` 모드). 안전 2차 방어선 |
 
 ### cron 자동화 (launchd)

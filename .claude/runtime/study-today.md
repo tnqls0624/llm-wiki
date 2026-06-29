@@ -4,6 +4,11 @@
 ## 오늘 할 것 (평일 · 20~40분)
 **W1** · D1: ai-infra-lab repo 생성 + 디렉토리 골격(training/serving/docker/notebooks/models/docs) 커밋, models/ gitignore
 
+### 학습 가이드
+- 🎯 개념: monorepo로 학습/서빙/인프라를 한 곳에 두는 이유, 대용량 모델 바이너리를 git에서 빼는 이유(.gitignore)
+- ✅ 완료: GitHub(private)에 골격이 push되고 origin 연결됨
+- ⚠️ 막히면: `gh auth status`로 로그인 확인, remote는 `git remote -v`
+
 > 피곤하면 10분 대안: 어제 셀/스크립트 1개 다시 실행 + 변수 1개 바꿔 결과 비교 후 커밋. 연속성만 유지.
 
 ## 어제 한 것 검토
