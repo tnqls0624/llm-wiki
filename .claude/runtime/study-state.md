@@ -1,4 +1,4 @@
-<!-- study-state v1 | block=1 | last_brief_date=2026-06-26 | repo_path=~/ai-infra-lab -->
+<!-- study-state v1 | block=1 | last_brief_date=2026-06-29 | repo_path=~/ai-infra-lab -->
 <!--
   AI Infra 학습 진도 정본. git 추적됨 → 두 Mac(회사/집)이 push/pull로 공유.
   study-brief.py(무인 cron)가 이 파일을 읽어 요일별 다음 미완료 항목을 study-today.md로 뽑고,
