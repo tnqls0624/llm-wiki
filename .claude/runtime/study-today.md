@@ -2,12 +2,13 @@
 # 오늘의 학습 — 2026-06-29 (월)
 
 ## 오늘 할 것 (평일 · 20~40분)
-**W1** · D1: ai-infra-lab repo 생성 + 디렉토리 골격(training/serving/docker/notebooks/models/docs) 커밋, models/ gitignore
+**W1** · D2: venv + PyTorch(CPU) 설치 + requirements.txt 커밋
 
 ### 학습 가이드
-- 🎯 개념: monorepo로 학습/서빙/인프라를 한 곳에 두는 이유, 대용량 모델 바이너리를 git에서 빼는 이유(.gitignore)
-- ✅ 완료: GitHub(private)에 골격이 push되고 origin 연결됨
-- ⚠️ 막히면: `gh auth status`로 로그인 확인, remote는 `git remote -v`
+- 🎯 개념: 가상환경(venv)으로 의존성 격리하는 이유, PyTorch CPU 빌드, requirements로 버전 고정
+- 📖 자료: pytorch.org/get-started/locally (OS/CPU 설치 명령), 점프투파이썬 가상환경 절
+- ✅ 완료: `import torch` 무오류 + requirements.txt 커밋
+- ⚠️ 막히면: pip 느림→pytorch.org 인덱스 명령 사용, 휠 충돌→python 3.10~3.12 권장
 
 > 피곤하면 10분 대안: 어제 셀/스크립트 1개 다시 실행 + 변수 1개 바꿔 결과 비교 후 커밋. 연속성만 유지.
 

@@ -16,7 +16,7 @@
 프로젝트: `ai-infra-lab` 단일 repo 단계 확장. K8s/GPU/분산학습/vLLM은 블록2(13~24주)로 미룸.
 
 ## W1 — 환경 + repo 척추
-- [ ] [평일] D1: ai-infra-lab repo 생성 + 디렉토리 골격(training/serving/docker/notebooks/models/docs) 커밋, models/ gitignore
+- [x] [평일] D1: ai-infra-lab repo 생성 + 디렉토리 골격(training/serving/docker/notebooks/models/docs) 커밋, models/ gitignore
   - 🎯 개념: monorepo로 학습/서빙/인프라를 한 곳에 두는 이유, 대용량 모델 바이너리를 git에서 빼는 이유(.gitignore)
   - ✅ 완료: GitHub(private)에 골격이 push되고 origin 연결됨
   - ⚠️ 막히면: `gh auth status`로 로그인 확인, remote는 `git remote -v`
@@ -120,3 +120,8 @@
 ---
 ## 검토 로그 (review가 append)
 <!-- /study-coach review가 날짜별 채점·피드백을 여기 누적. 면접 회고의 원천. -->
+
+### 2026-06-29 — W1 D1 ✅
+- 잘한 점: 디렉토리 골격 12개 + `models/` gitignore + GitHub(private) push 완료. git remote URL의 토큰 노출을 스스로 발견해 정리하고 log.md에 기록한 건 인프라 엔지니어다운 대응.
+- 고칠 점: README가 한 줄뿐 → 주말 항목에서 목표·디렉토리 설명 채우기. `.gitignore`에 `.venv/`·`__pycache__/`·`*.pyc` 추가 권장(D2 venv 대비). 빈 디렉토리는 git이 추적 안 함 — 파일 생기면 자동 포함되니 지금은 무방.
+- 다음 주의: 토큰을 URL에 평문 저장하는 방식은 노출이 지속됨 → 노출된 토큰 폐기 + 새 토큰 사용 권장.
