@@ -1,4 +1,4 @@
-<!-- study-state v1 | block=1 | last_brief_date=2026-06-29 | repo_path=~/Desktop/Project/ai-infra-lab -->
+<!-- study-state v1 | block=1 | last_brief_date=2026-06-30 | repo_path=~/Desktop/Project/ai-infra-lab -->
 <!--
   AI Infra 학습 진도 정본. git 추적됨 → 두 Mac(회사/집)이 push/pull로 공유.
   study-brief.py(무인 cron)가 이 파일을 읽어 요일별 다음 미완료 항목 + 그 아래 들여쓴 학습 가이드를
@@ -20,7 +20,7 @@
   - 🎯 개념: monorepo로 학습/서빙/인프라를 한 곳에 두는 이유, 대용량 모델 바이너리를 git에서 빼는 이유(.gitignore)
   - ✅ 완료: GitHub(private)에 골격이 push되고 origin 연결됨
   - ⚠️ 막히면: `gh auth status`로 로그인 확인, remote는 `git remote -v`
-- [ ] [평일] D2: venv + PyTorch(CPU) 설치 + requirements.txt 커밋
+- [x] [평일] D2: venv + PyTorch(CPU) 설치 + requirements.txt 커밋
   - 🎯 개념: 가상환경(venv)으로 의존성 격리하는 이유, PyTorch CPU 빌드, requirements로 버전 고정
   - 📖 자료: pytorch.org/get-started/locally (OS/CPU 설치 명령), 점프투파이썬 가상환경 절
   - ✅ 완료: `import torch` 무오류 + requirements.txt 커밋
@@ -125,3 +125,8 @@
 - 잘한 점: 디렉토리 골격 12개 + `models/` gitignore + GitHub(private) push 완료. git remote URL의 토큰 노출을 스스로 발견해 정리하고 log.md에 기록한 건 인프라 엔지니어다운 대응.
 - 고칠 점: README가 한 줄뿐 → 주말 항목에서 목표·디렉토리 설명 채우기. `.gitignore`에 `.venv/`·`__pycache__/`·`*.pyc` 추가 권장(D2 venv 대비). 빈 디렉토리는 git이 추적 안 함 — 파일 생기면 자동 포함되니 지금은 무방.
 - 다음 주의: 토큰을 URL에 평문 저장하는 방식은 노출이 지속됨 → 노출된 토큰 폐기 + 새 토큰 사용 권장.
+
+### 2026-06-30 — W1 D2 ✅
+- 잘한 점: torch 2.12.1 + torchvision 설치, requirements.txt로 버전 `==` 고정, `.gitignore`에 `.venv/`·`__pycache__/`·`*.pyc` 추가(어제 피드백 즉시 반영). `import torch` 무오류 + cuda False 확인.
+- 고칠 점: docs/log.md에 D2 회고가 빠짐(D1만 있음) — 세션 마감 4줄 남기는 습관 유지. requirements.txt가 전체 freeze(113줄)라 직접 의존(torch/numpy/scikit/jupyter)과 전이 의존이 섞임 — 지금은 무방, 나중에 직접 의존만 분리(requirements.in 등)하면 재현·감사 쉬움.
+- 다음 주의: cuda False가 정상(CPU). D3은 이를 명시 확인하고 docs/log.md에 기록하는 단계 — 사실상 거의 됐으니 기록만 남기면 빠르게 완료.
