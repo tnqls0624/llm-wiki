@@ -2,12 +2,12 @@
 # 오늘의 학습 — 2026-06-30 (화)
 
 ## 오늘 할 것 (평일 · 20~40분)
-**W1** · D3: `python -c "import torch; print(torch.__version__, torch.cuda.is_available())"` 성공, 결과 docs/log.md 기록
+**W1** · D4: 점프투파이썬에서 list/dict comprehension·f-string·타입힌트만 복습 + 짧은 예제 1개
 
 ### 학습 가이드
-- 🎯 개념: CUDA란 무엇이고 왜 회사/집 Mac에선 False인지(GPU 없음 = CPU 텐서). 블록2에서 EKS GPU로 바뀜
-- ✅ 완료: 버전 + False 출력 확인, docs/log.md에 기록
-- ⚠️ 막히면: False는 정상. import 에러면 venv 활성화 확인(`which python`)
+- 🎯 개념: comprehension(파이썬다운 반복), f-string(포매팅), 타입힌트(FastAPI/Pydantic 전제)
+- 📖 자료: 점프투파이썬(wikidocs.net/book/1) 해당 절만
+- ✅ 완료: 세 문법을 쓴 예제 .py 1개 커밋
 
 > 피곤하면 10분 대안: 어제 셀/스크립트 1개 다시 실행 + 변수 1개 바꿔 결과 비교 후 커밋. 연속성만 유지.
 

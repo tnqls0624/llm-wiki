@@ -25,7 +25,7 @@
   - 📖 자료: pytorch.org/get-started/locally (OS/CPU 설치 명령), 점프투파이썬 가상환경 절
   - ✅ 완료: `import torch` 무오류 + requirements.txt 커밋
   - ⚠️ 막히면: pip 느림→pytorch.org 인덱스 명령 사용, 휠 충돌→python 3.10~3.12 권장
-- [ ] [평일] D3: `python -c "import torch; print(torch.__version__, torch.cuda.is_available())"` 성공, 결과 docs/log.md 기록
+- [x] [평일] D3: `python -c "import torch; print(torch.__version__, torch.cuda.is_available())"` 성공, 결과 docs/log.md 기록
   - 🎯 개념: CUDA란 무엇이고 왜 회사/집 Mac에선 False인지(GPU 없음 = CPU 텐서). 블록2에서 EKS GPU로 바뀜
   - ✅ 완료: 버전 + False 출력 확인, docs/log.md에 기록
   - ⚠️ 막히면: False는 정상. import 에러면 venv 활성화 확인(`which python`)
@@ -130,3 +130,8 @@
 - 잘한 점: torch 2.12.1 + torchvision 설치, requirements.txt로 버전 `==` 고정, `.gitignore`에 `.venv/`·`__pycache__/`·`*.pyc` 추가(어제 피드백 즉시 반영). `import torch` 무오류 + cuda False 확인.
 - 고칠 점: docs/log.md에 D2 회고가 빠짐(D1만 있음) — 세션 마감 4줄 남기는 습관 유지. requirements.txt가 전체 freeze(113줄)라 직접 의존(torch/numpy/scikit/jupyter)과 전이 의존이 섞임 — 지금은 무방, 나중에 직접 의존만 분리(requirements.in 등)하면 재현·감사 쉬움.
 - 다음 주의: cuda False가 정상(CPU). D3은 이를 명시 확인하고 docs/log.md에 기록하는 단계 — 사실상 거의 됐으니 기록만 남기면 빠르게 완료.
+
+### 2026-06-30 — W1 D3 ✅
+- 잘한 점: `import torch 2.12.1 / cuda False`를 log.md에 명확히 기록. GPU 없는 CPU=정상이라는 점을 "블록2 EKS GPU에서 True로 바뀜"까지 연결해 이해한 게 좋음. README도 작성해 W1 주말 항목(디렉토리 설명)을 일부 선취.
+- 고칠 점: D2·D3을 한 로그 항목에 묶음 — 진도 추적엔 무방하나 앞으로 항목별 분리하면 회고가 또렷. README의 "환경 재현" 섹션은 실제 클린 체크아웃에서 한 번 돌려 검증해두면 주말 항목에 그대로 쓰임.
+- 다음 주의: 주말 항목은 README 외에 "새 터미널 venv 활성화 → import 성공"까지 확인해야 완료(주말에). D4는 **코드 산출물(예제 .py)이 처음 생기는 항목** — `training/` 또는 `notebooks/`에 두고 커밋.
