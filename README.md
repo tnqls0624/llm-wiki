@@ -78,7 +78,7 @@ obsidian_sync/
 
 ### 동작 (2단계 — "동의 후 추가"를 구조로 보장)
 ```
-[무인]  매일 09:17 (launchd cron)
+[무인]  매일 09:30 (launchd cron)
         → radar-collect.py 가 10개 채널 수집 → seen ledger 로 중복 제거
         → /claude-radar collect 이 분류·추천 → runtime/radar-queue.md 에 적재
         ⚠ 무인 단계는 큐+ledger만 변경 — skill/agent/KB를 절대 생성하지 않는다.
@@ -159,8 +159,8 @@ obsidian_sync/
 | 작업 | 스케줄 | 설치 |
 |---|---|---|
 | `kb-sync` | 월·목 09:07 | `bash .claude/install-kb-sync-cron.sh` |
-| `claude-radar` | 매일 09:17 | `bash .claude/install-claude-radar-cron.sh` |
-| `study-coach` | 매일 08:07 | `bash .claude/install-study-coach-cron.sh` |
+| `claude-radar` | 매일 09:30 | `bash .claude/install-claude-radar-cron.sh` |
+| `study-coach` | 매일 09:30 | `bash .claude/install-study-coach-cron.sh` |
 
 - 모두 **anacron 패턴**(전원 꺼짐으로 놓친 슬롯을 로그인 시 보충) + 락 + 로그 로테이션.
 - 헤드리스 실행이라 **sonnet** 티어 사용(비용 레버).

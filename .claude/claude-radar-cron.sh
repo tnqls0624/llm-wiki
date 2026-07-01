@@ -1,5 +1,5 @@
 #!/bin/bash
-# claude-radar cron wrapper — launchd가 매일 09:17(로컬) + 로그인 시(RunAtLoad) 실행.
+# claude-radar cron wrapper — launchd가 매일 09:30(로컬) + 로그인 시(RunAtLoad) 실행.
 # claude headless(-p)로 "/claude-radar collect"를 돌려 Claude 활용 정보를 수집·추천 큐에 적재한다.
 # 무인 단계는 큐(.claude/runtime/)와 seen ledger만 변경 — .claude/·KB 생성은 하지 않는다(동의 후 review 몫).
 # 커밋·push는 SessionEnd auto-commit 훅이 처리(fetch-guarded).
@@ -35,12 +35,12 @@ fi
 
 [ -n "$CLAUDE_BIN" ] && [ -x "$CLAUDE_BIN" ] || { echo "[$(date '+%F %T')] FAIL: claude CLI not found" >> "$LOG"; exit 1; }
 
-# ── due 판정 (anacron, 매일 09:17) ───────────────────────────────
+# ── due 판정 (anacron, 매일 09:30) ───────────────────────────────
 # 직전 예정 슬롯의 epoch 계산 (plist의 StartCalendarInterval Hour/Minute과 일치 유지!)
 SLOT_EPOCH="$(python3 - <<'PY'
 import datetime as d
 now = d.datetime.now()
-slot = now.replace(hour=9, minute=17, second=0, microsecond=0)
+slot = now.replace(hour=9, minute=30, second=0, microsecond=0)
 if slot > now:            # 오늘 슬롯이 아직 안 왔으면 어제 슬롯이 직전
     slot -= d.timedelta(days=1)
 print(int(slot.timestamp()))

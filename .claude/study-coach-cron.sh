@@ -1,5 +1,5 @@
 #!/bin/bash
-# study-coach cron wrapper — launchd가 매일 08:07(로컬) + 로그인 시(RunAtLoad) 실행.
+# study-coach cron wrapper — launchd가 매일 09:30(로컬) + 로그인 시(RunAtLoad) 실행.
 # claude headless(-p)로 "/study-coach review"를 돌려 ① 어제 ai-infra-lab 산출물을 LLM이 검토·채점하고
 # ② study-state.md(진도) 갱신 + study-today.md(오늘 브리핑)를 작성한다.
 # 쓰기는 .claude/runtime/ 만 — ai-infra-lab은 읽기 전용, .claude 메커니즘/KB는 stray-guard가 되돌린다.
@@ -36,12 +36,12 @@ fi
 
 [ -n "$CLAUDE_BIN" ] && [ -x "$CLAUDE_BIN" ] || { echo "[$(date '+%F %T')] FAIL: claude CLI not found" >> "$LOG"; exit 1; }
 
-# ── due 판정 (anacron, 매일 08:07) ───────────────────────────────
+# ── due 판정 (anacron, 매일 09:30) ───────────────────────────────
 # 직전 예정 슬롯의 epoch (plist의 StartCalendarInterval Hour/Minute과 일치 유지!)
 SLOT_EPOCH="$(python3 - <<'PY'
 import datetime as d
 now = d.datetime.now()
-slot = now.replace(hour=8, minute=7, second=0, microsecond=0)
+slot = now.replace(hour=9, minute=30, second=0, microsecond=0)
 if slot > now:
     slot -= d.timedelta(days=1)
 print(int(slot.timestamp()))

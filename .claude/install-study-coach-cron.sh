@@ -1,6 +1,6 @@
 #!/bin/bash
 # study-coach launchd 크론 설치/재설치 (멱등).
-# 스케줄: 매일 08:07 (머신 로컬 타임존 — kb-sync 09:07·radar 09:17보다 이른 아침에 검토+브리핑).
+# 스케줄: 매일 09:30 (머신 로컬 타임존 — 아침에 검토+브리핑).
 #
 # 멀티 머신: 학습하는 각 Mac에서 이 스크립트를 실행한다. 회사 Mac에서 무인 검토를
 # 돌리고 싶지 않으면 그 Mac에서는 설치하지 말고 /study-coach review를 수동 실행하면 된다.
@@ -38,8 +38,8 @@ cat > "$PLIST" << EOF
   <true/>
   <key>StartCalendarInterval</key>
   <dict>
-    <key>Hour</key><integer>8</integer>
-    <key>Minute</key><integer>7</integer>
+    <key>Hour</key><integer>9</integer>
+    <key>Minute</key><integer>30</integer>
   </dict>
   <key>StandardOutPath</key>
   <string>$LOG</string>
@@ -51,4 +51,4 @@ EOF
 
 launchctl bootout "gui/$(id -u)/$LABEL" 2>/dev/null || true
 launchctl bootstrap "gui/$(id -u)" "$PLIST"
-launchctl list | grep -q "$LABEL" && echo "installed: $LABEL (daily 08:07 local) wrapper=$WRAPPER" || { echo "FAIL: not registered"; exit 1; }
+launchctl list | grep -q "$LABEL" && echo "installed: $LABEL (daily 09:30 local) wrapper=$WRAPPER" || { echo "FAIL: not registered"; exit 1; }

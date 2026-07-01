@@ -1,6 +1,6 @@
 #!/bin/bash
 # claude-radar launchd 크론 설치/재설치 (멱등).
-# 스케줄: 매일 09:17 (머신 로컬 타임존, kb-sync의 09:07과 시차를 둬 동시 실행·rate limit 충돌 회피).
+# 스케줄: 매일 09:30 (머신 로컬 타임존).
 #
 # 포터블: vault·홈 경로를 설치 시점에 계산해 plist를 생성한다 — 하드코딩 없음.
 # 다른 머신으로 vault를 옮기면 이 스크립트만 다시 실행하면 된다.
@@ -37,7 +37,7 @@ cat > "$PLIST" << EOF
   <key>StartCalendarInterval</key>
   <dict>
     <key>Hour</key><integer>9</integer>
-    <key>Minute</key><integer>17</integer>
+    <key>Minute</key><integer>30</integer>
   </dict>
   <key>StandardOutPath</key>
   <string>$LOG</string>
@@ -50,4 +50,4 @@ EOF
 # 기존 등록이 있으면 내리고 다시 올린다 (재설치 멱등성)
 launchctl bootout "gui/$(id -u)/$LABEL" 2>/dev/null || true
 launchctl bootstrap "gui/$(id -u)" "$PLIST"
-launchctl list | grep -q "$LABEL" && echo "installed: $LABEL (daily 09:17 local) wrapper=$WRAPPER" || { echo "FAIL: not registered"; exit 1; }
+launchctl list | grep -q "$LABEL" && echo "installed: $LABEL (daily 09:30 local) wrapper=$WRAPPER" || { echo "FAIL: not registered"; exit 1; }
