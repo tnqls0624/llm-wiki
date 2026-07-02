@@ -1,4 +1,4 @@
-<!-- study-state v1 | block=1 | last_brief_date=2026-06-30 | repo_path=~/Desktop/Project/ai-infra-lab -->
+<!-- study-state v1 | block=0 | last_brief_date=2026-06-30 | repo_path=~/Desktop/Project/ai-infra-lab -->
 <!--
   AI Infra 학습 진도 정본. git 추적됨 → 두 Mac(회사/집)이 push/pull로 공유.
   study-brief.py(무인 cron)가 이 파일을 읽어 요일별 다음 미완료 항목 + 그 아래 들여쓴 학습 가이드를
@@ -10,112 +10,72 @@
   각 항목 아래 2칸 들여쓴 불릿(🎯개념 📖자료 ✅완료 ⚠️막히면)이 그날 브리핑에 함께 출력된다.
 -->
 
-# AI Infra 학습 진도 — 블록1 (Python/ML → PyTorch → FastAPI → Docker)
+# AI Infra 학습 진도 — 인프라 빌더 트랙 (Block 0~6)
 
-목표: **"PyTorch로 학습한 모델 → 저장 → FastAPI 추론 API → Docker 이미지"** 파이프라인을 자기 손으로 완성.
-프로젝트: `ai-infra-lab` 단일 repo 단계 확장. K8s/GPU/분산학습/vLLM은 블록2(13~24주)로 미룸.
+**정본 커리큘럼**: `ai-infra-lab/ROADMAP.md` (2026-07-02 v3 확정 — 학습 우선, 블랙웰 특화는 부록 A/B).
+**현재**: Block 0 (기초 최소화) — 통합 산출물 `python/train_mnist.py`를 S2→S5 순서로 증분 완성 중.
+**주차↔블록**: W1~2=Block 0 · W3~4=Block 1(컨테이너) · W5~7=Block 2(GPU/CUDA) · W8~10=Block 3(서버·네트워크) · W11~12=Block 4(K8s) · W13~16=Block 5(서빙&학습) · W17~19=Block 6(관측성) + 버퍼 3주.
 
-## W1 — 환경 + repo 척추
+## W1 — 환경 + repo 척추 + 로드맵 확정 [Block 0]
 - [x] [평일] D1: ai-infra-lab repo 생성 + 디렉토리 골격(training/serving/docker/notebooks/models/docs) 커밋, models/ gitignore
   - 🎯 개념: monorepo로 학습/서빙/인프라를 한 곳에 두는 이유, 대용량 모델 바이너리를 git에서 빼는 이유(.gitignore)
   - ✅ 완료: GitHub(private)에 골격이 push되고 origin 연결됨
-  - ⚠️ 막히면: `gh auth status`로 로그인 확인, remote는 `git remote -v`
 - [x] [평일] D2: venv + PyTorch(CPU) 설치 + requirements.txt 커밋
   - 🎯 개념: 가상환경(venv)으로 의존성 격리하는 이유, PyTorch CPU 빌드, requirements로 버전 고정
-  - 📖 자료: pytorch.org/get-started/locally (OS/CPU 설치 명령), 점프투파이썬 가상환경 절
   - ✅ 완료: `import torch` 무오류 + requirements.txt 커밋
-  - ⚠️ 막히면: pip 느림→pytorch.org 인덱스 명령 사용, 휠 충돌→python 3.10~3.12 권장
 - [x] [평일] D3: `python -c "import torch; print(torch.__version__, torch.cuda.is_available())"` 성공, 결과 docs/log.md 기록
-  - 🎯 개념: CUDA란 무엇이고 왜 회사/집 Mac에선 False인지(GPU 없음 = CPU 텐서). 블록2에서 EKS GPU로 바뀜
+  - 🎯 개념: CUDA란 무엇이고 왜 CPU Mac에선 False인지. GPU 실습은 Block 2에서 클라우드 GPU VM으로
   - ✅ 완료: 버전 + False 출력 확인, docs/log.md에 기록
-  - ⚠️ 막히면: False는 정상. import 에러면 venv 활성화 확인(`which python`)
-- [ ] [평일] D4: 점프투파이썬에서 list/dict comprehension·f-string·타입힌트만 복습 + 짧은 예제 1개
-  - 🎯 개념: comprehension(파이썬다운 반복), f-string(포매팅), 타입힌트(FastAPI/Pydantic 전제)
-  - 📖 자료: 점프투파이썬(wikidocs.net/book/1) 해당 절만
-  - ✅ 완료: 세 문법을 쓴 예제 .py 1개 커밋
-- [ ] [평일] D5: 데코레이터 + `with` 컨텍스트매니저 확인 (FastAPI/PyTorch에서 쓰임)
-  - 🎯 개념: 데코레이터(FastAPI 라우트 `@app.get`), with(파일·`torch.no_grad()` 자원 관리)
-  - ✅ 완료: 데코레이터 1개 직접 작성 + with 예제 실행
-- [ ] [주말] repo 골격 + venv + requirements.txt + README(목표·디렉토리 설명) 커밋, import 성공 기록 docs/
-  - 🎯 개념: 한 주 배운 환경을 하나로 통합 — 클린 체크아웃에서 재현 가능한 상태 만들기
-  - ✅ 완료: 새 터미널에서 venv 활성화 → import torch 성공, README에 디렉토리 설명
+- [x] [평일] D4: 파이썬 문법 예제(f-string·타입힌트) — `python/W1D4/practice.py` 커밋
+  - 참고: ROADMAP v3 전환으로 문법 드릴 방식 종결 — comprehension 등 나머지는 train_mnist.py 작성 중 자연 습득
+- [ ] [평일] D5: `train_mnist.py` **S2 — load_data() 구현** (MNIST 다운로드 → DataLoader)
+  - 🎯 개념: Dataset/DataLoader = 학습 데이터 공급 파이프라인, transform(ToTensor: 이미지→0~1 텐서)
+  - 📖 자료: `python/train_mnist.py`의 S2 docstring 힌트 3단계 (그대로 따라가면 됨)
+  - ✅ 완료: `python python/train_mnist.py` 실행 시 data/ 다운로드 후 "S3" 안내가 뜨고, 구현 커밋됨
+  - ⚠️ 막히면: import 에러 → venv 활성화(`which python`) 확인. 다운로드 실패 → 네트워크 확인 후 재실행
+- [ ] [주말] `train_mnist.py` **S3 — SimpleNet(nn.Module) 구현** + S1 코드 정독
+  - 🎯 개념: nn.Module 클래스와 super().__init__(), Flatten→Linear→ReLU→Linear 구조. S1의 argparse/logging이 왜 인프라 도구의 골격인지
+  - ✅ 완료: 실행 시 "S4" 안내가 뜨고 커밋됨 + log.md에 argparse/logging 요점 3줄
 
-## W2 — numpy + 데이터 감각
-- [ ] [평일] D1: numpy 배열 생성·인덱싱·`shape` (Tensor의 전신)
-  - 🎯 개념: ndarray와 shape — PyTorch Tensor의 기반. 차원(axis) 개념
-  - 📖 자료: 혼공머신 numpy 부분
-  - ✅ 완료: 2D 배열 만들고 슬라이싱·shape 출력하는 노트북 셀
-- [ ] [평일] D2: numpy broadcasting 규칙 직접 실험
-  - 🎯 개념: broadcasting(shape 다른 배열 연산) — 딥러닝 텐서 연산의 핵심, shape mismatch 디버깅의 기초
-  - ✅ 완료: (3,1)+(1,4) 같은 broadcasting 예제 1개 + 왜 되는지 한 줄 메모
-- [ ] [평일] D3: 혼공머신 1~2장 읽기 (ML이 뭔지, 지도학습 개념) — 핵심 키워드만 메모
-  - 🎯 개념: 지도학습(입력→정답 학습), 특성(feature)/타깃(target), 훈련/테스트 분리의 의미
-  - 📖 자료: 『혼자 공부하는 머신러닝+딥러닝』 1~2장 (코랩)
-  - ✅ 완료: 핵심 키워드 5개를 docs/log.md에 정리
-- [ ] [평일] D4: pandas로 CSV 로드 → `train_test_split` 직접 해보기
-  - 🎯 개념: 데이터를 train/test로 나누는 이유(일반화 측정), pandas DataFrame
-  - ✅ 완료: CSV 로드 → split → 각 shape 출력
-  - ⚠️ 막히면: 데이터 없으면 sklearn `load_iris()` 같은 내장 데이터셋 사용
-- [ ] [평일] D5: (가벼운 날) split한 데이터 shape만 출력해 확인
-  - 🎯 개념: 어제 한 split이 train/test 비율대로 나뉘었는지 눈으로 확인 — 복습/연속성
-  - ✅ 완료: train/test shape 출력 후 커밋
-- [ ] [주말] notebooks/01_data_basics.ipynb — 데이터 로드 → split → numpy 변환 한 흐름 정리
-  - 🎯 개념: 한 주 배운 numpy/pandas/split을 하나의 재현 가능한 노트북으로 통합
-  - ✅ 완료: 노트북이 위→아래 순서로 에러 없이 실행됨
+## W2 — Block 0 완료 → Block 1 진입
+- [ ] [평일] D1: `train_mnist.py` **S4 — train() 학습 루프 구현**
+  - 🎯 개념: 학습 루프 5박자(zero_grad→forward/loss→backward→step→log), 데이터도 `.to(device)` 해야 하는 이유
+  - 📖 자료: S4 docstring 힌트 (루프 골격 그대로 제공됨)
+  - ✅ 완료: `--epochs 1` 학습이 돌고 loss가 로그에 찍힘, 커밋
+- [ ] [평일] D2: **S5 — 모델 저장/재로드 + 예외처리** → 🎉 Block 0 완료 기준 충족
+  - 🎯 개념: state_dict 저장/로드, try/except로 "무엇이 왜 실패했는지" 구분하는 인프라 코드 기본기
+  - ✅ 완료: models/mnist.pt 저장→재로드 성공, 전체 파이프라인 무오류 실행, 커밋
+- [ ] [평일] D3: Linux 기본 — `docker run -it ubuntu`에서 top/권한/패키지/journalctl 감잡기 (Docker Desktop/OrbStack 설치 겸)
+  - 🎯 개념: 서버의 기본 화면 — 프로세스(top), 권한(chmod/sudo), 로그(journalctl). macOS와 뭐가 다른가
+  - ✅ 완료: 컨테이너 안에서 명령 실행해보고 새로 안 것 3개를 log.md에 기록
+- [ ] [평일] D4: Block 0 회고(버퍼 잔여 기록) + Block 1 시작 — Docker 이미지/레이어/볼륨 개념
+  - 🎯 개념: 이미지 vs 컨테이너, 레이어 캐시, 데이터는 볼륨으로 분리하는 이유
+  - ✅ 완료: log.md에 `[Block 1 시작]` 표기 + 개념 요약
+- [ ] [평일] D5: Dockerfile 초안 — CUDA 베이스 이미지에 train_mnist.py 탑재 (CPU 경로)
+  - 🎯 개념: 베이스 이미지 선택(nvidia/cuda vs NGC PyTorch), COPY/RUN/CMD
+  - ✅ 완료: `docker build`가 통과하는 Dockerfile 커밋 (docker/)
+- [ ] [주말] Dockerfile 완성 — 멀티스테이지 + .dockerignore + 컨테이너로 학습 실행 검증
+  - 🎯 개념: 멀티스테이지로 이미지 슬림화, .dockerignore로 빌드 컨텍스트 정리, 시크릿 커밋 금지 규칙
+  - ✅ 완료: `docker run`으로 train_mnist.py가 컨테이너 안에서 돌고 커밋됨
 
-## W3 — ML 기초 체화 (과적합·평가)
-- [ ] [평일] D1: 혼공머신 3장 또는 분류 챕터 — 핵심 키워드 노트
-  - 🎯 개념: 분류 vs 회귀, 모델이 "학습"한다는 게 코드 수준에서 무슨 뜻인지
-  - 📖 자료: 혼공머신 해당 장
-  - ✅ 완료: 키워드 메모 커밋
-- [ ] [평일] D2: scikit-learn KNeighborsClassifier 또는 LogisticRegression 학습
-  - 🎯 개념: `.fit()`/`.predict()` API — 모든 ML 라이브러리의 공통 패턴(PyTorch도 유사)
-  - ✅ 완료: 분류기 학습 후 `.predict()`로 예측 1개 출력
-- [ ] [평일] D3: 과적합/일반화 — train 정확도 vs test 정확도 직접 출력
-  - 🎯 개념: 과적합(훈련엔 강하고 새 데이터엔 약함) — ML에서 가장 중요한 함정
-  - ✅ 완료: train acc와 test acc를 나란히 출력해 차이 관찰
-- [ ] [평일] D4: 평가지표 accuracy·confusion matrix 출력
-  - 🎯 개념: accuracy의 한계, confusion matrix로 어디서 틀리는지 보기
-  - ✅ 완료: confusion matrix 출력 + 한 줄 해석
-- [ ] [평일] D5: 회고 — "ML = 데이터→학습→평가 루프" 한 문단 정리
-  - 🎯 개념: 이번 주 전체를 한 문장으로 압축 — 다음 PyTorch 학습 루프의 멘탈 모델
-  - ✅ 완료: docs/log.md에 한 문단 회고
-- [ ] [주말] notebooks/02_ml_baseline.ipynb — 분류기 학습 + 평가지표 + 과적합 관찰 메모
-  - 🎯 개념: scikit-learn 베이스라인 — 나중에 PyTorch 모델과 성능 비교할 기준선
-  - ✅ 완료: 노트북에 학습→평가→과적합 관찰이 한 흐름으로
-
-## W4 — PyTorch Tensor·autograd
-- [ ] [평일] D1: Tensor 생성/연산, numpy ↔ tensor 변환
-  - 🎯 개념: Tensor = numpy 배열 + GPU/autograd. `torch.from_numpy()`, `.numpy()`
-  - 📖 자료: PyTorch 한국어 튜토리얼 60분 블리츠 "텐서"
-  - ✅ 완료: numpy→tensor→numpy 왕복 변환 실행
-- [ ] [평일] D2: `requires_grad=True` + `.backward()`로 gradient 확인
-  - 🎯 개념: autograd(자동 미분) — 딥러닝 학습의 엔진. gradient가 뭔지
-  - 📖 자료: 60분 블리츠 "autograd"
-  - ✅ 완료: 간단한 식의 gradient를 `.grad`로 확인
-- [ ] [평일] D3: 손실함수 직접 정의 → gradient 수동 확인
-  - 🎯 개념: 손실(loss) = 예측과 정답의 차이. loss를 줄이는 게 학습
-  - ✅ 완료: MSE 같은 손실 정의 후 backward로 grad 확인
-- [ ] [평일] D4: 경사하강 1변수 직접 구현 (`w -= lr * w.grad`)
-  - 🎯 개념: 경사하강(gradient descent) — 파라미터를 grad 반대로 조금씩 갱신. learning rate
-  - ✅ 완료: 반복문으로 loss가 줄어드는 것 출력
-  - ⚠️ 막히면: loss가 발산하면 lr를 1/10로
-- [ ] [평일] D5: 60분 블리츠 "autograd" 페이지 교차 확인
-  - 🎯 개념: 직접 구현한 것과 공식 설명을 대조해 개념 굳히기
-  - ✅ 완료: 이해 안 됐던 부분 1개를 log.md에 질문/답으로 정리
-- [ ] [주말] training/03_autograd_gd.py — 경사하강 직접 구현 스크립트 (W5 nn.Module 버전과 비교 기준선)
-  - 🎯 개념: 손으로 만든 학습 루프 — W5에서 nn.Module로 같은 걸 만들어 "프레임워크가 뭘 자동화하는지" 체감
-  - ✅ 완료: `python training/03_autograd_gd.py` 실행 시 loss 감소 출력
-
-<!-- 다음 구간(W5~W12)은 W4 종료 후 /study-coach plan에서 일별 항목 + 학습 가이드로 상세화한다. 현재는 주차 헤더만. -->
-## W5 — nn.Module + 학습 루프 (상세화 대기)
-## W6 — DataLoader·검증 루프·정확도 (상세화 대기)
-## W7 — 모델 저장/로딩 + 추론 스크립트 (상세화 대기)
-## W8 — FastAPI 추론 서버 골격 (상세화 대기)
-## W9 — 입력검증·startup 로딩·헬스체크 (상세화 대기)
-## W10 — Dockerfile (multi-stage, CPU) (상세화 대기)
-## W11 — 이미지 슬림화 + docker-compose (상세화 대기)
-## W12 — 통합·문서화·회고 (상세화 대기)
+<!-- 다음 구간은 해당 블록 진입 직전에 /study-coach plan 또는 ROADMAP.md 주차 마일스톤 기준으로 일별 상세화한다. -->
+## W3 — Block 1: NVIDIA Container Toolkit 원리 + NGC (상세화 대기)
+## W4 — Block 1: GPU 실습 환경 결정 — gpu-access-decision.md 커밋 게이트 (상세화 대기)
+## W5 — Block 2: 스택 확인 랩 — 드라이버/CUDA/호환성 매트릭스 (상세화 대기)
+## W6 — Block 2: 함정 재현 랩 — no kernel image 재현→해결 (상세화 대기)
+## W7 — Block 2: OOM 랩 — VRAM과 모델 크기 (상세화 대기)
+## W8 — Block 3: Linux 서버 실무 — systemd/드라이버 설치 갈림길 (상세화 대기)
+## W9 — Block 3: GPU 서버 아키텍처 — NVLink/NUMA/스토리지 (상세화 대기)
+## W10 — Block 3: 토폴로지 읽기 — topo -m/nccl-tests (상세화 대기)
+## W11 — Block 4: kind로 K8s 개념 + Helm (상세화 대기)
+## W12 — Block 4: GPU Operator + GPU Pod (상세화 대기)
+## W13 — Block 5: vLLM 서빙 + 벤치마크 (상세화 대기)
+## W14 — Block 5: TRT-LLM 프리빌트 + 서빙 인증 1겹 (상세화 대기)
+## W15 — Block 5: DDP 토이 + 체크포인트 재개 (상세화 대기)
+## W16 — Block 5: MLflow 1런 + 트랙 회고 (상세화 대기)
+## W17 — Block 6: DCGM→Prometheus→Grafana 대시보드 (상세화 대기)
+## W18 — Block 6: 알림·장애 플레이북·패치 위생 (상세화 대기)
+## W19 — Block 6: 백업 개념 + 캡스톤 ops 핸드북 (상세화 대기)
 
 ---
 ## 검토 로그 (review가 append)
@@ -132,11 +92,17 @@
 - 다음 주의: cuda False가 정상(CPU). D3은 이를 명시 확인하고 docs/log.md에 기록하는 단계 — 사실상 거의 됐으니 기록만 남기면 빠르게 완료.
 
 ### 2026-06-30 — W1 D3 ✅
-- 잘한 점: `import torch 2.12.1 / cuda False`를 log.md에 명확히 기록. GPU 없는 CPU=정상이라는 점을 "블록2 EKS GPU에서 True로 바뀜"까지 연결해 이해한 게 좋음. README도 작성해 W1 주말 항목(디렉토리 설명)을 일부 선취.
-- 고칠 점: D2·D3을 한 로그 항목에 묶음 — 진도 추적엔 무방하나 앞으로 항목별 분리하면 회고가 또렷. README의 "환경 재현" 섹션은 실제 클린 체크아웃에서 한 번 돌려 검증해두면 주말 항목에 그대로 쓰임.
-- 다음 주의: 주말 항목은 README 외에 "새 터미널 venv 활성화 → import 성공"까지 확인해야 완료(주말에). D4는 **코드 산출물(예제 .py)이 처음 생기는 항목** — `training/` 또는 `notebooks/`에 두고 커밋.
+- 잘한 점: `import torch 2.12.1 / cuda False`를 log.md에 명확히 기록. GPU 없는 CPU=정상이라는 점을 연결해 이해한 게 좋음. README도 작성해 W1 주말 항목(디렉토리 설명)을 일부 선취.
+- 고칠 점: D2·D3을 한 로그 항목에 묶음 — 진도 추적엔 무방하나 앞으로 항목별 분리하면 회고가 또렷.
+- 다음 주의: D4는 **코드 산출물(예제 .py)이 처음 생기는 항목** — `training/` 또는 `notebooks/`에 두고 커밋.
 
 ### 2026-07-01 — 새 산출물 없음
 - 마지막 검토(6-30) 이후 ai-infra-lab에 새 커밋 없음(마지막 커밋 6-30 13:50 README). 진도 그대로 W1 D3까지 유지 — 억지 체크 안 함.
 - 상태: tracked 파일은 `.gitignore`·`README.md`·`docs/log.md`·`requirements.txt` 4개. `training/`·`notebooks/`에 아직 `.py`/`.ipynb` 산출물 없음 → D4가 첫 코드 커밋 지점.
-- 다음 주의: D4(comprehension·f-string·타입힌트 예제 .py 1개)를 커밋해야 진도가 나간다. 30~40분이면 충분 — 짧은 예제라도 `training/`에 두고 커밋하는 습관을 이어갈 것.
+- 다음 주의: D4(comprehension·f-string·타입힌트 예제 .py 1개)를 커밋해야 진도가 나간다.
+
+### 2026-07-02 — W1 D4 ✅ + 커리큘럼 v3 전환
+- D4 채점: `python/W1D4/practice.py` 커밋 — f-string·타입힌트 사용(기준 3개 중 2개). comprehension 미사용이나 로드맵 전환으로 문법 드릴 종결 — 이후 train_mnist.py 작성 중 자연 습득. 코드 품질 메모: 불필요한 세미콜론, 미사용 import(`from numpy import number`), f-string 안 `$`는 리터럴 출력 — S2 구현 때 정리 습관 들일 것.
+- 대형 변화: **ROADMAP.md v3 확정**(7블록 인프라 빌더 트랙, 학습 우선 — 블랙웰 특화는 부록 A/B) + `python/train_mnist.py` 스캐폴드 커밋(S1 완성, S2~S5 TODO). 이 study-state를 v3 구조(W1~19 ↔ Block 0~6)로 재편 — 완료 이력(D1~D4)과 검토 로그는 보존.
+- 운영 메모: 09:30 자동 리뷰가 세션 한도(resets 14:10)로 실패 → 16:53 --force 재실행으로 복구. 폴백 브리핑(study-brief.py)은 정상 동작했음.
+- 다음: W1 D5 = train_mnist.py **S2(load_data) 구현** — S2 docstring 힌트 3단계 참고. 집에서 진행 예정(양 repo pull 잊지 말 것).

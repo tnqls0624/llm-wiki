@@ -2,12 +2,13 @@
 # 오늘의 학습 — 2026-07-02 (목)
 
 ## 오늘 할 것 (평일 · 20~40분)
-**W1** · D4: 점프투파이썬에서 list/dict comprehension·f-string·타입힌트만 복습 + 짧은 예제 1개
+**W1** · D5: `train_mnist.py` **S2 — load_data() 구현** (MNIST 다운로드 → DataLoader)
 
 ### 학습 가이드
-- 🎯 개념: comprehension(파이썬다운 반복), f-string(포매팅), 타입힌트(FastAPI/Pydantic 전제)
-- 📖 자료: 점프투파이썬(wikidocs.net/book/1) 해당 절만
-- ✅ 완료: 세 문법을 쓴 예제 .py 1개 커밋
+- 🎯 개념: Dataset/DataLoader = 학습 데이터 공급 파이프라인, transform(ToTensor: 이미지→0~1 텐서)
+- 📖 자료: `python/train_mnist.py`의 S2 docstring 힌트 3단계 (그대로 따라가면 됨)
+- ✅ 완료: `python python/train_mnist.py` 실행 시 data/ 다운로드 후 "S3" 안내가 뜨고, 구현 커밋됨
+- ⚠️ 막히면: import 에러 → venv 활성화(`which python`) 확인. 다운로드 실패 → 네트워크 확인 후 재실행
 
 > 피곤하면 10분 대안: 어제 셀/스크립트 1개 다시 실행 + 변수 1개 바꿔 결과 비교 후 커밋. 연속성만 유지.
 
