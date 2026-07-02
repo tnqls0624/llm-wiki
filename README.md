@@ -152,7 +152,7 @@ obsidian_sync/
 | `kb-source-hashes.py` | 출처 원문 sha256을 추적해 **같은 슬러그 내 본문 변경**(슬러그 diff가 못 잡는) 감지. 변경 의심분을 review 큐에 적재만(노트 자동수정 X). kb-sync 흐름에서 호출 |
 | `scrub-secrets.py` | 크리덴셜 탐지·마스킹 코어(GitHub PAT·AWS·OpenAI·Anthropic 등). ingest 시 1차 방어 |
 | `radar-collect.py` | claude-radar 수집 엔진(0-LLM, 결정론적). 10개 채널 → dedup → JSON |
-| `study-brief.py` | study-coach 아침 브리핑 엔진(0-LLM, 결정론적). `study-state.md` 읽어 요일별 다음 미완료 항목 **+ 항목 하위 학습 가이드(개념·자료·완료기준·막히면)** → `study-today.md`. 날짜 멱등(`--check`/`--dry-run`/`--force`) |
+| `study-brief.py` | study-coach 아침 브리핑 엔진(0-LLM, 결정론적). `study-state.md` 읽어 요일별 다음 미완료 항목 **+ 항목 하위 학습 가이드(개념·자료·완료기준·막히면)** → `study-today.md`. 날짜 멱등(`--check`/`--dry-run`/`--force`/`--brief-only`). `--brief-only`는 브리핑만 쓰고 `last_brief_date`는 안 건드림 — cron의 LLM 리뷰 실패 시 fallback |
 | `stray-guard.sh` | 무인 cron 런이 허용 범위 밖 파일을 건드리면 커밋 경계 이전에 되돌림(radar/study=`runtime` 모드 / kb-sync=`kb` 모드). 안전 2차 방어선 |
 
 ### cron 자동화 (launchd)
@@ -165,6 +165,7 @@ obsidian_sync/
 - 모두 **anacron 패턴**(전원 꺼짐으로 놓친 슬롯을 로그인 시 보충) + 락 + 로그 로테이션.
 - 헤드리스 실행이라 **sonnet** 티어 사용(비용 레버).
 - `study-coach`는 멀티 머신용: 시작 시 vault를 `git pull --ff-only`하고, `study-state.md`의 `last_brief_date`로 두 Mac 중복 검토를 막는다(stamp는 기기별). 회사 Mac에서 무인 검토를 원치 않으면 그 Mac엔 설치하지 말고 `/study-coach review`를 수동 실행하면 된다.
+- **한도 내성**: LLM 리뷰가 사용 한도·네트워크로 실패해도, wrapper가 `study-brief.py --brief-only`로 오늘 브리핑을 **항상** 생성한다(0-LLM). 이때 `last_brief_date`는 그대로라 stamp도 안 올라가므로, 한도 리셋 후 재로그인/다음 슬롯에서 LLM 채점이 재시도된다(브리핑은 멱등이라 중복 안 남).
 - 제거: `launchctl bootout "gui/$(id -u)/com.$(id -un).<작업명>"` + plist 삭제.
 
 ---

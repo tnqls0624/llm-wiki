@@ -970,6 +970,38 @@ class TestStudyBrief(unittest.TestCase):
         self._run(d, "--force")
         self.assertTrue(os.path.exists(self._today(d)), "--force는 멱등 무시하고 재생성")
 
+    def test_brief_only_writes_today_but_not_stamp(self):
+        # --brief-only(cron fallback): study-today.md는 쓰되 last_brief_date 멱등 키는 안 건드려야.
+        # 그래야 한도 리셋 후 재시도가 LLM 채점을 다시 수행할 수 있다.
+        import datetime
+        old = "2000-01-01"
+        state = self.STATE_FIXTURE.replace("last_brief_date= ", f"last_brief_date={old} ")
+        d = self._vault(state)
+        p = self._run(d, "--brief-only")
+        self.assertEqual(p.returncode, 0, p.stderr)
+        today = datetime.date.today().isoformat()
+        self.assertIn(f"date={today}", _read(self._today(d)), "브리핑은 오늘 날짜로 생성돼야")
+        self.assertIn(f"last_brief_date={old}", self._state_text(d),
+                      "--brief-only는 last_brief_date를 갱신하면 안 됨(멱등 키 보존)")
+        self.assertNotIn(f"last_brief_date={today}", self._state_text(d))
+
+    def test_brief_only_overrides_same_day_idempotency(self):
+        # positive control: --brief-only는 last_brief_date==today여도 항상 재생성(멱등 no-op 건너뜀).
+        import datetime
+        today = datetime.date.today().isoformat()
+        state = self.STATE_FIXTURE.replace("last_brief_date= ", f"last_brief_date={today} ")
+        d = self._vault(state)
+        p = self._run(d, "--brief-only")
+        self.assertNotIn("already briefed", p.stdout, "--brief-only는 멱등 no-op 하면 안 됨")
+        self.assertTrue(os.path.exists(self._today(d)), "--brief-only는 항상 브리핑 재생성")
+
+    def test_cron_wrapper_has_brief_only_fallback(self):
+        # wrapper 계약: LLM 리뷰 실패 시 study-brief.py --brief-only로 브리핑을 보장하는 fallback이 존재해야.
+        # (silent regression 방지 — 이 줄이 사라지면 한도 소진일에 브리핑이 다시 6-30에 고착된다.)
+        wrapper = _read(os.path.join(CLAUDE, "study-coach-cron.sh"))
+        self.assertIn("study-brief.py", wrapper)
+        self.assertIn("--brief-only", wrapper, "cron wrapper에 --brief-only fallback 호출이 있어야")
+
     def test_dry_run_does_not_touch_state(self):
         d = self._vault(self.STATE_FIXTURE)
         before = self._state_text(d)

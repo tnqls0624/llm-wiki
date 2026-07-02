@@ -97,9 +97,17 @@ cd "$VAULT" || exit 0
   # auto-commit/push 전에 되돌린다(동의 없는 생성물 차단). ai-infra-lab은 별도 repo라 vault git status에 안 잡힘.
   bash "$VAULT/.claude/stray-guard.sh" runtime
 
+  # LLM 리뷰가 어떤 이유로든(사용 한도·네트워크) 오늘 브리핑을 못 냈으면 0-LLM 엔진으로 직접 보장.
+  # study-brief.py --brief-only는 last_brief_date를 안 건드려, 한도 리셋 후 재시도가 채점을 재수행할 수 있다.
+  # rc 무관하게 "오늘 날짜 브리핑 존재?"로 게이트 → 실패 케이스에서만 발동(성공 시 중복 overwrite 없음).
+  if ! grep -q "date=$(date +%F)" "$TODAY_FILE" 2>/dev/null; then
+    python3 "$VAULT/.claude/study-brief.py" --brief-only && echo "(fallback: study-brief.py로 오늘 브리핑 생성 — LLM 리뷰 실패/스킵)"
+  fi
+
   # macOS 알림: 오늘 브리핑 한 줄(brief.py --notify-line은 멱등이라 이미 생성됨 → state에서 다시 못 뽑음)을
   # study-today.md 본문 "오늘 할 것" 라인에서 추출해 표시. GUI 세션(launchd Aqua)이라 알림 노출됨.
-  if [ "$rc" -eq 0 ] && [ -f "$TODAY_FILE" ]; then
+  # 게이트는 rc가 아니라 "오늘 브리핑 존재?" — LLM 성공/ fallback 어느 경로든 오늘 브리핑이 있으면 알린다.
+  if grep -q "date=$(date +%F)" "$TODAY_FILE" 2>/dev/null; then
     NOTE="$(grep -m1 '^\*\*W' "$TODAY_FILE" 2>/dev/null | sed 's/\*\*//g' | cut -c1-110)"
     [ -z "$NOTE" ] && NOTE="오늘의 학습 브리핑이 준비됐어요"
     osascript -e "display notification \"${NOTE//\"/\\\"}\" with title \"📚 AI Infra 학습\" sound name \"Glass\"" 2>/dev/null || true
