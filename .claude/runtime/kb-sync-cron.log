@@ -22,3 +22,5 @@ Failed to authenticate. API Error: 401 Invalid authentication credentials
 === [2026-06-29 09:07:05] kb-sync run start ===
 Failed to authenticate. API Error: 401 Invalid authentication credentials
 === [2026-06-29 09:07:13] exit=1 ===
+=== [2026-07-02 09:11:38] kb-sync run start ===
+You've hit your session limit · resets 1:50pm (Asia/Seoul)

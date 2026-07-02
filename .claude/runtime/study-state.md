@@ -135,3 +135,8 @@
 - 잘한 점: `import torch 2.12.1 / cuda False`를 log.md에 명확히 기록. GPU 없는 CPU=정상이라는 점을 "블록2 EKS GPU에서 True로 바뀜"까지 연결해 이해한 게 좋음. README도 작성해 W1 주말 항목(디렉토리 설명)을 일부 선취.
 - 고칠 점: D2·D3을 한 로그 항목에 묶음 — 진도 추적엔 무방하나 앞으로 항목별 분리하면 회고가 또렷. README의 "환경 재현" 섹션은 실제 클린 체크아웃에서 한 번 돌려 검증해두면 주말 항목에 그대로 쓰임.
 - 다음 주의: 주말 항목은 README 외에 "새 터미널 venv 활성화 → import 성공"까지 확인해야 완료(주말에). D4는 **코드 산출물(예제 .py)이 처음 생기는 항목** — `training/` 또는 `notebooks/`에 두고 커밋.
+
+### 2026-07-01 — 새 산출물 없음
+- 마지막 검토(6-30) 이후 ai-infra-lab에 새 커밋 없음(마지막 커밋 6-30 13:50 README). 진도 그대로 W1 D3까지 유지 — 억지 체크 안 함.
+- 상태: tracked 파일은 `.gitignore`·`README.md`·`docs/log.md`·`requirements.txt` 4개. `training/`·`notebooks/`에 아직 `.py`/`.ipynb` 산출물 없음 → D4가 첫 코드 커밋 지점.
+- 다음 주의: D4(comprehension·f-string·타입힌트 예제 .py 1개)를 커밋해야 진도가 나간다. 30~40분이면 충분 — 짧은 예제라도 `training/`에 두고 커밋하는 습관을 이어갈 것.
