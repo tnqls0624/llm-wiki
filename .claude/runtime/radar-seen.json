@@ -469,7 +469,7 @@
   "devto:4021575": "2026-07-03",
   "devto:4008877": "2026-07-03",
   "gh:crisnahine/chameleon": "2026-07-04",
-  "gh:26zl/cybersec-toolkit": "2026-07-04",
+  "gh:26zl/cybersec-toolkit": "2026-07-03",
   "gh:kahliburke/Kaimon.jl": "2026-07-04",
   "gh:Frisher1/ClaudeCode-Workflow-Lab": "2026-07-04",
   "gh:Sakshxm1/hermes-agency-orchestrator": "2026-07-04",
@@ -521,6 +521,15 @@
   "npm:hyper-animator": "2026-07-06",
   "devto:4033058": "2026-07-06",
   "devto:4021573": "2026-07-06",
-  "npm:@hmanlab/mmx-claude": "2026-07-06"
+  "npm:@hmanlab/mmx-claude": "2026-07-06",
+  "gh:ai-agents-for-agencies-coaches/fb-ad-video-studio": "2026-07-03",
+  "gh:griffinwork40/agent-afk": "2026-07-03",
+  "gh:hesreallyhim/awesome-claude-code": "2026-07-03",
+  "hn:48762040": "2026-07-03",
+  "hn:48760834": "2026-07-03",
+  "hn:48759754": "2026-07-03",
+  "hn:48746915": "2026-07-03",
+  "hn:48746839": "2026-07-03",
+  "hn:48745590": "2026-07-03"
  }
 }
