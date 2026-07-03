@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-07-02T09:31:44",
+ "updated": "2026-07-03T09:17:22",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -441,6 +441,32 @@
   "devto:3977922": "2026-07-02",
   "npm:fenix-claude-plugin": "2026-07-02",
   "npm:@intentsolutionsio/openrouter-pack": "2026-07-02",
-  "npm:@nometria-ai/claude-code": "2026-07-02"
+  "npm:@nometria-ai/claude-code": "2026-07-02",
+  "gh:bhargavamin/contexer": "2026-07-03",
+  "gh:Magma1321/mythos-agent-pipe": "2026-07-03",
+  "gh:CoderLuii/HolyClaude": "2026-07-03",
+  "gh:1iry/multi-agent-architecture-advisor": "2026-07-03",
+  "gh:automagik-dev/genie": "2026-07-03",
+  "gn:https://news.hada.io/topic?id=31062": "2026-07-03",
+  "hn:48768400": "2026-07-03",
+  "hn:48767874": "2026-07-03",
+  "hn:48765630": "2026-07-03",
+  "hn:48764800": "2026-07-03",
+  "hn:48764013": "2026-07-03",
+  "hn:48763592": "2026-07-03",
+  "hn:48763253": "2026-07-03",
+  "hn:48762862": "2026-07-03",
+  "ghrel:v2.1.199": "2026-07-03",
+  "gh:KarpelesLab/teamclaude": "2026-07-03",
+  "gh:marckrenn/claude-code-changelog": "2026-07-03",
+  "gn:https://news.hada.io/topic?id=31046": "2026-07-03",
+  "gn:https://news.hada.io/topic?id=31035": "2026-07-03",
+  "devto:4054238": "2026-07-03",
+  "npm:@co-engram/claude-code": "2026-07-03",
+  "devto:4043909": "2026-07-03",
+  "devto:4033308": "2026-07-03",
+  "devto:4033313": "2026-07-03",
+  "devto:4021575": "2026-07-03",
+  "devto:4008877": "2026-07-03"
  }
 }
