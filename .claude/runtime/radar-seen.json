@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-07-03T09:17:22",
+ "updated": "2026-07-04T09:17:23",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -467,6 +467,31 @@
   "devto:4033308": "2026-07-03",
   "devto:4033313": "2026-07-03",
   "devto:4021575": "2026-07-03",
-  "devto:4008877": "2026-07-03"
+  "devto:4008877": "2026-07-03",
+  "gh:crisnahine/chameleon": "2026-07-04",
+  "gh:26zl/cybersec-toolkit": "2026-07-04",
+  "gh:kahliburke/Kaimon.jl": "2026-07-04",
+  "gh:Frisher1/ClaudeCode-Workflow-Lab": "2026-07-04",
+  "gh:Sakshxm1/hermes-agency-orchestrator": "2026-07-04",
+  "gh:AThevon/TokenEater": "2026-07-04",
+  "gh:mixpeek/amux": "2026-07-04",
+  "gn:https://news.hada.io/topic?id=31099": "2026-07-04",
+  "gn:https://news.hada.io/topic?id=31097": "2026-07-04",
+  "hn:48780858": "2026-07-04",
+  "hn:48779068": "2026-07-04",
+  "hn:48778710": "2026-07-04",
+  "hn:48778176": "2026-07-04",
+  "hn:48777790": "2026-07-04",
+  "hn:48776842": "2026-07-04",
+  "hn:48774615": "2026-07-04",
+  "hn:48774579": "2026-07-04",
+  "ghrel:v2.1.201": "2026-07-04",
+  "ghrel:v2.1.200": "2026-07-04",
+  "gn:https://news.hada.io/topic?id=31080": "2026-07-04",
+  "devto:4047940": "2026-07-04",
+  "npm:nextjs-cicd-skill": "2026-07-04",
+  "devto:4033303": "2026-07-04",
+  "devto:4022348": "2026-07-04",
+  "devto:4021597": "2026-07-04"
  }
 }
