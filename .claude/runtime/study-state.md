@@ -115,3 +115,8 @@
   3) `torch.load(path)` → 최신 PyTorch는 `weights_only=True` 권장(pickle 역직렬화 보안 경고 회피). state_dict 로드엔 안전한 옵션.
   4) 죽은 주석(`# raise NotImplementedError(...)`) 잔존 — 구현 끝나면 삭제.
 - 다음 주의: test_loader를 만들지만 정확도 평가는 없음(Block 0 범위상 무방). W2 D3부터는 코드가 아니라 Linux/Docker 감각 — `docker run -it ubuntu`에서 top/권한/journalctl을 직접 만져보고 log.md에 "새로 안 것 3개" 남기기가 완료 기준. 병행 중인 수학(함수/이차함수/지수로그)은 좋은 방향.
+
+### 2026-07-05 (저녁 재검토)
+- 새 커밋 1개: `697a024` docs/log.md W1 D5 회고(세션 마감 4형식 준수) — 아침 검토에 이미 반영된 내용의 커밋화. 코드 변경 없음 → 체크 변동 없음.
+- 세션 관찰: **졸업 시험 예측 1번을 실전 수행** — 네트워크 차단 후 실행해 torchvision이 밑바닥 OSError(URLError←gaierror)를 `RuntimeError`로 재포장해 던지는 것을 traceback으로 직접 확인(`except OSError` 미포착 → unhandled로 exit 1). "라이브러리 예외 계약은 목격으로 안다"를 체득한 좋은 실험. batch 의미(938 vs 235 = 60,000÷batch_size)와 `return 1`→`sys.exit(main())` 종료 흐름도 세션에서 확립.
+- 다음 주의: **exit code 수정(`return 1`)·`--device` 플래그·예측 2·3번이 아직 미커밋** — 월요일 워밍업으로 커밋하면 다음 검토에서 채점. 이후 D3(Linux 기본, `docker run -it ubuntu`) 진입.
