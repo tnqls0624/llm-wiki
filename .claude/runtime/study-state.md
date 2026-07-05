@@ -1,4 +1,4 @@
-<!-- study-state v1 | block=0 | last_brief_date=2026-06-30 | repo_path=~/Desktop/Project/ai-infra-lab -->
+<!-- study-state v1 | block=0 | last_brief_date=2026-07-05 | repo_path=~/Desktop/Project/ai-infra-lab -->
 <!--
   AI Infra 학습 진도 정본. git 추적됨 → 두 Mac(회사/집)이 push/pull로 공유.
   study-brief.py(무인 cron)가 이 파일을 읽어 요일별 다음 미완료 항목 + 그 아래 들여쓴 학습 가이드를
@@ -13,7 +13,7 @@
 # AI Infra 학습 진도 — 인프라 빌더 트랙 (Block 0~6)
 
 **정본 커리큘럼**: `ai-infra-lab/ROADMAP.md` (2026-07-02 v3 확정 — 학습 우선, 블랙웰 특화는 부록 A/B).
-**현재**: Block 0 (기초 최소화) — 통합 산출물 `python/train_mnist.py`를 S2→S5 순서로 증분 완성 중.
+**현재**: 🎉 Block 0 완료(2026-07-05 — `python/train_mnist.py` S2~S5 전 파이프라인 `--epochs 1` 동작 검증). W2 후반(D3~) Linux/Docker = Block 1 진입 중.
 **주차↔블록**: W1~2=Block 0 · W3~4=Block 1(컨테이너) · W5~7=Block 2(GPU/CUDA) · W8~10=Block 3(서버·네트워크) · W11~12=Block 4(K8s) · W13~16=Block 5(서빙&학습) · W17~19=Block 6(관측성) + 버퍼 3주.
 
 ## W1 — 환경 + repo 척추 + 로드맵 확정 [Block 0]
@@ -28,21 +28,21 @@
   - ✅ 완료: 버전 + False 출력 확인, docs/log.md에 기록
 - [x] [평일] D4: 파이썬 문법 예제(f-string·타입힌트) — `python/W1D4/practice.py` 커밋
   - 참고: ROADMAP v3 전환으로 문법 드릴 방식 종결 — comprehension 등 나머지는 train_mnist.py 작성 중 자연 습득
-- [ ] [평일] D5: `train_mnist.py` **S2 — load_data() 구현** (MNIST 다운로드 → DataLoader)
+- [x] [평일] D5: `train_mnist.py` **S2 — load_data() 구현** (MNIST 다운로드 → DataLoader)
   - 🎯 개념: Dataset/DataLoader = 학습 데이터 공급 파이프라인, transform(ToTensor: 이미지→0~1 텐서)
   - 📖 자료: `python/train_mnist.py`의 S2 docstring 힌트 3단계 (그대로 따라가면 됨)
   - ✅ 완료: `python python/train_mnist.py` 실행 시 data/ 다운로드 후 "S3" 안내가 뜨고, 구현 커밋됨
   - ⚠️ 막히면: import 에러 → venv 활성화(`which python`) 확인. 다운로드 실패 → 네트워크 확인 후 재실행
-- [ ] [주말] `train_mnist.py` **S3 — SimpleNet(nn.Module) 구현** + S1 코드 정독
+- [x] [주말] `train_mnist.py` **S3 — SimpleNet(nn.Module) 구현** + S1 코드 정독
   - 🎯 개념: nn.Module 클래스와 super().__init__(), Flatten→Linear→ReLU→Linear 구조. S1의 argparse/logging이 왜 인프라 도구의 골격인지
   - ✅ 완료: 실행 시 "S4" 안내가 뜨고 커밋됨 + log.md에 argparse/logging 요점 3줄
 
 ## W2 — Block 0 완료 → Block 1 진입
-- [ ] [평일] D1: `train_mnist.py` **S4 — train() 학습 루프 구현**
+- [x] [평일] D1: `train_mnist.py` **S4 — train() 학습 루프 구현**
   - 🎯 개념: 학습 루프 5박자(zero_grad→forward/loss→backward→step→log), 데이터도 `.to(device)` 해야 하는 이유
   - 📖 자료: S4 docstring 힌트 (루프 골격 그대로 제공됨)
   - ✅ 완료: `--epochs 1` 학습이 돌고 loss가 로그에 찍힘, 커밋
-- [ ] [평일] D2: **S5 — 모델 저장/재로드 + 예외처리** → 🎉 Block 0 완료 기준 충족
+- [x] [평일] D2: **S5 — 모델 저장/재로드 + 예외처리** → 🎉 Block 0 완료 기준 충족
   - 🎯 개념: state_dict 저장/로드, try/except로 "무엇이 왜 실패했는지" 구분하는 인프라 코드 기본기
   - ✅ 완료: models/mnist.pt 저장→재로드 성공, 전체 파이프라인 무오류 실행, 커밋
 - [ ] [평일] D3: Linux 기본 — `docker run -it ubuntu`에서 top/권한/패키지/journalctl 감잡기 (Docker Desktop/OrbStack 설치 겸)
@@ -106,3 +106,12 @@
 - 대형 변화: **ROADMAP.md v3 확정**(7블록 인프라 빌더 트랙, 학습 우선 — 블랙웰 특화는 부록 A/B) + `python/train_mnist.py` 스캐폴드 커밋(S1 완성, S2~S5 TODO). 이 study-state를 v3 구조(W1~19 ↔ Block 0~6)로 재편 — 완료 이력(D1~D4)과 검토 로그는 보존.
 - 운영 메모: 09:30 자동 리뷰가 세션 한도(resets 14:10)로 실패 → 16:53 --force 재실행으로 복구. 폴백 브리핑(study-brief.py)은 정상 동작했음.
 - 다음: W1 D5 = train_mnist.py **S2(load_data) 구현** — S2 docstring 힌트 3단계 참고. 집에서 진행 예정(양 repo pull 잊지 말 것).
+
+### 2026-07-05 — W1 D5 + 주말 + W2 D1·D2 ✅ (S2~S5 완주 → 🎉 Block 0 완료)
+- 잘한 점: 하루 세션에서 S2(load_data)만 예정이었으나 **S3~S5까지 완주**해 train_mnist.py 전 파이프라인을 `--epochs 1`로 실행 검증. DataLoader vs Dataset 반환 버그를 스스로 발견·수정했고, batch 64 vs 256 실험으로 "총 연산량은 같고 업데이트 횟수(938 vs 235)가 loss에 영향"을 직접 관찰 — 복붙이 아닌 CS 이해 목표에 정확히 부합. y=wx+b 선형대수 직관까지 병행 학습.
+- 고칠 점(구체):
+  1) **`main()` 종료 코드 버그** — `except OSError` 브랜치가 bare `return`(→ None)이라 `sys.exit(None)`=exit 0. 즉 I/O 실패인데 성공(0)으로 종료됨. 인프라 코드는 실패를 **exit code로** 알려야 함 → `return 1`. `NotImplementedError` 브랜치도 마찬가지, `-> int` 시그니처와도 불일치.
+  2) **세미콜론** — D4 리뷰에서 지적한 습관이 S2~S5 전반에 다시 등장(`tf = ...;`). Python은 불필요 — 커밋 전 제거 습관.
+  3) `torch.load(path)` → 최신 PyTorch는 `weights_only=True` 권장(pickle 역직렬화 보안 경고 회피). state_dict 로드엔 안전한 옵션.
+  4) 죽은 주석(`# raise NotImplementedError(...)`) 잔존 — 구현 끝나면 삭제.
+- 다음 주의: test_loader를 만들지만 정확도 평가는 없음(Block 0 범위상 무방). W2 D3부터는 코드가 아니라 Linux/Docker 감각 — `docker run -it ubuntu`에서 top/권한/journalctl을 직접 만져보고 log.md에 "새로 안 것 3개" 남기기가 완료 기준. 병행 중인 수학(함수/이차함수/지수로그)은 좋은 방향.
