@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-07-06T09:17:16",
+ "updated": "2026-07-06T09:30:23",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -536,6 +536,15 @@
   "gh:TexasBedouin/vibe-check": "2026-07-06",
   "gh:JasonColapietro/suede-creator-skills": "2026-07-06",
   "gh:jgravelle/jcodemunch-mcp": "2026-07-06",
-  "gh:777genius/agent-teams-ai": "2026-07-06"
+  "gh:777genius/agent-teams-ai": "2026-07-06",
+  "gh:lyonzin/knowledge-rag": "2026-07-06",
+  "hn:48791474": "2026-07-06",
+  "hn:48791105": "2026-07-06",
+  "hn:48790887": "2026-07-06",
+  "hn:48785485": "2026-07-06",
+  "hn:48784795": "2026-07-06",
+  "hn:48784569": "2026-07-06",
+  "hn:48784250": "2026-07-06",
+  "hn:48783001": "2026-07-06"
  }
 }
