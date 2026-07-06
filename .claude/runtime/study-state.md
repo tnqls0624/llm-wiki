@@ -1,4 +1,4 @@
-<!-- study-state v1 | block=0 | last_brief_date=2026-07-05 | repo_path=~/Desktop/Project/ai-infra-lab -->
+<!-- study-state v1 | block=0 | last_brief_date=2026-07-06 | repo_path=~/Desktop/Project/ai-infra-lab -->
 <!--
   AI Infra 학습 진도 정본. git 추적됨 → 두 Mac(회사/집)이 push/pull로 공유.
   study-brief.py(무인 cron)가 이 파일을 읽어 요일별 다음 미완료 항목 + 그 아래 들여쓴 학습 가이드를
@@ -121,3 +121,8 @@
 - 세션 관찰: **졸업 시험 예측 1번을 실전 수행** — 네트워크 차단 후 실행해 torchvision이 밑바닥 OSError(URLError←gaierror)를 `RuntimeError`로 재포장해 던지는 것을 traceback으로 직접 확인(`except OSError` 미포착 → unhandled로 exit 1). "라이브러리 예외 계약은 목격으로 안다"를 체득한 좋은 실험. batch 의미(938 vs 235 = 60,000÷batch_size)와 `return 1`→`sys.exit(main())` 종료 흐름도 세션에서 확립.
 - 다음 주의: **exit code 수정(`return 1`)·`--device` 플래그·예측 2·3번이 아직 미커밋** — 월요일 워밍업으로 커밋하면 다음 검토에서 채점. 이후 D3(Linux 기본, `docker run -it ubuntu`) 진입.
 - (심야 추가) 졸업 시험 진행: 예측 2번(models/ 권한 → torch.save의 EACCES→RuntimeError 재포장 + exit 0 버그 목격 → `return 1` 수정으로 exit=1 확인) 완료. **③ --device 완료 — 단 2회 실패 후 코치 제공 코드로 마감**(1차: 검사 없음+silent fallback / 2차: `pick_device.add_argument` 오타로 전 실행 즉사 — 셀프 실행 없이 리뷰 요청한 게 핵심 교훈). 인수 매트릭스 0/0/1/2 전부 통과. 냅킨 계산(101,770개·7B=28/14GB·13B fp16 26GB)은 공동 풀이. **재시험 2건 예약: 냅킨 3문 + pick_device 무힌트 재구현.** 잔여: ④ 예측 3번(.to(device) 함정, 예측 먼저) + 커밋(사용자 진행 중).
+
+### 2026-07-06 — 새 커밋 2개 검토, 체크 없음 (W2 D3 부분 진행)
+- 잘한 점: ① `8761381` exit code 숙제 이행 — 심야 검토 예고대로 `NotImplementedError`/`OSError` 브랜치를 `return 1`로 수정했고, `except (OSError, RuntimeError)` 확장은 "torchvision이 OSError를 RuntimeError로 재포장" 실험 결과를 근거로 연결한 정확한 수정(체크박스는 W2 D2 후속이라 변동 없음). ② `f8ce89f` W2 D3 착수 — `lscpu`·`top`·`free -m`·`df -h` 실행, 특히 "load average 최대치 ≈ 코어 수(11)" 통찰은 직접 관찰로 얻은 진짜 학습.
+- 부족하거나 고칠 점: ① **W2 D3 미체크 유지(확인 필요)** — (a) 컨테이너(`docker run -it ubuntu`) 안에서 실행했는지 log.md에 명시 없음 (b) 항목이 요구한 권한(chmod/sudo)·패키지(apt)·journalctl 미다룸 (c) "새로 안 것 3개" 형식 미충족(확실한 통찰은 load average 1개), 로그가 "다음에 할 것: 너가 적어줘"로 미완. notes 3파일 변경은 빈 줄 포매팅뿐. ② 세미콜론 습관이 수정 커밋에도 잔존(`logger.error(...);`) — **3번째 지적**, 커밋 전 자기 리뷰 체크리스트에 넣을 것.
+- 다음에 주의할 것: D3 마감 조건 — 컨테이너 **안에서** whoami/chmod/`apt update && apt install`/journalctl을 직접 실행(plain ubuntu 컨테이너엔 systemd가 없어 journalctl이 실패하는데, 그 실패 자체가 "컨테이너 ≠ 완전한 서버" 학습 포인트) 후 "새로 안 것 3개"를 log.md에 번호 목록으로 기록하면 체크. 그다음 D4(Block 0 회고 + 이미지/레이어/볼륨 개념) 진입.
