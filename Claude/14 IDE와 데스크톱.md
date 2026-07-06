@@ -1,8 +1,8 @@
 ---
 title: 14 IDE와 데스크톱
-updated: 2026-06-07
+updated: 2026-07-06
 type: reference
-sources: [vs-code, jetbrains, desktop, desktop-quickstart, platforms]
+sources: [vs-code, jetbrains, desktop, desktop-quickstart, platforms, desktop-linux]
 ---
 
 # 14 IDE와 데스크톱
@@ -392,11 +392,29 @@ networkingMode=mirrored
 | macOS | [Universal 빌드](https://claude.ai/api/desktop/darwin/universal/dmg/latest/redirect?utm_source=claude_code&utm_medium=docs) (Intel + Apple Silicon) |
 | Windows x64 | [setup 인스톨러](https://claude.ai/api/desktop/win32/x64/setup/latest/redirect?utm_source=claude_code&utm_medium=docs) |
 | Windows ARM64 | [ARM64 인스톨러](https://claude.ai/api/desktop/win32/arm64/setup/latest/redirect?utm_source=claude_code&utm_medium=docs) |
-| Linux | **미지원** — [[02 CLI 레퍼런스]]의 CLI 사용 |
+| Linux (베타) | Ubuntu 22.04+ / Debian 12+, x86_64·arm64. apt 저장소로 설치 — 아래 [Linux 베타](#linux-베타-desktop-linux) 참고 |
 
 - **구독 필요**: Pro, Max, Team, 또는 Enterprise.
 - **Windows 첫 실행 시 [Git for Windows](https://git-scm.com/downloads/win) 필요** — 설치 후 앱 재시작.
 - 데스크톱 앱에 Claude Code가 포함되어 Node.js·CLI 별도 설치 불필요. 터미널에서 `claude`를 쓰려면 CLI를 별도 설치([[01 시작하기]]).
+
+### Linux 베타 (desktop-linux)
+
+Ubuntu·Debian 계열에서 macOS·Windows와 동일한 Chat·Cowork·Code 세 탭을 제공한다(요구사항은 Ubuntu 22.04+ 또는 Debian 12+, x86_64/arm64 — 조건을 만족하는 다른 Debian 계열도 동작할 수 있으나 공식 테스트 대상은 아님).
+
+**설치**(apt 저장소 등록 — 이후 업데이트가 일반 시스템 패키지 업데이트로 도착):
+
+```bash
+sudo curl -fsSLo /usr/share/keyrings/claude-desktop-archive-keyring.asc https://downloads.claude.ai/claude-desktop/key.asc
+echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/claude-desktop-archive-keyring.asc] https://downloads.claude.ai/claude-desktop/apt/stable stable main" | sudo tee /etc/apt/sources.list.d/claude-desktop.list
+sudo apt update && sudo apt install claude-desktop
+```
+
+앱 런처에서 **Claude** 실행 또는 터미널에서 `claude-desktop`. 로그인은 macOS/Windows와 동일(구독 또는 조직 SSO) — **Console API 키로 직접 로그인 불가**, API 키 인증은 CLI를 쓴다. 저장소 없이 [claude.com/download](https://claude.com/download)의 `.deb`를 직접 설치할 수도 있으나(`sudo apt install ./claude-desktop_*.deb`) 이 경로는 apt 업데이트를 안 받는다.
+
+**업데이트**: `sudo apt update && sudo apt upgrade` (앱 자체 자동 업데이트 없음). **제거**: `sudo apt remove claude-desktop` (저장소 등록도 했다면 `/etc/apt/sources.list.d/claude-desktop.list` 별도 삭제).
+
+**Linux 베타에 아직 없는 것**: [Computer use](#claude에게-컴퓨터-사용-허용-computer-use)(앱·화면 제어), 음성 받아쓰기([[02 CLI 레퍼런스]]의 CLI로 대체), 네이티브 Wayland에서의 Quick Entry 전역 단축키(데스크톱 환경의 GlobalShortcuts portal 필요, X11은 동작), Fedora/RHEL 지원. 이 기능들이 필요하면 같은 엔진을 쓰는 CLI를 사용.
 
 ### 세 개의 탭
 
@@ -929,3 +947,4 @@ CLI가 터미널 네이티브 작업에 가장 완전(스크립팅·Agent SDK는
 - [desktop](https://code.claude.com/docs/en/desktop)
 - [desktop-quickstart](https://code.claude.com/docs/en/desktop-quickstart)
 - [platforms](https://code.claude.com/docs/en/platforms)
+- [desktop-linux](https://code.claude.com/docs/en/desktop-linux)
