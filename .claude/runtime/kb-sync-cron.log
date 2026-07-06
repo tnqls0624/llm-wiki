@@ -26,3 +26,5 @@ Failed to authenticate. API Error: 401 Invalid authentication credentials
 You've hit your session limit · resets 1:50pm (Asia/Seoul)
 === [2026-07-02 09:28:20] exit=1 ===
 === [2026-07-06 09:12:59] kb-sync run start ===
+Background tasks still running after 600s; terminating. Set CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS=0 to wait indefinitely.
+`kb-updater` 서브에이전트가 백그라운드에서 `Claude/27 게이트웨이.md`를 생성하는 중입니다. 완료되면 자동으로 알림을 받아 이어서 `hot.md` 갱신과 최종 검증(`kb-lint --online`, source-hashes)을 진행하겠습니다.
