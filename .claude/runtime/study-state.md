@@ -126,3 +126,8 @@
 - 잘한 점: ① `8761381` exit code 숙제 이행 — 심야 검토 예고대로 `NotImplementedError`/`OSError` 브랜치를 `return 1`로 수정했고, `except (OSError, RuntimeError)` 확장은 "torchvision이 OSError를 RuntimeError로 재포장" 실험 결과를 근거로 연결한 정확한 수정(체크박스는 W2 D2 후속이라 변동 없음). ② `f8ce89f` W2 D3 착수 — `lscpu`·`top`·`free -m`·`df -h` 실행, 특히 "load average 최대치 ≈ 코어 수(11)" 통찰은 직접 관찰로 얻은 진짜 학습.
 - 부족하거나 고칠 점: ① **W2 D3 미체크 유지(확인 필요)** — (a) 컨테이너(`docker run -it ubuntu`) 안에서 실행했는지 log.md에 명시 없음 (b) 항목이 요구한 권한(chmod/sudo)·패키지(apt)·journalctl 미다룸 (c) "새로 안 것 3개" 형식 미충족(확실한 통찰은 load average 1개), 로그가 "다음에 할 것: 너가 적어줘"로 미완. notes 3파일 변경은 빈 줄 포매팅뿐. ② 세미콜론 습관이 수정 커밋에도 잔존(`logger.error(...);`) — **3번째 지적**, 커밋 전 자기 리뷰 체크리스트에 넣을 것.
 - 다음에 주의할 것: D3 마감 조건 — 컨테이너 **안에서** whoami/chmod/`apt update && apt install`/journalctl을 직접 실행(plain ubuntu 컨테이너엔 systemd가 없어 journalctl이 실패하는데, 그 실패 자체가 "컨테이너 ≠ 완전한 서버" 학습 포인트) 후 "새로 안 것 3개"를 log.md에 번호 목록으로 기록하면 체크. 그다음 D4(Block 0 회고 + 이미지/레이어/볼륨 개념) 진입.
+
+### 2026-07-06 (밤 재검토) — 새 커밋 없음, 미커밋 log.md에서 D3 조작 실습 확인
+- 확인: docs/log.md **미커밋 수정**에서 저녁 피드백 즉시 이행 — 프롬프트 `root@1e001715902c:/#`가 **컨테이너 안 실행을 확정**(아침 '확인 필요' (a) 해소). chmod 400→600 실험(ls -l 출력 증거 포함), `apt update && apt install`, whoami/id, journalctl 시도→실패 목격, vmstat 1까지 — D3의 조작 요구사항 전부 수행됨.
+- 남은 것 2가지(체크는 보류): ① **"새로 안 것 3개"를 번호 목록으로 기록** — 지금은 명령 나열이라 "배운 것"이 없음. 특히 journalctl이 "왜" 실패했는지(PID 1=bash, systemd 부재 → 컨테이너 ≠ 완전한 서버)를 자기 말로 쓰는 게 핵심. ② **커밋** — 채점은 커밋 기준(두 Mac 동기화 전제). 둘 다 되면 다음 검토에서 체크.
+- 다음에 주의할 것: log.md의 "발생한 문제: 없음"인데 journalctl 실패는 문제였다 — 실패를 '발생한 문제/해결' 칸에 쓰는 습관이 트러블슈팅 기록의 시작(면접 소재도 여기서 나옴). "다음에 할 것: 너가 적어줘"는 study-today.md 브리핑이 그 답.
