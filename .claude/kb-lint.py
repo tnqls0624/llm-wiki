@@ -32,7 +32,8 @@ import urllib.error
 LLMS_TXT_URL = "https://code.claude.com/docs/llms.txt"
 FALLBACK_REQUIRED = ["title", "updated", "sources", "type"]
 FALLBACK_TYPES = ["reference", "explanation", "how-to", "tutorial", "moc"]
-EXCLUDE_DIR_NAMES = {".claude", ".codex", ".obsidian", ".git", ".agents", ".trash"}
+EXCLUDE_DIR_NAMES = {".claude", ".codex", ".obsidian", ".git", ".agents", ".trash",
+                     "Projects"}  # Projects/ = 사업 운영 워크스페이스, KB 콘텐츠 아님(hot.md 계약)
 MIN_BODY_CHARS = 50
 AGE_WARN_DAYS = 90  # updated가 이보다 오래되면 stale 후보(정보성 — exit code 미반영)
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")

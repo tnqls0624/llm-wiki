@@ -1088,16 +1088,15 @@ class TestKbLintCheckProjects(TestKbLintCheck):
         self.assertEqual(rc, 2, "Claude/ 노트는 여전히 검사돼야(positive control)")
 
 
-# ── 에이전트 직원 조직 (Projects/ 운영 체계)의 정적 계약 ───────────────
-class TestFounderOrg(unittest.TestCase):
-    """1인 사업 운영 조직: 직원 에이전트 7명 + 회의 커맨드 3개의 정적 계약.
-    실제 REPO 파일을 검사(임시 vault 아님) — 모델 티어·읽기전용 경계·사람결정 게이트가
-    automation-safety(durable 변경은 사람 동의 후)를 충족하는지 회귀 가드로 고정한다."""
-    AGENTS_DIR = os.path.join(CLAUDE, "agents")
-    CMDS_DIR = os.path.join(CLAUDE, "commands")
-    EMPLOYEES = ["founder-chief-of-staff", "market-researcher", "product-pm",
-                 "builder", "growth-marketer", "ops-finance", "red-team-critic"]
-    COUNCIL_CMDS = ["new-venture", "council", "weekly-review"]
+# ── 수빈 페르소나 3종 (agent/skill/rule)의 정적 계약 ───────────────────
+class TestSoobeenPersona(unittest.TestCase):
+    """페르소나 내장 산출물 3종의 정적 계약. 실제 REPO 파일을 검사(임시 vault 아님).
+    핵심 불변식: ① voice 에이전트는 초안만 반환(Write/Edit 금지) ② check 스킬은
+    ai-infra-lab 읽기 전용 ③ rule은 150줄 이하(매 세션 상시 토큰 비용) ④ 셋 다
+    대화형 전용 — 어떤 cron 래퍼에도 연결되지 않는다(automation-safety)."""
+    AGENT = os.path.join(CLAUDE, "agents", "soobeen-voice.md")
+    SKILL = os.path.join(CLAUDE, "skills", "soobeen-check", "SKILL.md")
+    RULE = os.path.join(CLAUDE, "rules", "soobeen-profile.md")
 
     def _fm(self, path):
         """파일에서 (frontmatter 텍스트, 전체 텍스트) 반환."""
@@ -1105,48 +1104,57 @@ class TestFounderOrg(unittest.TestCase):
         m = re.match(r"^---\n(.*?)\n---", txt, re.S)
         return (m.group(1) if m else ""), txt
 
-    def test_all_employee_agents_exist_with_frontmatter(self):
-        for name in self.EMPLOYEES:
-            p = os.path.join(self.AGENTS_DIR, name + ".md")
-            self.assertTrue(os.path.isfile(p), f"직원 에이전트 누락: {name}")
-            fm, _ = self._fm(p)
-            for field in ("name", "description", "tools", "model"):
-                self.assertRegex(fm, rf"(?m)^{field}:", f"{name} frontmatter에 {field} 필요")
-            self.assertRegex(fm, rf"(?m)^name:\s*{re.escape(name)}\s*$",
-                             f"{name}: frontmatter name이 파일명과 일치해야")
+    def test_agent_frontmatter_contract(self):
+        self.assertTrue(os.path.isfile(self.AGENT), "soobeen-voice 에이전트 누락")
+        fm, _ = self._fm(self.AGENT)
+        for field in ("name", "description", "tools", "model"):
+            self.assertRegex(fm, rf"(?m)^{field}:", f"frontmatter에 {field} 필요")
+        self.assertRegex(fm, r"(?m)^name:\s*soobeen-voice\s*$", "name이 파일명과 일치해야")
+        self.assertRegex(fm, r"(?m)^model:\s*sonnet\s*$", "글 초안은 sonnet(비용 계약)")
 
-    def test_all_council_commands_exist(self):
-        for name in self.COUNCIL_CMDS:
-            p = os.path.join(self.CMDS_DIR, name + ".md")
-            self.assertTrue(os.path.isfile(p), f"회의 커맨드 누락: {name}")
-            fm, _ = self._fm(p)
-            self.assertRegex(fm, r"(?m)^description:", f"{name}: description 필요")
+    def test_agent_draft_only_no_write(self):
+        # 경계 계약: 초안만 반환 — 파일 생성/게시 불가(발행은 메인 세션에서 사용자 승인 후)
+        fm, _ = self._fm(self.AGENT)
+        tools = re.search(r"(?m)^tools:\s*(.+)$", fm).group(1)
+        self.assertNotIn("Write", tools, "voice는 초안 반환만 — Write 금지")
+        self.assertNotIn("Edit", tools, "voice는 초안 반환만 — Edit 금지")
 
-    def test_model_tiers(self):
-        # 전략 판단(라우팅·비판)은 opus, 단순 집계는 haiku — 비용/오판 트레이드오프 계약
-        def model_of(name):
-            fm, _ = self._fm(os.path.join(self.AGENTS_DIR, name + ".md"))
-            m = re.search(r"(?m)^model:\s*(\S+)", fm)
-            return m.group(1) if m else None
-        self.assertEqual(model_of("red-team-critic"), "opus", "비판가는 opus(오판 비용 큼)")
-        self.assertEqual(model_of("founder-chief-of-staff"), "opus", "참모장은 opus(라우팅=전략)")
-        self.assertEqual(model_of("ops-finance"), "haiku", "운영재무는 haiku(단순 집계, 상시비용 절감)")
+    def test_agent_grounding_and_scrub(self):
+        # 창작 금지(실제 기록만 소재) + 민감정보 스크럽 절차가 본문에 고정돼야 한다
+        _, txt = self._fm(self.AGENT)
+        self.assertIn("docs/log.md", txt, "소스 계약(실제 기록만) 명시 필요")
+        self.assertIn("scrub-secrets.py", txt, "민감정보 스크럽 절차 명시 필요")
 
-    def test_critic_and_cos_read_only(self):
-        # 경계 계약: 비판가·참모장은 읽기 전용(Write/Edit 없음) — 깨기/라우팅만 하고 산출물은 안 만든다
-        for name in ("red-team-critic", "founder-chief-of-staff"):
-            fm, _ = self._fm(os.path.join(self.AGENTS_DIR, name + ".md"))
-            tools = re.search(r"(?m)^tools:\s*(.+)$", fm).group(1)
-            self.assertNotIn("Write", tools, f"{name}는 읽기 전용이어야(Write 금지)")
-            self.assertNotIn("Edit", tools, f"{name}는 읽기 전용이어야(Edit 금지)")
+    def test_skill_triggers(self):
+        self.assertTrue(os.path.isfile(self.SKILL), "soobeen-check 스킬 누락")
+        fm, _ = self._fm(self.SKILL)
+        self.assertRegex(fm, r"(?m)^name:\s*soobeen-check\s*$", "name이 디렉터리명과 일치해야")
+        desc = re.search(r"(?m)^description:\s*(.+)$", fm).group(1)
+        self.assertIn("마감 체크", desc, "트리거 문구가 description에 필요")
 
-    def test_human_decision_gate(self):
-        # 안전 계약: durable 기록(decisions.md)을 만드는 커맨드는 AskUserQuestion 사람 동의 게이트를
-        # 명시해야 한다(automation-safety: durable 변경은 사람 동의 후). prompt 문구를 기계적으로 고정.
-        for name in ("new-venture", "council"):
-            _, txt = self._fm(os.path.join(self.CMDS_DIR, name + ".md"))
-            self.assertIn("AskUserQuestion", txt, f"{name}: 사람 결정 게이트(AskUserQuestion) 명시 필요")
-            self.assertIn("decisions.md", txt, f"{name}: decisions.md 기록 절차 필요")
+    def test_skill_lab_read_only(self):
+        # 경계 계약: ai-infra-lab은 읽기 전용(study-coach 불변식과 동일) — 스킬이 수정·커밋하지 않는다
+        _, txt = self._fm(self.SKILL)
+        self.assertIn("읽기 전용", txt, "ai-infra-lab READ-ONLY 경계 명시 필요")
+
+    def test_rule_compact_and_maintained(self):
+        self.assertTrue(os.path.isfile(self.RULE), "soobeen-profile 룰 누락")
+        lines = _read(self.RULE).splitlines()
+        self.assertLessEqual(len(lines), 150, "상시 로드 룰은 150줄 이하(토큰 비용 계약)")
+        txt = "\n".join(lines)
+        for marker in ("①", "②", "③", "④", "⑤"):
+            self.assertIn(marker, txt, f"감시 목록 {marker} 필요")
+        self.assertIn("유지보수", txt, "감시 목록 갱신(유지보수) 조항 필요")
+
+    def test_interactive_only_not_wired_to_cron(self):
+        # 안전 계약: 페르소나 3종은 대화형 전용 — cron 래퍼/설치기가 참조하면 automation-safety 위반.
+        # positive control: 래퍼가 실제로 존재해야 이 가드가 살아있는 검사다.
+        wrappers = [f for f in os.listdir(CLAUDE)
+                    if f.endswith(".sh") and ("cron" in f or f.startswith("install-"))]
+        self.assertTrue(wrappers, "cron 래퍼가 하나도 안 보이면 이 가드 자체가 죽은 것(positive control)")
+        for w in wrappers:
+            self.assertNotIn("soobeen", _read(os.path.join(CLAUDE, w)),
+                             f"{w}: 페르소나 산출물은 무인 런에 연결 금지(대화형 전용)")
 
 
 

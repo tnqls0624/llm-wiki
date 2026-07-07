@@ -29,12 +29,12 @@ obsidian_sync/
 │   ├── 00 LLM Wiki 아키텍처와 OKF 자기진단.md
 │   └── Meta.md                  # MOC 허브
 ├── .claude/                     # 메커니즘: 포터블 프레임워크
-│   ├── commands/                # 슬래시 커맨드 7개
-│   ├── agents/                  # 서브에이전트 2개
-│   ├── skills/                  # 스킬 (kb-assistant)
-│   ├── rules/                   # 자동 로드 룰 2개
+│   ├── commands/                # 슬래시 커맨드 8개
+│   ├── agents/                  # 서브에이전트 3개
+│   ├── skills/                  # 스킬 (kb-assistant · soobeen-check)
+│   ├── rules/                   # 자동 로드 룰 3개
 │   ├── hooks/                   # 이벤트 훅 4개
-│   ├── tests/                   # 계약 테스트 (79 케이스)
+│   ├── tests/                   # 계약 테스트 (135 케이스)
 │   ├── runtime/                 # 휘발성 상태 (hot.md, 큐, ledger, 로그)
 │   ├── kb-required-fields.txt · kb-allowed-types.txt   # frontmatter 스키마 정본
 │   ├── *.py / *.sh              # 스크립트 + cron 래퍼/설치기 + stray-guard.sh
@@ -45,9 +45,9 @@ obsidian_sync/
 
 ---
 
-## ⌨️ 슬래시 커맨드 (7개)
+## ⌨️ 슬래시 커맨드 (8개)
 
-세션에서 `/<이름>`으로 호출한다. KB 관련 5개 + 생태계 자동화 2개.
+세션에서 `/<이름>`으로 호출한다. KB 관련 5개 + 자동화·점검 3개.
 
 | 커맨드 | 인자 | 용도 |
 |---|---|---|
@@ -99,28 +99,30 @@ obsidian_sync/
 
 ---
 
-## 🤖 서브에이전트 (2개)
+## 🤖 서브에이전트 (3개)
 
-격리 컨텍스트에서 도는 위임용 에이전트. `Agent` 도구의 `subagent_type`으로 호출되거나, 커맨드가 무거운 작업을 위임한다. 둘 다 비용 레버로 **sonnet**.
+격리 컨텍스트에서 도는 위임용 에이전트. `Agent` 도구의 `subagent_type`으로 호출되거나, 커맨드가 무거운 작업을 위임한다. 셋 다 비용 레버로 **sonnet**.
 
 | 에이전트 | 도구 | 용도 |
 |---|---|---|
 | `kb-guide` | Read·Grep·Glob (**읽기 전용**) | 여러 KB 노트에 흩어진 답을 격리 컨텍스트에서 모아 답변 + 근거 노트명만 반환 (메인 컨텍스트 오염 방지) |
 | `kb-updater` | Read·Write·Edit·Glob·Grep·Bash·WebFetch | 공식 문서 변경 반영·다중 노트 동시 갱신 등 무거운 KB 쓰기. 갱신 의무 ①(updated)·②(MOC)는 자기가 수행하되 **hot.md는 건드리지 않는다**(메인 세션 몫) |
+| `soobeen-voice` | Read·Grep·Glob·Bash (**Write/Edit 없음**) | 수빈 1인칭 목소리로 TIL·회고·README 서사 초안 작성. 소재는 실제 기록(ai-infra-lab `docs/log.md`·git log·검토 로그)만 — 창작 금지, 스크럽 후 **초안만 반환**(발행은 사용자 승인 후). 대화형 전용 |
 
 ---
 
-## 🧠 스킬 (1개)
+## 🧠 스킬 (2개)
 
 | 스킬 | 용도 |
 |---|---|
 | `kb-assistant` | 사용자의 KB 관련 의도("훅 어떻게 설정해", "문서 최신화", "이 글 정리해줘")를 감지해 올바른 kb-* 커맨드로 **라우팅** |
+| `soobeen-check` | 개인화 **세션 마감 체크**("마감 체크", "오늘 끝") — 감시 목록 ①~⑦(`soobeen-profile` 룰)을 git status·diff·log.md와 대조해 통과/미달 표 반환. ai-infra-lab 읽기 전용, 대화형 전용 |
 
 > 플러그인 marketplace로 설치된 다른 스킬(`data:*`, `figma:*`, `claude-mem:*` 등)은 이 프로젝트가 만든 것이 아니다. `/skill-audit --plugins`로 상시 비용을 점검할 수 있다.
 
 ---
 
-## 📐 룰 (2개 · 매 세션 자동 로드)
+## 📐 룰 (3개 · 매 세션 자동 로드)
 
 `.claude/rules/*.md`는 세션 시작 시 자동으로 컨텍스트에 주입된다. 충돌 시 `vault-rules.md`가 우선.
 
@@ -128,6 +130,7 @@ obsidian_sync/
 |---|---|
 | `vault-rules.md` | **핵심 운영 규칙 정본** — 구조(메커니즘/콘텐츠 분리), 노트 형식, 갱신 의무 3단계, 네비게이션 계층, lint, claude-radar |
 | `automation-safety-rules.md` | **무인/위임 자동화 가드레일** — 최소 권한, 신뢰 불가 입력 중립화, 다층 방어, 검증(테스트), 비용 |
+| `soobeen-profile.md` | **사용자 페르소나**(관찰 사실 기반, 증거 검증 2026-07-07) — 소통 계약, 감시 목록 ①~⑦, 코칭 원칙(검증 상태 표기). 검토 로그에 새 반복 패턴 2회↑ 등장 시 갱신 |
 
 ---
 
@@ -173,7 +176,7 @@ obsidian_sync/
 ## ✅ 테스트
 
 ```bash
-bash .claude/tests/run-tests.sh      # 79개 계약 테스트 (표준 라이브러리만, 의존성 0)
+bash .claude/tests/run-tests.sh      # 135개 계약 테스트 (표준 라이브러리만, 의존성 0)
 ```
 
 격리 임시 vault에서 모든 훅·스크립트를 실제 호출해 계약을 검증한다(silent-fail 회귀 방지). 새 메커니즘을 추가하면 `test_mechanisms.py`에 케이스를 더하는 것이 규칙이다.

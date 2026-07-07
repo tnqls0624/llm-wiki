@@ -23,8 +23,8 @@ norm = fp.replace("\\", "/")
 # (.agents 는 .claude 와 마찬가지로 메커니즘 — 스킬/에이전트 정의 SKILL.md, frontmatter가 name/description).
 if not fp or not norm.endswith(".md"):
     sys.exit(0)
-if any(seg in norm for seg in ("/.claude/", "/.agents/", "/.codex/", "/.obsidian/", "/.space/", "/.git/", "/.trash/")):
-    sys.exit(0)
+if any(seg in norm for seg in ("/.claude/", "/.agents/", "/.codex/", "/.obsidian/", "/.space/", "/.git/", "/.trash/", "/Projects/")):
+    sys.exit(0)  # Projects/ = 운영 워크스페이스, KB 노트 아님 — 배치 린터 EXCLUDE와 일치
 if not os.path.isfile(fp):
     sys.exit(0)
 
@@ -110,7 +110,7 @@ stripped = re.sub(r"`[^`\n]*`", "", stripped)
 pages = set()
 for p in glob.glob(os.path.join(vault_root, "**", "*.md"), recursive=True):
     pn = p.replace("\\", "/")
-    if any(seg in pn for seg in ("/.claude/", "/.agents/", "/.codex/", "/.obsidian/", "/.space/", "/.git/", "/.trash/")):
+    if any(seg in pn for seg in ("/.claude/", "/.agents/", "/.codex/", "/.obsidian/", "/.space/", "/.git/", "/.trash/", "/Projects/")):
         continue
     pages.add(os.path.splitext(os.path.basename(p))[0])
 for raw in re.findall(r"\[\[([^\]]+)\]\]", stripped):
