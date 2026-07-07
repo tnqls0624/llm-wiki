@@ -11,7 +11,7 @@
 > 피곤하면 10분 대안: 어제 셀/스크립트 1개 다시 실행 + 변수 1개 바꿔 결과 비교 후 커밋. 연속성만 유지.
 
 ## 어제 한 것 검토
-`/study-coach review` 실행 → 어제 산출물(`/Users/leesoobeen/Desktop/Project/ai-infra-lab`의 커밋·코드·docs/log.md)을 점검하고 진도를 체크합니다.
+`/study-coach review` 실행 → 어제 산출물(`/Users/soobeen/Desktop/Project/ai-infra-lab`의 커밋·코드·docs/log.md)을 점검하고 진도를 체크합니다.
 
 ## 세션 마감 형식
 ```
