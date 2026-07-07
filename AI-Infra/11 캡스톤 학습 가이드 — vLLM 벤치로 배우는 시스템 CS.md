@@ -4,6 +4,7 @@ updated: 2026-06-09
 sources:
   - https://docs.vllm.ai/en/stable/
   - https://arxiv.org/abs/2309.06180
+type: tutorial
 ---
 
 # 캡스톤 학습 가이드: vLLM 벤치 = 시스템 CS 실전
