@@ -107,7 +107,7 @@ obsidian_sync/
 |---|---|---|
 | `kb-guide` | Read·Grep·Glob (**읽기 전용**) | 여러 KB 노트에 흩어진 답을 격리 컨텍스트에서 모아 답변 + 근거 노트명만 반환 (메인 컨텍스트 오염 방지) |
 | `kb-updater` | Read·Write·Edit·Glob·Grep·Bash·WebFetch | 공식 문서 변경 반영·다중 노트 동시 갱신 등 무거운 KB 쓰기. 갱신 의무 ①(updated)·②(MOC)는 자기가 수행하되 **hot.md는 건드리지 않는다**(메인 세션 몫) |
-| `soobeen-voice` | Read·Grep·Glob·Bash (**Write/Edit 없음**) | 수빈 1인칭 목소리로 TIL·회고·README 서사 초안 작성. 소재는 실제 기록(ai-infra-lab `docs/log.md`·git log·검토 로그)만 — 창작 금지. 개념 글이면 **이해용 도식(SVG) + 원본 자료 인용을 빌드 섹션에 함께 emit**(파일화·래스터화는 메인 세션 `blog-assets.py` 몫). 스크럽 후 **초안만 반환**(발행은 사용자 승인 후). 대화형 전용 |
+| `soobeen-voice` | Read·Grep·Glob·Bash (**Write/Edit 없음**) | 수빈 1인칭 목소리로 TIL·회고·README 서사 초안 작성. 소재는 실제 기록(ai-infra-lab `docs/log.md`·git log·검토 로그)만 — 창작 금지. 이미지가 필요하면 본문에 **번호 플레이스홀더 `[사진 N]`**(인용 블록 콜아웃) + 상단 이미지 목록만 남긴다 — Tistory 로컬경로 첨부 실패 회피용. 실제 이미지는 사용자가 `N. 이름.png`로 저장해 직접 업로드(Claude는 생성·materialize 안 함). 스크럽 후 **초안만 반환**(발행은 사용자 승인 후). 대화형 전용 |
 
 ---
 
@@ -156,7 +156,6 @@ obsidian_sync/
 | `scrub-secrets.py` | 크리덴셜 탐지·마스킹 코어(GitHub PAT·AWS·OpenAI·Anthropic 등). ingest 시 1차 방어 |
 | `radar-collect.py` | claude-radar 수집 엔진(0-LLM, 결정론적). 10개 채널 → dedup → JSON |
 | `study-brief.py` | study-coach 아침 브리핑 엔진(0-LLM, 결정론적). `study-state.md` 읽어 요일별 다음 미완료 항목 **+ 항목 하위 학습 가이드(개념·자료·완료기준·막히면)** → `study-today.md`. 날짜 멱등(`--check`/`--dry-run`/`--force`/`--brief-only`). `--brief-only`는 브리핑만 쓰고 `last_brief_date`는 안 건드림 — cron의 LLM 리뷰 실패 시 fallback |
-| `blog-assets.py` | 블로그 초안의 도식/이미지 materialize(0-LLM, 결정론적). soobeen-voice가 emit한 빌드 섹션 → SVG 파일 write + **XML well-formed 검증(깨지면 exit 3)** + **SVG→PNG 래스터화**(Tistory 호환: cairosvg→rsvg-convert→Chrome→qlmanage) + 본문 `![]()` 참조 정규화 + 미해결 참조 loud fail(exit 4). 원본 이미지는 **기본 출처 링크 인용**(저작권 안전), `--fetch-sources`일 때만 다운로드. **메인 세션이 실행**(agent·cron 아님). `--check`/`--outdir`/`--in-place`/`--raster none` |
 | `stray-guard.sh` | 무인 cron 런이 허용 범위 밖 파일을 건드리면 커밋 경계 이전에 되돌림(radar/study=`runtime` 모드 / kb-sync=`kb` 모드). 안전 2차 방어선 |
 
 ### cron 자동화 (launchd)

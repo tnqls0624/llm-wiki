@@ -1089,99 +1089,6 @@ class TestKbLintCheckProjects(TestKbLintCheck):
 
 
 # ── 수빈 페르소나 3종 (agent/skill/rule)의 정적 계약 ───────────────────
-# ── blog-assets.py (블로그 초안 도식/이미지 materialize 엔진) ──────────
-BLOG_ASSETS = os.path.join(CLAUDE, "blog-assets.py")
-
-
-class TestBlogAssets(unittest.TestCase):
-    """blog-assets.py 계약: SVG well-formed 검증(깨지면 loud fail) + 본문 참조 정규화 +
-    빌드 섹션 스트립 + 원본 이미지는 기본 다운로드 안 함(저작권 안전) + 미해결 참조 loud fail.
-    래스터라이저(Chrome 등)는 이식성 위해 쓰지 않는다 → --raster none / --check로 계약만 검증.
-    silent-fail 위험(참조 깨짐·SVG 파손) → 음성·양성 컨트롤 모두 둔다."""
-
-    GOOD = (
-        "# 제목\n\n도입.\n\n"
-        "![그림1](assets/s/01-a.png)\n\n본문.\n\n"
-        "![원본](assets/s/02-src.png)\n\n## 끝\n\n"
-        "<!-- BLOG-ASSETS BUILD (test) -->\n\n"
-        "<!-- FIGURE: assets/s/01-a -->\n"
-        "```svg\n"
-        '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="60" viewBox="0 0 120 60">'
-        '<rect width="120" height="60" fill="#fff"/>'
-        '<text x="10" y="30" font-family="Helvetica" font-size="14">A</text></svg>\n'
-        "```\n\n"
-        "<!-- SOURCE-IMAGE: assets/s/02-src | https://example.com/x.png | Example, CC BY -->\n"
-    )
-
-    def _draft(self, text):
-        d = tempfile.mkdtemp(prefix="blog_")
-        self.addCleanup(shutil.rmtree, d, ignore_errors=True)
-        p = os.path.join(d, "post.md")
-        _write(p, text)
-        return d, p
-
-    def _run(self, draft, *args):
-        return subprocess.run(["python3", BLOG_ASSETS, draft, *args],
-                              capture_output=True, text=True)
-
-    def test_check_ok(self):
-        _, p = self._draft(self.GOOD)
-        r = self._run(p, "--check")
-        self.assertEqual(r.returncode, 0, r.stderr)
-        self.assertIn("check ok", r.stdout)
-
-    def test_malformed_svg_fails_loud_no_write(self):
-        # 음성 컨트롤: 깨진 SVG는 exit 3 + 파일 미생성(silent-pass 금지)
-        bad = self.GOOD.replace("</text></svg>", "</text>")  # 닫는 태그 어긋남
-        d, p = self._draft(bad)
-        r = self._run(p, "--outdir", os.path.join(d, "out"))
-        self.assertEqual(r.returncode, 3, r.stdout + r.stderr)
-        self.assertFalse(os.path.exists(os.path.join(d, "out")),
-                         "SVG 검증 실패 시 어떤 파일도 쓰지 않아야")
-
-    def test_unresolved_ref_fails(self):
-        # 선언(FIGURE/SOURCE) 없고 실제 파일도 없는 참조 → exit 4
-        d, p = self._draft("# x\n\n![없음](assets/s/99-missing.png)\n")
-        r = self._run(p, "--check")
-        self.assertEqual(r.returncode, 4, r.stdout + r.stderr)
-
-    def test_materialize_writes_svg_and_normalizes_ref(self):
-        # 양성 컨트롤: SVG 파일 생성 + 본문 .png 참조가 실제 생성 포맷(.svg)으로 정규화 + 빌드 섹션 스트립
-        d, p = self._draft(self.GOOD)
-        out = os.path.join(d, "out")
-        r = self._run(p, "--outdir", out, "--raster", "none")
-        self.assertEqual(r.returncode, 0, r.stderr)
-        svg = os.path.join(out, "assets", "s", "01-a.svg")
-        self.assertTrue(os.path.exists(svg), "SVG 파일이 생성돼야")
-        self.assertIn("<svg", _read(svg))
-        body = _read(os.path.join(out, "post.md"))
-        self.assertIn("assets/s/01-a.svg)", body, "png 참조가 실제 포맷(.svg)으로 정규화돼야")
-        self.assertNotIn("01-a.png)", body)
-        self.assertNotIn("BLOG-ASSETS BUILD", body, "빌드 섹션은 발행 본문에서 제거돼야")
-        self.assertNotIn("<svg", body, "SVG 소스는 발행 본문에 남으면 안 됨")
-
-    def test_source_image_cite_only_no_download(self):
-        # 저작권 안전 계약: --fetch-sources 없으면 원본을 다운로드하지 않고 링크 인용으로 변환 + SOURCES.md 기록
-        d, p = self._draft(self.GOOD)
-        out = os.path.join(d, "out")
-        self._run(p, "--outdir", out, "--raster", "none")
-        self.assertFalse(os.path.exists(os.path.join(out, "assets", "s", "02-src.png")),
-                         "기본은 원본 이미지 다운로드 안 함")
-        body = _read(os.path.join(out, "post.md"))
-        self.assertIn("https://example.com/x.png", body, "출처 링크로 인용돼야")
-        self.assertNotIn("![원본]", body, "이미지 임베드가 아니라 링크로 변환돼야")
-        self.assertTrue(os.path.exists(os.path.join(out, "assets", "s", "SOURCES.md")),
-                        "인용 sidecar SOURCES.md 생성돼야")
-
-    def test_default_output_does_not_clobber_input(self):
-        # --in-place 아니고 outdir가 초안 옆이면 입력 초안을 덮어쓰지 않고 .blog.md로 쓴다
-        d, p = self._draft(self.GOOD)
-        r = self._run(p, "--raster", "none")
-        self.assertEqual(r.returncode, 0, r.stderr)
-        self.assertIn("BLOG-ASSETS BUILD", _read(p), "입력 초안(빌드 섹션 포함)은 보존돼야")
-        self.assertTrue(os.path.exists(os.path.join(d, "post.blog.md")), ".blog.md로 발행본 출력")
-
-
 class TestSoobeenPersona(unittest.TestCase):
     """페르소나 내장 산출물 3종의 정적 계약. 실제 REPO 파일을 검사(임시 vault 아님).
     핵심 불변식: ① voice 에이전트는 초안만 반환(Write/Edit 금지) ② check 스킬은
@@ -1218,13 +1125,17 @@ class TestSoobeenPersona(unittest.TestCase):
         self.assertIn("docs/log.md", txt, "소스 계약(실제 기록만) 명시 필요")
         self.assertIn("scrub-secrets.py", txt, "민감정보 스크럽 절차 명시 필요")
 
-    def test_agent_image_layer_emits_but_does_not_run(self):
-        # 이미지 레이어 계약: 도식/인용을 텍스트로 emit(빌드 센티넬+FIGURE), 파일 생성/래스터화는
-        # 메인 세션의 blog-assets.py 몫 — 에이전트는 초안만 반환(draft-only 유지).
+    def test_agent_image_numbered_placeholder_contract(self):
+        # 이미지 계약(2026-07-08 개편): SVG 자동 생성/materialize 폐지 → 번호 플레이스홀더만.
+        # 본문 `[사진 N]` 콜아웃 + 상단 이미지 목록을 emit하고, 실제 이미지는 사용자가 직접 업로드.
+        # 음성 컨트롤: 폐지된 SVG/blog-assets 파이프라인 흔적이 남아 있으면 실패.
         _, txt = self._fm(self.AGENT)
-        self.assertIn("BLOG-ASSETS BUILD", txt, "빌드 섹션 센티넬 명시 필요(blog-assets.py 계약)")
-        self.assertIn("FIGURE", txt, "개념 다이어그램 FIGURE 형식 명시 필요")
-        self.assertIn("blog-assets.py", txt, "materialize는 메인 세션 blog-assets.py 몫임을 명시 필요")
+        self.assertIn("[사진 N]", txt, "번호 플레이스홀더 형식 명시 필요")
+        self.assertIn("이미지 목록", txt, "상단 이미지 목록 관례 명시 필요")
+        self.assertIn("업로드", txt, "사용자 직접 업로드 계약 명시 필요")
+        self.assertNotIn("blog-assets", txt, "폐지된 blog-assets 파이프라인 참조가 남으면 안 됨")
+        self.assertNotIn("BLOG-ASSETS BUILD", txt, "폐지된 빌드 섹션 센티넬이 남으면 안 됨")
+        self.assertNotIn("FIGURE:", txt, "폐지된 SVG FIGURE 형식이 남으면 안 됨")
 
     def test_skill_triggers(self):
         self.assertTrue(os.path.isfile(self.SKILL), "soobeen-check 스킬 누락")
