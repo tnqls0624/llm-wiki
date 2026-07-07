@@ -5,7 +5,8 @@ Auto-loaded every session. Compact, imperative rule set for the AI hot path. The
 ## Structure (mechanism vs content)
 - Content lives in **topic directories**, each `<Topic>/` holding notes + a `<Topic>/<Topic>.md` MOC hub. Current topics: `Claude/` (Claude Code official-docs KB, 26 notes) · `AI-Infra/` (backend→AI-infra learning, 6 notes) · `Infra/` (CS/Linux/kernel fundamentals, 10 notes) · `Meta/` (vault's own architecture self-diagnosis). This is **content (data)**.
 - `.claude/` — the **portable framework package** (rules, runtime, hooks, scripts, tests, commands, agents, skills). Copyable to another vault as-is.
-- Keep the split when adding files: mechanism → `.claude/`; knowledge → a topic dir. Adding a new topic → follow the checklist in root `CLAUDE.md`'s change-sync table.
+- `blog/` — blog drafts + their collected images (`blog/<slug>/` = `<slug>.md` draft + `N. name.png` numbered images + `SOURCES.md` provenance, produced by soobeen-voice + `blog-collect.py`). Git-tracked but **neither KB content nor mechanism** — a publishing workspace, so kb-lint excludes it (like `Projects/`).
+- Keep the split when adding files: mechanism → `.claude/`; knowledge → a topic dir; blog output → `blog/`. Adding a new topic → follow the checklist in root `CLAUDE.md`'s change-sync table.
 
 ## Note format
 Frontmatter, four fields (canonical list in `.claude/kb-required-fields.txt`):

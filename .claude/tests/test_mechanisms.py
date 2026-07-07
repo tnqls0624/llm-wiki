@@ -17,8 +17,9 @@ rc 검증 + positive control(살아있음 증명)을 둔다.
 실행: bash .claude/tests/run-tests.sh  또는  python3 .claude/tests/test_mechanisms.py
 의존성: 표준 라이브러리만(unittest/subprocess/tempfile). git 필요(auto-commit 테스트).
 """
-import json, os, re, shutil, subprocess, tempfile, unittest
+import base64, json, os, re, shutil, subprocess, tempfile, threading, unittest
 import importlib.util as _ilu
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 HOOKS = os.path.join(REPO, ".claude", "hooks")
@@ -1081,11 +1082,164 @@ class TestKbLintCheckProjects(TestKbLintCheck):
         rc, _, err = self.fire("Projects/geo-citation-report/plan.md")
         self.assertEqual(rc, 0, f"Projects/ 운영 문서는 훅 검사 제외돼야: {err}")
 
+
+# ── blog/ 제외 (블로그 초안 + 수집 이미지 sidecar는 KB 콘텐츠가 아님) ────
+class TestKbLintBlogExclusion(TestKbLint):
+    """blog/ 아래 초안·수집물(frontmatter 없는 SOURCES.md 등)은 kb-lint가 검사하지 않는다.
+    positive control: Claude/ 깨진 노트는 여전히 잡힌다(제외가 전체 검사를 끄지 않음)."""
+
+    def test_blog_excluded_claude_still_checked(self):
+        _write(os.path.join(self.d, "blog", "my-post", "SOURCES.md"),
+               "# 이미지 출처\n프론트매터 없는 수집 sidecar. 충분히 긴 본문이라 빈 노트 아님.")
+        _write(os.path.join(self.d, "blog", "my-post", "my-post.md"),
+               "# 초안\n[[없는-노트]] 참조, frontmatter 없음.")
+        _write(os.path.join(self.d, "Claude", "bad.md"),
+               "---\ntitle: bad\nupdated: 2026-01-01\n---\n본문이 충분히 길다.")
+        rc, data = self.lint()
+        self.assertEqual(rc, 1, "Claude/ 깨진 노트 때문에 rc=1이어야(제외가 전체 검사를 끄지 않음)")
+        self.assertIsNone(self.issues_for(data, "SOURCES.md"), "blog/ sidecar는 검사 제외")
+        self.assertIsNone(self.issues_for(data, "my-post.md"), "blog/ 초안은 검사 제외")
+        self.assertIsNotNone(self.issues_for(data, "bad.md"), "Claude/ 깨진 노트는 여전히 검출(positive control)")
+
+
+class TestKbLintCheckBlog(TestKbLintCheck):
+    """PostToolUse 훅도 blog/ 파일을 건너뛴다(배치 린터 EXCLUDE와 일치)."""
+
+    def test_blog_file_skipped(self):
+        _write(os.path.join(self.d, "blog", "my-post", "SOURCES.md"),
+               "# 이미지 출처\n프론트매터 없음.")
+        rc, _, err = self.fire("blog/my-post/SOURCES.md")
+        self.assertEqual(rc, 0, f"blog/ 파일은 훅 검사 제외돼야: {err}")
+
     def test_claude_note_still_warns(self):
         # positive control: 같은 결함을 Claude/ 노트가 가지면 여전히 경고(제외가 과하지 않음)
         _write(os.path.join(self.d, "Claude", "bad.md"), "# 프론트매터 없음\n본문")
         rc, _, err = self.fire("Claude/bad.md")
         self.assertEqual(rc, 2, "Claude/ 노트는 여전히 검사돼야(positive control)")
+
+
+# ── blog-collect.py (블로그 웹 이미지 수집·저장 엔진) ──────────────────
+BLOG_COLLECT = os.path.join(CLAUDE, "blog-collect.py")
+
+# 1x1 유효 PNG (다운로드 양성 컨트롤용)
+_PNG_1x1 = base64.b64decode(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk"
+    "+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==")
+
+
+class _ImgHandler(BaseHTTPRequestHandler):
+    """.png 요청엔 image/png, 그 외엔 text/plain 응답(content-type 검증 테스트용)."""
+
+    def do_GET(self):
+        if self.path.endswith(".png"):
+            body, ctype = self.server.png, "image/png"
+        else:
+            body, ctype = b"not an image", "text/plain"
+        self.send_response(200)
+        self.send_header("Content-Type", ctype)
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def log_message(self, *a):
+        pass
+
+
+class TestBlogCollect(unittest.TestCase):
+    """blog-collect.py 계약: 본문 [사진 N] ↔ IMG 계획 1:1 검증(어긋나면 exit 4) +
+    web+URL 다운로드(content-type image/* + SSRF 가드) + shot/URL없음은 대기(정상) +
+    SOURCES.md 출처 기록 + 빌드 섹션 스트립. silent-fail 위험 → 음성·양성 컨트롤 모두 둔다.
+    실제 네트워크 없이 로컬 http 서버(127.0.0.1)로 다운로드 경로를 검증(--allow-local-hosts)."""
+
+    BODY = (
+        "# 제목\n\n## 준비할 이미지\n1. `1. arch.png` — 구조도 (web)\n"
+        "2. `2. shot.png` — 내 터미널 (shot)\n\n도입.\n\n"
+        "> 🖼️ **[사진 1]** 구조도\n> → 업로드: `1. arch.png`\n\n중간.\n\n"
+        "> 🖼️ **[사진 2]** 터미널\n> → 업로드: `2. shot.png`\n\n"
+    )
+    BUILD = (
+        "<!-- BLOG-IMAGES (test) -->\n"
+        "<!-- IMG: 1 | arch | web  | 아키텍처 구조도 |URL_1| src, CC -->\n"
+        "<!-- IMG: 2 | shot | shot | 내 터미널 출력 -->\n"
+    )
+
+    def _server(self):
+        httpd = HTTPServer(("127.0.0.1", 0), _ImgHandler)
+        httpd.png = _PNG_1x1
+        threading.Thread(target=httpd.serve_forever, daemon=True).start()
+        self.addCleanup(httpd.server_close)  # 소켓 닫기(ResourceWarning 방지)
+        self.addCleanup(httpd.shutdown)
+        return f"http://127.0.0.1:{httpd.server_port}"
+
+    def _draft(self, body=None, build=None):
+        d = tempfile.mkdtemp(prefix="bc_")
+        self.addCleanup(shutil.rmtree, d, ignore_errors=True)
+        p = os.path.join(d, "post.md")
+        _write(p, (body if body is not None else self.BODY)
+               + (build if build is not None else self.BUILD))
+        return d, p
+
+    def _run(self, draft, *args):
+        return subprocess.run(["python3", BLOG_COLLECT, draft, *args],
+                              capture_output=True, text=True)
+
+    def test_check_ok(self):
+        _, p = self._draft()
+        r = self._run(p, "--check")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("check ok", r.stdout)
+
+    def test_placeholder_manifest_mismatch_exit4(self):
+        # 음성 컨트롤: 본문 [사진 2] 있는데 IMG #2 없으면 exit 4 + 파일 미생성
+        build = "<!-- BLOG-IMAGES (test) -->\n<!-- IMG: 1 | arch | web | 구조도 -->\n"
+        d, p = self._draft(build=build)
+        out = os.path.join(d, "out")
+        r = self._run(p, "--outdir", out)
+        self.assertEqual(r.returncode, 4, r.stdout + r.stderr)
+        self.assertFalse(os.path.exists(out), "검증 실패 시 어떤 파일도 쓰지 않아야")
+
+    def test_web_download_and_sources(self):
+        # 양성 컨트롤: web+URL(이미지) 다운로드 → `N. name.png` 저장 + SOURCES.md '다운로드됨'
+        base = self._server()
+        d, p = self._draft(build=self.BUILD.replace("URL_1", base + "/a.png"))
+        out = os.path.join(d, "out")
+        r = self._run(p, "--outdir", out, "--allow-local-hosts")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertTrue(os.path.exists(os.path.join(out, "1. arch.png")), "web 이미지 다운로드 저장돼야")
+        self.assertFalse(os.path.exists(os.path.join(out, "2. shot.png")), "shot 은 다운로드 안 함(대기)")
+        src = _read(os.path.join(out, "SOURCES.md"))
+        self.assertIn("다운로드됨", src)
+        self.assertIn(base + "/a.png", src, "출처 URL 기록돼야")
+        self.assertIn("직접 촬영", src, "shot 은 대기로 기록돼야")
+
+    def test_build_section_stripped_from_publish_body(self):
+        base = self._server()
+        d, p = self._draft(build=self.BUILD.replace("URL_1", base + "/a.png"))
+        out = os.path.join(d, "out")
+        self._run(p, "--outdir", out, "--allow-local-hosts")
+        body = _read(os.path.join(out, "post.blog.md"))
+        self.assertNotIn("BLOG-IMAGES", body, "빌드 섹션은 발행 본문에서 제거돼야")
+        self.assertNotIn("<!-- IMG:", body, "IMG 계획 줄은 발행 본문에 남으면 안 됨")
+        self.assertIn("[사진 1]", body, "본문 플레이스홀더는 유지돼야")
+
+    def test_ssrf_blocks_local_without_flag(self):
+        # 음성 컨트롤: --allow-local-hosts 없으면 127.0.0.1 은 차단 → 미다운로드 + exit 0(대기 기록)
+        base = self._server()
+        d, p = self._draft(build=self.BUILD.replace("URL_1", base + "/a.png"))
+        out = os.path.join(d, "out")
+        r = self._run(p, "--outdir", out)  # 플래그 없음
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertFalse(os.path.exists(os.path.join(out, "1. arch.png")), "사설·로컬 IP는 차단돼 미다운로드")
+        self.assertIn("차단", _read(os.path.join(out, "SOURCES.md")) + r.stdout + r.stderr)
+
+    def test_non_image_content_type_rejected(self):
+        # web+URL 이지만 응답이 이미지가 아니면(text/plain) 미저장 + 대기 기록
+        base = self._server()
+        d, p = self._draft(build=self.BUILD.replace("URL_1", base + "/a.txt"))
+        out = os.path.join(d, "out")
+        r = self._run(p, "--outdir", out, "--allow-local-hosts")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertFalse(os.path.exists(os.path.join(out, "1. arch.png")), "비이미지 응답은 저장 안 함")
 
 
 # ── 수빈 페르소나 3종 (agent/skill/rule)의 정적 계약 ───────────────────
@@ -1126,13 +1280,15 @@ class TestSoobeenPersona(unittest.TestCase):
         self.assertIn("scrub-secrets.py", txt, "민감정보 스크럽 절차 명시 필요")
 
     def test_agent_image_numbered_placeholder_contract(self):
-        # 이미지 계약(2026-07-08 개편): SVG 자동 생성/materialize 폐지 → 번호 플레이스홀더만.
-        # 본문 `[사진 N]` 콜아웃 + 상단 이미지 목록을 emit하고, 실제 이미지는 사용자가 직접 업로드.
-        # 음성 컨트롤: 폐지된 SVG/blog-assets 파이프라인 흔적이 남아 있으면 실패.
+        # 이미지 계약(2026-07-08 개편): 번호 플레이스홀더 `[사진 N]` + web/shot 분류 계획을 emit.
+        # web 은 메인 세션이 blog-collect.py로 수집, shot 은 사용자 촬영. 파일 생성은 안 함(draft-only).
+        # 음성 컨트롤: 폐지된 SVG 자동생성(blog-assets/FIGURE) 흔적이 남아 있으면 실패.
         _, txt = self._fm(self.AGENT)
         self.assertIn("[사진 N]", txt, "번호 플레이스홀더 형식 명시 필요")
         self.assertIn("이미지 목록", txt, "상단 이미지 목록 관례 명시 필요")
-        self.assertIn("업로드", txt, "사용자 직접 업로드 계약 명시 필요")
+        self.assertIn("BLOG-IMAGES", txt, "이미지 계획 빌드 섹션 센티넬 명시 필요")
+        self.assertRegex(txt, r"web.*shot|shot.*web", "web/shot 수집 분류 명시 필요")
+        self.assertIn("blog-collect.py", txt, "수집은 메인 세션 blog-collect.py 몫임을 명시 필요")
         self.assertNotIn("blog-assets", txt, "폐지된 blog-assets 파이프라인 참조가 남으면 안 됨")
         self.assertNotIn("BLOG-ASSETS BUILD", txt, "폐지된 빌드 섹션 센티넬이 남으면 안 됨")
         self.assertNotIn("FIGURE:", txt, "폐지된 SVG FIGURE 형식이 남으면 안 됨")
