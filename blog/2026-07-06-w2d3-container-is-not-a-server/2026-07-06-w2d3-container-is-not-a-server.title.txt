@@ -1,0 +1,1 @@
+컨테이너 안에서 리눅스 기본기 다시 익히기 — load average부터 journalctl까지
