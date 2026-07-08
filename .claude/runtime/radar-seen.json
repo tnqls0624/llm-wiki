@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-07-07T09:30:29",
+ "updated": "2026-07-08T09:41:41",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -566,6 +566,22 @@
   "gh:jagoff/memo": "2026-07-07",
   "gh:robotrocketscience/aelfrice": "2026-07-07",
   "hn:48802300": "2026-07-07",
-  "hn:48800879": "2026-07-07"
+  "hn:48800879": "2026-07-07",
+  "ghrel:v2.1.204": "2026-07-08",
+  "gh:Fractera/Agent-Engineering-Infrastructure": "2026-07-08",
+  "gh:majiayu000/remem": "2026-07-08",
+  "gh:opentabs-dev/opentabs": "2026-07-08",
+  "gh:conorbronsdon/gws-mcp-server": "2026-07-08",
+  "gh:mobius-os/mobius": "2026-07-08",
+  "gh:linny006/awesome-agent-skills": "2026-07-08",
+  "gn:https://news.hada.io/topic?id=31225": "2026-07-08",
+  "ghrel:v2.1.203": "2026-07-08",
+  "gn:https://news.hada.io/topic?id=31201": "2026-07-08",
+  "gn:https://news.hada.io/topic?id=31199": "2026-07-08",
+  "devto:4090558": "2026-07-08",
+  "npm:@flux-ui/skill": "2026-07-08",
+  "devto:4080543": "2026-07-08",
+  "devto:4064863": "2026-07-08",
+  "devto:4042461": "2026-07-08"
  }
 }
