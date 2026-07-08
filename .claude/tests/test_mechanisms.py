@@ -1242,6 +1242,42 @@ class TestBlogCollect(unittest.TestCase):
         self.assertFalse(os.path.exists(os.path.join(out, "1. arch.png")), "비이미지 응답은 저장 안 함")
 
 
+# ── blog-publish 스킬 (Tistory 반자동 게시 — 임시저장까지) 정적 계약 ────
+class TestBlogPublishSkill(unittest.TestCase):
+    """blog-publish 스킬의 안전 경계가 SKILL.md에 고정돼 있는지 정적 검사.
+    불변식: ① 임시저장까지만(최종 발행은 사용자) ② 이미지 자동 첨부 안 함(위치 마커만)
+    ③ 대화형 전용 — cron 연결 금지 ④ name이 디렉터리명과 일치."""
+    SKILL = os.path.join(CLAUDE, "skills", "blog-publish", "SKILL.md")
+
+    def _skill(self):
+        self.assertTrue(os.path.isfile(self.SKILL), "blog-publish 스킬 누락")
+        return _read(self.SKILL)
+
+    def test_frontmatter_name_and_trigger(self):
+        txt = self._skill()
+        fm = re.match(r"^---\n(.*?)\n---", txt, re.S).group(1)
+        self.assertRegex(fm, r"(?m)^name:\s*blog-publish\s*$", "name이 디렉터리명과 일치해야")
+        desc = re.search(r"(?m)^description:\s*(.+)$", fm).group(1)
+        self.assertIn("블로그", desc, "트리거 문구(블로그)가 description에 필요")
+
+    def test_temp_save_only_publish_is_user(self):
+        # 경계 계약: 임시저장까지만 — 최종 발행은 사용자 몫
+        txt = self._skill()
+        self.assertIn("임시저장", txt, "임시저장 경계 명시 필요")
+        self.assertRegex(txt, r"발행.*(?:사용자|직접|승인|않는다|누르지)",
+                         "최종 발행은 사용자 몫임을 명시 필요")
+
+    def test_images_not_auto_attached(self):
+        # 이미지 자동 첨부 안 함(네이티브 파일 선택창) — 위치 마커만, 첨부는 사용자
+        txt = self._skill()
+        self.assertIn("[사진 N]", txt, "이미지 위치 마커 관례 명시 필요")
+        self.assertRegex(txt, r"첨부.*(?:하지 않는다|사용자)", "이미지 첨부는 사용자 몫임을 명시 필요")
+
+    def test_interactive_only_not_in_cron(self):
+        # automation-safety: 대화형 전용 — cron 연결 금지
+        self.assertIn("cron", self._skill(), "cron 미연결(대화형 전용) 경계 명시 필요")
+
+
 # ── 수빈 페르소나 3종 (agent/skill/rule)의 정적 계약 ───────────────────
 class TestSoobeenPersona(unittest.TestCase):
     """페르소나 내장 산출물 3종의 정적 계약. 실제 REPO 파일을 검사(임시 vault 아님).
