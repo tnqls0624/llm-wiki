@@ -1,4 +1,4 @@
-<!-- study-state v1 | block=0 | last_brief_date=2026-07-07 | repo_path=~/Desktop/Project/ai-infra-lab -->
+<!-- study-state v1 | block=0 | last_brief_date=2026-07-09 | repo_path=~/Desktop/Project/ai-infra-lab -->
 <!--
   AI Infra 학습 진도 정본. git 추적됨 → 두 Mac(회사/집)이 push/pull로 공유.
   study-brief.py(무인 cron)가 이 파일을 읽어 요일별 다음 미완료 항목 + 그 아래 들여쓴 학습 가이드를
@@ -13,7 +13,7 @@
 # AI Infra 학습 진도 — 인프라 빌더 트랙 (Block 0~6)
 
 **정본 커리큘럼**: `ai-infra-lab/ROADMAP.md` (2026-07-02 v3 확정 — 학습 우선, 블랙웰 특화는 부록 A/B).
-**현재**: 🎉 Block 0 완료(2026-07-05 — `python/train_mnist.py` S2~S5 전 파이프라인 `--epochs 1` 동작 검증). W2 후반(D3~) Linux/Docker = Block 1 진입 중.
+**현재**: 🎉 Block 0 완료(2026-07-05 — `python/train_mnist.py` S2~S5 전 파이프라인 `--epochs 1` 동작 검증). **[Block 1 시작]**(2026-07-09, W2 D4 ✅) — 다음: W2 D5 Dockerfile 초안.
 **주차↔블록**: W1~2=Block 0 · W3~4=Block 1(컨테이너) · W5~7=Block 2(GPU/CUDA) · W8~10=Block 3(서버·네트워크) · W11~12=Block 4(K8s) · W13~16=Block 5(서빙&학습) · W17~19=Block 6(관측성) + 버퍼 3주.
 
 ## W1 — 환경 + repo 척추 + 로드맵 확정 [Block 0]
@@ -48,7 +48,7 @@
 - [x] [평일] D3: Linux 기본 — `docker run -it ubuntu`에서 top/권한/패키지/journalctl 감잡기 (Docker Desktop/OrbStack 설치 겸)
   - 🎯 개념: 서버의 기본 화면 — 프로세스(top), 권한(chmod/sudo), 로그(journalctl). macOS와 뭐가 다른가
   - ✅ 완료: 컨테이너 안에서 명령 실행해보고 새로 안 것 3개를 log.md에 기록
-- [ ] [평일] D4: Block 0 회고(버퍼 잔여 기록) + Block 1 시작 — Docker 이미지/레이어/볼륨 개념
+- [x] [평일] D4: Block 0 회고(버퍼 잔여 기록) + Block 1 시작 — Docker 이미지/레이어/볼륨 개념
   - 🎯 개념: 이미지 vs 컨테이너, 레이어 캐시, 데이터는 볼륨으로 분리하는 이유
   - ✅ 완료: log.md에 `[Block 1 시작]` 표기 + 개념 요약
 - [ ] [평일] D5: Dockerfile 초안 — CUDA 베이스 이미지에 train_mnist.py 탑재 (CPU 경로)
@@ -146,3 +146,8 @@
 - 채점: 심야 2차 판정대로 커밋 확인 즉시 체크. 완료 기준 전부 충족 — 컨테이너 안 실행(증거: `root@1e00…` 프롬프트), 조작 실습(chmod·apt·whoami/id·journalctl 실패 목격·vmstat), 새로 안 것 3개 log.md 기록 + 커밋.
 - 총평: 하루에 검토→이행 루프 5회 — 관찰(lscpu/top/free/df)에서 시작해 피드백마다 빠짐없이 메꿔 마감까지 감. 이 반응 루프 자체가 시스템이 의도한 사용법. 아쉬운 점은 기존 지적 반복: 서술 3줄 verbatim 복붙(수용됨, 다음부턴 기억→대조), "발생한 문제: 없음" 칸 미활용(journalctl 실패가 거기 들어갈 내용).
 - 다음: W2 D4 = Block 0 회고 + **[Block 1 시작]** — Docker 이미지 vs 컨테이너·레이어 캐시·볼륨 개념을 log.md에 요약(먼저 기억으로 쓰고 자료와 대조). Infra/06 컨테이너 내부 노트가 좋은 대조 자료.
+
+### 2026-07-09 — W2 D4 ✅ (`c31cbcb`) + TIL 4편 소급 반영
+- 잘한 점: ① D4 채점 — Docker 이미지/컨테이너/볼륨 개념을 **먼저 기억으로**("아는것을 적어봄") 자기 말로 서술. 7-06 verbatim 지적 이후 retrieval-first 처방이 처음으로 실전 이행됨. cgroups(자원)/namespace(격리) 구분 정확, 특히 온프레미스 레이어-diff 배포 실무 사례("발생한 문제/해결" 칸 활용)는 개념↔경험 연결의 모범 — 면접 소재감. ② 7-07 저녁 TIL 4편 커밋(`d75d332`·`fe5a227`·`cc3d1e7`) — 학습→블로그 아웃풋 루프 가동(검토 공백일 산출물 소급 반영; 7-07·7-08 무인 검토 로그 없음). ③ 학습 인프라 자가 개선(`d710b87`·`a4ffbf2`): ai-infra-lab CLAUDE.md가 study-today.md 심볼릭 링크를 @참조 — 브리핑이 학습 세션에 자동 주입되는 구조를 스스로 설계(링크·타깃 동작 확인됨).
+- 부족하거나 고칠 점(기술 정밀도 — 내일 실습에서 검증): 1) "베이스 이미지를 복사하여 실행" → 실제로는 복사가 아니라 read-only 레이어들 위에 얇은 쓰기 레이어 하나를 얹는 **CoW(copy-on-write)**. `docker diff`/`docker history`로 실측 가능. 2) 레이어는 **불변(immutable)** — 변경이 "기존 레이어에 쌓이는" 게 아니라 새 레이어로 위에 쌓임. 캐시 무효화는 Dockerfile 명령 순서 기준(한 줄 바뀌면 그 아래 전부 재빌드) — D5에서 직접 체감할 것. 3) 볼륨 서술이 bind mount(호스트 디렉토리 마운트)에 가까움 — named volume(도커 관리 영역)과 구분. retrieval의 후반부(자료와 **대조**)는 아직 — 본인이 적은 내일 계획(volume 생존 실험·docker history)이 정확히 그 대조다.
+- 다음에 주의할 것: 고객사명이 든 실무 사례는 private repo(log.md)까지만 — 공개 TIL/블로그로 옮길 땐 스크럽(soobeen-voice가 걸러주지만 본인도 인지). D5 완료 기준 = `docker build` 통과하는 Dockerfile 커밋(`docker/`), CUDA 베이스 이미지 선택(nvidia/cuda vs NGC PyTorch)이 첫 결정 지점.
