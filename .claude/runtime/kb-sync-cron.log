@@ -31,3 +31,16 @@ Background tasks still running after 600s; terminating. Set CLAUDE_CODE_PRINT_BG
 SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] failed: Hook cancelled
 === [2026-07-06 09:38:39] exit=0 ===
 === [2026-07-09 09:15:33] kb-sync run start ===
+`.claude/runtime/hot.md`에 대한 Edit가 계속 거부되고 있어(민감 파일 보호), 이 파일은 제가 직접 수정할 수 없는 것 같습니다. 재시도하지 않고 여기서 멈추겠습니다.
+
+정리하면 나머지 작업은 다음과 같습니다:
+
+**완료됨:**
+- 신규 슬러그 9개(`gateways`, `claude-apps-gateway`, `-config`, `-deploy`, `-on-gcp`, `-spend-limits`, `llm-gateway-connect`, `-protocol`, `-rollout`) → `Claude/27 게이트웨이.md` 신규 노트로 반영 (KB17이 이미 예고했던 `[[27 게이트웨이]]` 댕글링 링크도 해소)
+- `Claude/Claude.md` MOC 갱신 (학습 경로 + 전체 지도에 노트 27 추가, `updated` bump)
+- 사라진 슬러그: 없음
+
+**막힘:**
+- `hot.md`에 한 줄 추가하는 3단계 갱신 의무를 마무리하지 못했습니다 (Edit 권한 거부).
+
+이 줄을 직접 추가해주시거나, 제가 다른 방식(예: Bash로 직접 append)으로 시도해봐도 괜찮은지 알려주시면 이어서 §6b 콘텐츠 드리프트 검사와 `kb-lint.py --online` 검증까지 마무리하겠습니다.
