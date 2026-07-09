@@ -54,7 +54,3 @@ VM은 OS를 통째로 하나 더 띄우는 거라 무겁고, 컨테이너는 커
 ## 정리
 
 오늘 개념만 정리해보고 나니, 이미지·컨테이너·레이어·볼륨의 역할이 이렇게 이어진다는 감은 잡혔다. 이미지는 실행 환경의 스냅샷이고, 컨테이너는 그 스냅샷 위에서 실제로 도는 격리된 프로세스이고, 레이어는 그 스냅샷을 쌓고 재활용하는 단위이고, 볼륨은 컨테이너의 생명주기와 데이터의 생명주기를 분리해주는 장치다. 다만 자료 없이 기억으로만 적어보니 "말로는 되는데 명령으로는 확인 안 해본" 지점이 세 개나 나왔다. 다음엔 실제로 Dockerfile을 써보면서, 오늘 적어놓은 개념이 명령어 결과와 맞는지 하나씩 대조해볼 차례다.
-
-<!-- BLOG-IMAGES (blog-collect.py가 이 아래를 떼어냄) -->
-<!-- IMG: 1 | docker-image-layers | web | 이미지의 읽기전용 레이어 + 쓰기 레이어 구조를 보여주는 Docker 공식 문서 그림 | https://docs.docker.com/engine/storage/drivers/images/container-layers.webp | Docker 공식 문서(About storage drivers), 저작권 Docker Inc., 출처 표기 후 인용 -->
-<!-- IMG: 2 | bind-mount-vs-named-volume | web | bind mount·volume·tmpfs가 호스트 어디에 저장되는지 비교하는 Docker 공식 문서 그림 | https://web.archive.org/web/20230601000000im_/https://docs.docker.com/storage/images/types-of-mounts.png | Docker 공식 문서 구판(Wayback 아카이브), 저작권 Docker Inc., 출처 표기 후 인용 -->
