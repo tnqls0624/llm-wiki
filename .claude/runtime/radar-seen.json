@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-07-08T09:41:41",
+ "updated": "2026-07-09T09:17:17",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -582,6 +582,24 @@
   "npm:@flux-ui/skill": "2026-07-08",
   "devto:4080543": "2026-07-08",
   "devto:4064863": "2026-07-08",
-  "devto:4042461": "2026-07-08"
+  "devto:4042461": "2026-07-08",
+  "gh:dryvist/nix-ai": "2026-07-09",
+  "gh:legioncodeinc/honeycomb": "2026-07-09",
+  "gh:timothywarner-org/claude-architect": "2026-07-09",
+  "hn:48837653": "2026-07-09",
+  "hn:48836757": "2026-07-09",
+  "hn:48836458": "2026-07-09",
+  "hn:48834422": "2026-07-09",
+  "hn:48833790": "2026-07-09",
+  "hn:48832989": "2026-07-09",
+  "hn:48832902": "2026-07-09",
+  "hn:48832797": "2026-07-09",
+  "ghrel:v2.1.205": "2026-07-09",
+  "devto:4079415": "2026-07-09",
+  "devto:4098176": "2026-07-09",
+  "airel:vLLM:v0.25.0rc1": "2026-07-09",
+  "npm:@m13v/s4l": "2026-07-09",
+  "devto:4053329": "2026-07-09",
+  "devto:3941845": "2026-07-09"
  }
 }
