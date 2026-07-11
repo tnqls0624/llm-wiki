@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-07-09T21:55:38",
+ "updated": "2026-07-11T09:36:05",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -631,6 +631,27 @@
   "airel:vLLM:v0.25.0rc3": "2026-07-09",
   "airel:vLLM:v0.25.0rc2": "2026-07-09",
   "devto:4099265": "2026-07-09",
-  "npm:@myclaw163/claude-clawclaw": "2026-07-09"
+  "npm:@myclaw163/claude-clawclaw": "2026-07-09",
+  "gh:lennix1337/Genexus18MCP": "2026-07-11",
+  "gh:openwong2kim/wmux": "2026-07-11",
+  "gh:DeusData/codebase-memory-mcp": "2026-07-11",
+  "gh:CodeAbra/iai-personal-memory-engine": "2026-07-11",
+  "gh:davila7/claude-code-templates": "2026-07-11",
+  "hn:48865825": "2026-07-11",
+  "hn:48860775": "2026-07-11",
+  "hn:48860355": "2026-07-11",
+  "hn:48860301": "2026-07-11",
+  "hn:48856473": "2026-07-11",
+  "ghrel:v2.1.206": "2026-07-11",
+  "gh:firish/claude_code_vs": "2026-07-11",
+  "gn:https://news.hada.io/topic?id=31286": "2026-07-11",
+  "gn:https://news.hada.io/topic?id=31279": "2026-07-11",
+  "hn:48852172": "2026-07-11",
+  "hn:48850924": "2026-07-11",
+  "hn:48850838": "2026-07-11",
+  "devto:4106002": "2026-07-11",
+  "devto:4106902": "2026-07-11",
+  "devto:4104289": "2026-07-11",
+  "airel:vLLM:v0.25.0": "2026-07-11"
  }
 }
