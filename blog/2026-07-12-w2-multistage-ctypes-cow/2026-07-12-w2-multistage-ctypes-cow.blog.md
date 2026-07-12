@@ -140,8 +140,3 @@ docker run --rm \
 5. exec form CMD는 컨테이너 안 프로세스를 PID 1로 만들어 시그널을 직접 받게 한다 — 이게 볼륨·캐시뿐 아니라 종료 방식까지 관통하는 원리였다.
 
 다음은 named volume과 bind mount를 나란히 비교해보고, Block 1 게이트인 GPU 접근 방식 결정 문서를 쓸 차례다.
-
-<!-- BLOG-IMAGES (blog-collect.py가 이 아래를 떼어냄) -->
-<!-- IMG: 1 | multi-stage-build          | web  | builder/runner 두 스테이지로 나뉜 멀티스테이지 빌드 구조도 -->
-<!-- IMG: 2 | ctypes-modulenotfounderror | shot | venv COPY 후 import torch가 ctypes를 못 찾고 죽는 에러 터미널 출력 -->
-<!-- IMG: 3 | docker-diff-cow            | shot | -v 마운트 유무에 따른 docker diff 결과 대조 -->
