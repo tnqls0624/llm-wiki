@@ -13,7 +13,7 @@
 # AI Infra 학습 진도 — 인프라 빌더 트랙 (Block 0~6)
 
 **정본 커리큘럼**: `ai-infra-lab/ROADMAP.md` (2026-07-02 v3 확정 — 학습 우선, 블랙웰 특화는 부록 A/B).
-**현재**: 🎉 Block 0 완료(2026-07-05). **[Block 1 진행]** — W2 D5 ✅(2026-07-11, `docker build`/`run` 완주 + 레이어 캐시 실측). 다음: W2 주말 — **멀티스테이지 변환만 남음**(.dockerignore·컨테이너 실행 검증은 D5에서 선취).
+**현재**: 🎉 Block 0 완료(2026-07-05). **[Block 1 진행]** — 🎉 W2 전체 완료(2026-07-12, 멀티스테이지 `docker build`/`run` 완주 + 크기·CoW 실측). 다음: **W3 상세화 필요** — `/study-coach plan`으로 일별 항목을 채워야 브리핑이 나온다.
 **주차↔블록**: W1~2=Block 0 · W3~4=Block 1(컨테이너) · W5~7=Block 2(GPU/CUDA) · W8~10=Block 3(서버·네트워크) · W11~12=Block 4(K8s) · W13~16=Block 5(서빙&학습) · W17~19=Block 6(관측성) + 버퍼 3주.
 
 ## W1 — 환경 + repo 척추 + 로드맵 확정 [Block 0]
@@ -54,7 +54,7 @@
 - [x] [평일] D5: Dockerfile 초안 — CUDA 베이스 이미지에 train_mnist.py 탑재 (CPU 경로)
   - 🎯 개념: 베이스 이미지 선택(nvidia/cuda vs NGC PyTorch), COPY/RUN/CMD
   - ✅ 완료: `docker build`가 통과하는 Dockerfile 커밋 (docker/)
-- [ ] [주말] Dockerfile 완성 — 멀티스테이지 + .dockerignore + 컨테이너로 학습 실행 검증
+- [x] [주말] Dockerfile 완성 — 멀티스테이지 + .dockerignore + 컨테이너로 학습 실행 검증
   - 🎯 개념: 멀티스테이지로 이미지 슬림화, .dockerignore로 빌드 컨텍스트 정리, 시크릿 커밋 금지 규칙
   - ✅ 완료: `docker run`으로 train_mnist.py가 컨테이너 안에서 돌고 커밋됨
 
@@ -161,3 +161,9 @@
 - 확인: 미커밋 docker/Dockerfile이 멀티스테이지(builder venv → runner COPY)로 변환됨 — venv-copy 패턴 정석, `--no-install-recommends`·`libgomp1`·`ca-certificates`·`PYTHONUNBUFFERED=1` 등 의존성 사고 좋음. 코치가 빌드 검증: `docker build` 통과, 크기 3.22GB→2.71GB(-510MB) 실측.
 - **불합격 사유(코치 실측)**: `docker run … python -c "import torch"` → **`ModuleNotFoundError: No module named 'ctypes'`**. 원인 = runner의 `python3-minimal`은 인터프리터 최소본만 — ctypes 등 stdlib 대부분은 `libpython3.10-stdlib`(full `python3`가 끌고 옴)에 있고, **venv 복사로는 안 따라옴**(venv는 site-packages만 담고 stdlib은 시스템 것을 참조). "빌드 통과 ≠ 동작" — 7-05 교훈 그대로.
 - 추가 지적: 핀 값 `torch==2.5.1/torchvision==0.20.1`이 로컬 실측(2.12.1/0.27.1)과 불일치 — 외부 예제 조합으로 의심(무검토 붙여넣기 패턴). 로컬 기준으로 핀 교체 필요. 마감 조건 = ① runner python 패키지 수정 ② 핀 교체 ③ 재빌드+`docker run` 1 epoch 완주(본인 실행) ④ log.md 실측 기록 ⑤ 커밋 — 다음 검토에서 확인되면 주말 항목 체크.
+
+### 2026-07-12 (오후 2차) — W2 주말 ✅ (`2d82b38`~`9ccca23` 4커밋) → 🎉 W2 완료
+- 채점: 마감 조건 ①~⑤ 전부 이행 확인 — 멀티스테이지 Dockerfile+핀(2.12.1/0.27.1) 커밋, 컨테이너 학습 실행(13s/3.5s, loss 3회 관찰), 크기·CoW 실측 기록, working tree clean → 체크. 중간에 "저장 전 빌드로 옛 이미지(2.5.1) 실행"을 시각 대조로 잡아냈고, 이후 이미지 내부를 직접 열어 확인하는 검증("아티팩트 쪽을 확인한다")을 본인이 재현함. "커밋했다" 선언 후 커밋 0개였던 해프닝 1회(감시 ② — git log로 확인하는 습관 재강조 후 즉시 이행).
+- 잘한 점: ① **크기 실측의 해상도** — 3.22→2.90GB(-320MB)를 레이어 단위로 분해(apt 345→32.3MB가 절감의 거의 전부, torch venv 779→772MB 동일)해 "실행 라이브러리는 멀티스테이지로 못 줄인다"를 수치로 결론. CUDA 베이스 유지 결정도 근거(Block 2 GPU 전환)와 함께 기록. ② `-v` 마운트+`docker diff`로 CoW 우회 실측(D4 정밀도 ①③ 마감) — mtime 초 단위 대조, 마운트 시 diff 0줄. ③ 부수 관찰 2건(^C가 exec form PID 1에 직접 전달됨, 로그 loss는 에포크 평균이 아닌 마지막 배치 값) — 실험 설계 강점 그대로.
+- 부족하거나 고칠 점: **"발생한 문제" 칸 오용 재발(감시 ③)** — 오늘 실제 문제 2건(runner `python3-minimal`의 ctypes ModuleNotFoundError, 저장 전 빌드로 옛 이미지 실행)이 log.md에 없고, 그 칸을 멀티스테이지 일반론(AI 설명체 "~해보자/~않아" verbatim 대량 복붙)이 차지. "오늘 한 것" 첫 줄도 브리핑 🎯 문구 그대로. 자기 실측 파트(2·3절)는 살아있는데 이론 서술이 복붙 — retrieval-first 전반부(먼저 기억으로) 생략.
+- 다음에 주의할 것: W3~가 상세화 대기 — `/study-coach plan`을 돌려야 내일 브리핑이 나온다. named volume 비교(정밀도 ③ 나머지)·gpu-access-decision.md(W4 게이트)는 본인 계획에 이미 있음. ctypes·옛 이미지 사건 2줄을 log.md "발생한 문제" 칸에 추가하는 5분 커밋 권장 — 오늘 최고의 면접 소재.
