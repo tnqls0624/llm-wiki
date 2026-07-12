@@ -59,8 +59,47 @@
   - ✅ 완료: `docker run`으로 train_mnist.py가 컨테이너 안에서 돌고 커밋됨
 
 <!-- 다음 구간은 해당 블록 진입 직전에 /study-coach plan 또는 ROADMAP.md 주차 마일스톤 기준으로 일별 상세화한다. -->
-## W3 — Block 1: NVIDIA Container Toolkit 원리 + NGC (상세화 대기)
-## W4 — Block 1: GPU 실습 환경 결정 — gpu-access-decision.md 커밋 게이트 (상세화 대기)
+## W3 — Block 1: NVIDIA Container Toolkit 원리 + NGC (상세화 2026-07-12)
+- [ ] [평일] D1: NVIDIA 스택 지도 — 드라이버 vs CUDA 툴킷 vs 컨테이너 런타임 (retrieval-first)
+  - 🎯 개념: 호스트 커널 드라이버 / CUDA 런타임·툴킷 / 컨테이너의 경계. W2에서 목격한 "NVIDIA Driver was not detected" 경고가 정확히 어느 층의 부재인가
+  - 📖 자료: **먼저 무자료로** log.md에 스택 그림+설명 → 그다음 NVIDIA Container Toolkit 공식 아키텍처 문서와 대조
+  - ✅ 완료: log.md에 자기 말 스택 지도 + 대조에서 틀렸던 부분 수정 기록
+- [ ] [평일] D2: NVIDIA Container Toolkit 동작 원리 — `--gpus all`이 하는 일
+  - 🎯 개념: nvidia-container-runtime이 컨테이너 시작 시점에 드라이버 라이브러리·`/dev/nvidia*`를 주입하는 구조(runc hook). "이미지에 드라이버를 안 굽는" 이유가 여기서 완성됨
+  - ✅ 완료: log.md에 주입 흐름 요약 + Block 2 D1에서 실측할 체크리스트 3개
+- [ ] [평일] D3: CPU Mac에서 가능한 실측 — 컨테이너 안 드라이버 부재 확인
+  - 📖 자료: `docker run --rm mnist-train:multistage sh -c "ls /dev | grep -i nvidia; ldconfig -p | grep -i cuda"` → 이어서 `--gpus all` 시도 시 에러 관찰
+  - ✅ 완료: 출력과 에러를 log.md "발생한 문제/확인" 칸에 기록 — **에러가 나는 게 정상인 실험**
+- [ ] [평일] D4: NGC 카탈로그 + 이미지 태그 체계
+  - 🎯 개념: nvidia/cuda의 base/runtime/devel 3티어 차이, NGC PyTorch 년.월 태그 체계, 각각 언제 쓰나
+  - ✅ 완료: "내 Dockerfile은 왜 runtime 티어로 충분한가 + devel이 필요해지는 경우"를 log.md에 자기 말로
+- [ ] [평일] D5: 시크릿 규칙 확립 — NGC API key (W1 D1 PAT 사건 재발 방지)
+  - 🎯 개념: nvcr.io 로그인은 `$oauthtoken` + API key. 키는 환경변수/키체인으로만 — 커밋·Dockerfile 하드코딩 금지 규칙화
+  - ✅ 완료: NGC 계정+API key 발급, `docker login nvcr.io` 성공, 시크릿 규칙 3줄을 docs/notes 또는 log.md에 커밋(키 값 자체는 어디에도 안 남김)
+- [ ] [주말] cuda 이미지 3티어 실측 — base vs runtime vs devel
+  - 🎯 개념: 티어별 크기·내용물 차이를 수치로 — W2 크기 실측의 연장선
+  - 📖 자료: `docker pull nvidia/cuda:12.4.1-{base,runtime,devel}-ubuntu22.04` → `docker images`·`docker history`·컨테이너 안 `nvcc --version`(devel만 성공)·`ldconfig -p | grep cuda` 대조
+  - ✅ 완료: 비교표+관찰을 `docs/notes/block1-cuda-image-tiers.md`로 커밋 (다운로드 ~5GB)
+  - ⚠️ 막히면: 디스크 부족 → 실측 후 `docker rmi <태그>`로 개별 정리 (`prune -a` 금지 — 7-12 전체 소실 사건 참고)
+
+## W4 — Block 1: GPU 실습 환경 결정 — gpu-access-decision.md 커밋 게이트 (상세화 2026-07-12)
+- [ ] [평일] D1: 요구사항 정리 — Block 2~3 실습이 GPU 환경에 요구하는 것
+  - 🎯 개념: root 있는 단일 GPU VM이어야 하는 이유(드라이버 설치 실습), Turing 이상이어야 하는 이유(CUDA 13.x의 Volta 이하 제거), RunPod/Vast 컨테이너 대여 불가 이유
+  - ✅ 완료: 요구사항 체크리스트를 자기 말로 log.md에 — ROADMAP 주의사항과 대조
+- [ ] [평일] D2: 후보 조사 ① — Lambda / AWS(g4dn·g5·g6)
+  - ✅ 완료: 인스턴스 타입·GPU 모델·시급·리전·스팟 여부 비교표 log.md 기록
+- [ ] [평일] D3: 후보 조사 ② + 예산 산정
+  - 🎯 개념: 온디맨드 vs 스팟 트레이드오프(회수 리스크), 총 15~25h × 시급 = 예산($50~100 목표)
+  - ✅ 완료: 후보 3곳 이상 비교표 완성 + 예산 상한 결정
+- [ ] [평일] D4: 결정 — `docs/notes/gpu-access-decision.md` 커밋 (🎉 Block 1 게이트)
+  - ✅ 완료: 프로바이더·인스턴스 타입·GPU 모델·시급·예산 상한·스팟 회수 대응이 적힌 결정 문서 커밋. **이 커밋 없이 Block 2 진입 금지**
+- [ ] [평일] D5: 계정·쿼터 선처리 + Block 1 회고
+  - 🎯 개념: GPU 인스턴스 쿼터 승인은 며칠 걸릴 수 있음 — Block 2 첫날 막히지 않게 지금 신청
+  - ✅ 완료: 계정·결제·쿼터 신청 상태 log.md 기록 + Block 1 회고(`[Block 2 준비]` 표기)
+- [ ] [주말] 스모크 테스트 — 결정한 환경에서 인스턴스 1회 기동 (실비용 ~$5, 2026-07-12 사용자 승인)
+  - 🎯 개념: 결정이 실제로 뜨는지 Block 2 전에 확인 — 기동→ssh→`nvidia-smi`→**즉시 종료**
+  - ✅ 완료: nvidia-smi 출력(드라이버·CUDA 버전·GPU 모델)을 log.md에 기록 + 인스턴스 종료·과금 중단 확인
+  - ⚠️ 막히면: 쿼터 거부/대기 → D5 신청 티켓 상태 확인, 길어지면 대체 프로바이더 스위치 판단
 ## W5 — Block 2: 스택 확인 랩 — 드라이버/CUDA/호환성 매트릭스 (상세화 대기)
 ## W6 — Block 2: 함정 재현 랩 — no kernel image 재현→해결 (상세화 대기)
 ## W7 — Block 2: OOM 랩 — VRAM과 모델 크기 (상세화 대기)
