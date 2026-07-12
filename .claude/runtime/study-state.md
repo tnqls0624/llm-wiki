@@ -1,4 +1,4 @@
-<!-- study-state v1 | block=0 | last_brief_date=2026-07-09 | repo_path=~/Desktop/Project/ai-infra-lab -->
+<!-- study-state v1 | block=0 | last_brief_date=2026-07-12 | repo_path=~/Desktop/Project/ai-infra-lab -->
 <!--
   AI Infra 학습 진도 정본. git 추적됨 → 두 Mac(회사/집)이 push/pull로 공유.
   study-brief.py(무인 cron)가 이 파일을 읽어 요일별 다음 미완료 항목 + 그 아래 들여쓴 학습 가이드를
@@ -13,7 +13,7 @@
 # AI Infra 학습 진도 — 인프라 빌더 트랙 (Block 0~6)
 
 **정본 커리큘럼**: `ai-infra-lab/ROADMAP.md` (2026-07-02 v3 확정 — 학습 우선, 블랙웰 특화는 부록 A/B).
-**현재**: 🎉 Block 0 완료(2026-07-05 — `python/train_mnist.py` S2~S5 전 파이프라인 `--epochs 1` 동작 검증). **[Block 1 시작]**(2026-07-09, W2 D4 ✅) — 다음: W2 D5 Dockerfile 초안.
+**현재**: 🎉 Block 0 완료(2026-07-05). **[Block 1 진행]** — W2 D5 ✅(2026-07-11, `docker build`/`run` 완주 + 레이어 캐시 실측). 다음: W2 주말 — **멀티스테이지 변환만 남음**(.dockerignore·컨테이너 실행 검증은 D5에서 선취).
 **주차↔블록**: W1~2=Block 0 · W3~4=Block 1(컨테이너) · W5~7=Block 2(GPU/CUDA) · W8~10=Block 3(서버·네트워크) · W11~12=Block 4(K8s) · W13~16=Block 5(서빙&학습) · W17~19=Block 6(관측성) + 버퍼 3주.
 
 ## W1 — 환경 + repo 척추 + 로드맵 확정 [Block 0]
@@ -51,7 +51,7 @@
 - [x] [평일] D4: Block 0 회고(버퍼 잔여 기록) + Block 1 시작 — Docker 이미지/레이어/볼륨 개념
   - 🎯 개념: 이미지 vs 컨테이너, 레이어 캐시, 데이터는 볼륨으로 분리하는 이유
   - ✅ 완료: log.md에 `[Block 1 시작]` 표기 + 개념 요약
-- [ ] [평일] D5: Dockerfile 초안 — CUDA 베이스 이미지에 train_mnist.py 탑재 (CPU 경로)
+- [x] [평일] D5: Dockerfile 초안 — CUDA 베이스 이미지에 train_mnist.py 탑재 (CPU 경로)
   - 🎯 개념: 베이스 이미지 선택(nvidia/cuda vs NGC PyTorch), COPY/RUN/CMD
   - ✅ 완료: `docker build`가 통과하는 Dockerfile 커밋 (docker/)
 - [ ] [주말] Dockerfile 완성 — 멀티스테이지 + .dockerignore + 컨테이너로 학습 실행 검증
@@ -151,3 +151,8 @@
 - 잘한 점: ① D4 채점 — Docker 이미지/컨테이너/볼륨 개념을 **먼저 기억으로**("아는것을 적어봄") 자기 말로 서술. 7-06 verbatim 지적 이후 retrieval-first 처방이 처음으로 실전 이행됨. cgroups(자원)/namespace(격리) 구분 정확, 특히 온프레미스 레이어-diff 배포 실무 사례("발생한 문제/해결" 칸 활용)는 개념↔경험 연결의 모범 — 면접 소재감. ② 7-07 저녁 TIL 4편 커밋(`d75d332`·`fe5a227`·`cc3d1e7`) — 학습→블로그 아웃풋 루프 가동(검토 공백일 산출물 소급 반영; 7-07·7-08 무인 검토 로그 없음). ③ 학습 인프라 자가 개선(`d710b87`·`a4ffbf2`): ai-infra-lab CLAUDE.md가 study-today.md 심볼릭 링크를 @참조 — 브리핑이 학습 세션에 자동 주입되는 구조를 스스로 설계(링크·타깃 동작 확인됨).
 - 부족하거나 고칠 점(기술 정밀도 — 내일 실습에서 검증): 1) "베이스 이미지를 복사하여 실행" → 실제로는 복사가 아니라 read-only 레이어들 위에 얇은 쓰기 레이어 하나를 얹는 **CoW(copy-on-write)**. `docker diff`/`docker history`로 실측 가능. 2) 레이어는 **불변(immutable)** — 변경이 "기존 레이어에 쌓이는" 게 아니라 새 레이어로 위에 쌓임. 캐시 무효화는 Dockerfile 명령 순서 기준(한 줄 바뀌면 그 아래 전부 재빌드) — D5에서 직접 체감할 것. 3) 볼륨 서술이 bind mount(호스트 디렉토리 마운트)에 가까움 — named volume(도커 관리 영역)과 구분. retrieval의 후반부(자료와 **대조**)는 아직 — 본인이 적은 내일 계획(volume 생존 실험·docker history)이 정확히 그 대조다.
 - 다음에 주의할 것: 고객사명이 든 실무 사례는 private repo(log.md)까지만 — 공개 TIL/블로그로 옮길 땐 스크럽(soobeen-voice가 걸러주지만 본인도 인지). D5 완료 기준 = `docker build` 통과하는 Dockerfile 커밋(`docker/`), CUDA 베이스 이미지 선택(nvidia/cuda vs NGC PyTorch)이 첫 결정 지점.
+
+### 2026-07-12 — W2 D5 ✅ (`4a9b603`~`15c3204`, 7-11 토 10커밋) / 주말 항목은 멀티스테이지만 남음
+- 잘한 점: ① D5 초과 달성 — `docker build` 통과(기준)를 넘어 `docker run`으로 컨테이너 안 1 epoch 학습 완주(loss=0.0898, 저장/재로드까지). ② **빌드 에러 4종을 "발생한 문제" 칸에 원인까지 기록** — 7-06 세 차례 지적된 실패 미기록 습관(감시 ③)이 이번 세션에서 정확히 교정됨. ③ 캐시 무효화 실측(주석 1줄→재빌드→apt/pip CACHED·이미지 해시 변경 관찰)으로 D4 정밀도 피드백 ②를 실험으로 검증 — retrieval의 후반부(자료와 대조)를 실측으로 수행. ④ "다음에 할 것"을 정밀도 ①③ 넘버링에 연결해 스스로 구체화(감시 ⑤ 해소 지속). TIL 5편도 자기 말 서술 + 금융권 사례 고객사명 스크럽 준수.
+- 부족하거나 고칠 점: ① **주말 항목 보류 — 멀티스테이지만 미구현**(.dockerignore·실행 검증은 D5에서 선취). 현 Dockerfile은 런타임 의존성만 설치해 슬림화 여지가 작지만 학습 목표는 메커니즘 — builder 스테이지에서 pip install 후 site-packages만 COPY하고 `docker images`로 크기 전후를 실측하면 체감됨. ② 컨테이너의 `pip3 install torch torchvision`이 **버전 무핀** — 로컬 requirements.txt는 `==` 고정인데 이미지는 매 빌드마다 최신을 받아 로컬↔컨테이너 버전이 갈라질 수 있음(재현성). `torch==2.12.1` 식으로 핀 권장. ③ `f0384eb`가 CMD shell form 실패 기록을 삭제 — 실패 기록을 지울 땐 "확인해보니 X여서 제거" 사유를 커밋 본문이나 log.md에 남길 것(트러블슈팅 이력의 신뢰성).
+- 다음에 주의할 것: 주말 마감 조건 = 멀티스테이지 변환 + 재빌드·재실행 통과 + 커밋(하나 남음). 본인이 적은 계획(`-v` 마운트로 data/models 분리·`docker diff` CoW 확인)은 정밀도 ①③ 검증이라 같은 세션에서 병행하기 좋음. Block 1 게이트 (b) gpu-access-decision.md는 W4 항목 — 서두를 필요 없음.
