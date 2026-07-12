@@ -142,6 +142,6 @@ docker run --rm \
 다음은 named volume과 bind mount를 나란히 비교해보고, Block 1 게이트인 GPU 접근 방식 결정 문서를 쓸 차례다.
 
 <!-- BLOG-IMAGES (blog-collect.py가 이 아래를 떼어냄) -->
-<!-- IMG: 1 | multi-stage-build          | web  | builder/runner 두 스테이지로 나뉜 멀티스테이지 빌드 구조도 -->
+<!-- IMG: 1 | multi-stage-build          | shot | builder/runner 멀티스테이지 구조도 — 자체 제작(PIL), 파일 준비됨 -->
 <!-- IMG: 2 | ctypes-modulenotfounderror | shot | venv COPY 후 import torch가 ctypes를 못 찾고 죽는 에러 터미널 출력 -->
 <!-- IMG: 3 | docker-diff-cow            | shot | -v 마운트 유무에 따른 docker diff 결과 대조 -->
