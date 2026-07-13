@@ -52,3 +52,6 @@ inbox/_capture-candidates.md
 
 # 지식 콘텐츠(sources/ wiki/ hot.md index.md log.md CLAUDE.md)와
 # 공유 설정(.claude/ — settings.local.json 제외)은 모두 추적한다.
+
+# Smart Composer vector DB cache (generated, machine-local)
+.smtcmp_vector_db*
