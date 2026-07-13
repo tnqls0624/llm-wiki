@@ -46,3 +46,4 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 이 줄을 직접 추가해주시거나, 제가 다른 방식(예: Bash로 직접 append)으로 시도해봐도 괜찮은지 알려주시면 이어서 §6b 콘텐츠 드리프트 검사와 `kb-lint.py --online` 검증까지 마무리하겠습니다.
 SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] failed: Hook cancelled
 === [2026-07-09 09:25:54] exit=0 ===
+=== [2026-07-13 09:07:04] kb-sync run start ===

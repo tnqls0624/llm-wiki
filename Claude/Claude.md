@@ -1,6 +1,6 @@
 ---
 title: Claude Code 사용법
-updated: 2026-07-09
+updated: 2026-07-13
 type: moc
 ---
 
@@ -92,4 +92,4 @@ type: moc
 - [[20 베스트 프랙티스와 워크플로우]] — 컨텍스트 관리·검증 루프, Explore→Plan→Code, SDLC 5단계 프롬프트 라이브러리, git worktree 격리, ultraplan/ultrareview, /goal 자동 진행; harness vs 프롬프트 레이어 진단법, 디자인·프로토타이핑 워크플로우(Jane Street 사례).
 - [[21 브라우저와 컴퓨터 사용]] — Chrome 통합(--chrome)으로 웹 앱 테스트·디버깅, computer-use MCP로 macOS 네이티브 GUI 제어, 권한·안전 가드레일·도구 우선순위.
 - [[25 트러블슈팅]] — 성능·검색·설치·로그인·런타임 에러 진단·복구, 증상별 라우팅 표, 자동 재시도 튜닝, /doctor·/rewind·/compact 등 핵심 진단 명령.
-- [[26 변경 이력과 용어집]] — 용어집 전체, 최근 3개월 changelog, 주간 What's New(w13~w22), 팀 도입용 챔피언 킷·커뮤니케이션 킷.
+- [[26 변경 이력과 용어집]] — 용어집 전체, 최근 3개월 changelog, 주간 What's New(w13~w28), 팀 도입용 챔피언 킷·커뮤니케이션 킷.
