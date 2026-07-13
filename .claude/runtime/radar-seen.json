@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-07-11T09:36:05",
+ "updated": "2026-07-13T09:17:16",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -652,6 +652,34 @@
   "devto:4106002": "2026-07-11",
   "devto:4106902": "2026-07-11",
   "devto:4104289": "2026-07-11",
-  "airel:vLLM:v0.25.0": "2026-07-11"
+  "airel:vLLM:v0.25.0": "2026-07-11",
+  "hn:48886272": "2026-07-13",
+  "gh:jarrodwatts/claude-hud": "2026-07-13",
+  "hn:48883275": "2026-07-13",
+  "hn:48883257": "2026-07-13",
+  "hn:48883064": "2026-07-13",
+  "hn:48882253": "2026-07-13",
+  "hn:48879501": "2026-07-13",
+  "hn:48877650": "2026-07-13",
+  "gh:burakgon/roamcode": "2026-07-13",
+  "gh:NodeNestor/claude-rolling-context": "2026-07-13",
+  "ghc:hesreallyhim/awesome-claude-code:69d3b50df1": "2026-07-13",
+  "devto:4126384": "2026-07-13",
+  "airel:vLLM:v0.25.1": "2026-07-13",
+  "hn:48875892": "2026-07-13",
+  "ghrel:v2.1.207": "2026-07-13",
+  "devto:4122621": "2026-07-13",
+  "devto:4115157": "2026-07-13",
+  "devto:4121587": "2026-07-13",
+  "devto:4120450": "2026-07-13",
+  "airel:Karpenter:v1.14.0": "2026-07-13",
+  "airel:Karpenter:v1.11.2": "2026-07-13",
+  "airel:Karpenter:v1.9.1": "2026-07-13",
+  "airel:Karpenter:v1.8.7": "2026-07-13",
+  "airel:Karpenter:v1.7.5": "2026-07-13",
+  "devto:4109245": "2026-07-13",
+  "devto:4115039": "2026-07-13",
+  "devto:4109841": "2026-07-13",
+  "npm:@yanglet/claude-monitor": "2026-07-13"
  }
 }
