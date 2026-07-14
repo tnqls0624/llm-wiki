@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-07-13T09:17:16",
+ "updated": "2026-07-14T09:30:32",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -707,6 +707,32 @@
   "hn:48847672": "2026-07-10",
   "hn:48847662": "2026-07-10",
   "hn:48847623": "2026-07-10",
-  "hn:48875375": "2026-07-13"
+  "hn:48875375": "2026-07-13",
+  "gh:KyaniteLabs/kinocut": "2026-07-14",
+  "gh:eriknewton/sanctuary-framework": "2026-07-14",
+  "gh:FrkAk/piyaz": "2026-07-14",
+  "gh:wigtn/wigtn-plugins": "2026-07-14",
+  "gh:rshankras/claude-code-apple-skills": "2026-07-14",
+  "gh:zernie/vigiles": "2026-07-14",
+  "gn:https://news.hada.io/topic?id=31406": "2026-07-14",
+  "devto:4115207": "2026-07-14",
+  "hn:48899321": "2026-07-14",
+  "hn:48898736": "2026-07-14",
+  "hn:48898604": "2026-07-14",
+  "hn:48898409": "2026-07-14",
+  "hn:48897613": "2026-07-14",
+  "hn:48897554": "2026-07-14",
+  "hn:48896257": "2026-07-14",
+  "hn:48892955": "2026-07-14",
+  "gn:https://news.hada.io/topic?id=31397": "2026-07-14",
+  "gn:https://news.hada.io/topic?id=31373": "2026-07-14",
+  "gn:https://news.hada.io/topic?id=31370": "2026-07-14",
+  "devto:4131632": "2026-07-14",
+  "devto:4135418": "2026-07-14",
+  "devto:4136319": "2026-07-14",
+  "airel:Karpenter:v1.10.1": "2026-07-14",
+  "airel:Karpenter:v1.6.7": "2026-07-14",
+  "devto:4115170": "2026-07-14",
+  "devto:4115166": "2026-07-14"
  }
 }
