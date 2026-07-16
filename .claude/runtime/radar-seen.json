@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-07-16T09:06:34",
+ "updated": "2026-07-16T09:30:24",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -761,6 +761,17 @@
   "devto:4132935": "2026-07-16",
   "devto:4124801": "2026-07-16",
   "devto:4115162": "2026-07-16",
-  "npm:gmccc": "2026-07-16"
+  "npm:gmccc": "2026-07-16",
+  "gh:EconSolider/dynare-copilot": "2026-07-16",
+  "gh:Agent360dk/browser-mcp": "2026-07-16",
+  "gh:BlockRunAI/blockrun-mcp": "2026-07-16",
+  "gh:vulca-org/vulca-visual-control-sdk": "2026-07-16",
+  "hn:48916708": "2026-07-16",
+  "hn:48915381": "2026-07-16",
+  "hn:48912004": "2026-07-16",
+  "hn:48910978": "2026-07-16",
+  "hn:48908393": "2026-07-16",
+  "hn:48906000": "2026-07-16",
+  "devto:4114460": "2026-07-16"
  }
 }
