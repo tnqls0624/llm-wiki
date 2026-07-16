@@ -50,3 +50,4 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 공식 문서 165개 페이지의 해시를 비교하는 백그라운드 작업이 완료되면 자동으로 알림을 받아 이어서 진행하겠습니다.
 === [2026-07-13 09:12:16] exit=0 ===
 === [2026-07-16 09:07:05] kb-sync run start ===
+백그라운드 작업(콘텐츠 드리프트 검사)이 아직 진행 중이다. 완료되면 알림이 올 것이므로 여기서 대기하겠다.
