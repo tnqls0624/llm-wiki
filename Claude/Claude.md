@@ -55,7 +55,7 @@ type: moc
 
 ### 시작·CLI
 - [[01 시작하기]] — 설치·업데이트·제거(바이너리 서명 검증), 로그인·인증, 에이전틱 루프·세션·컨텍스트·권한 모드, Quickstart 8단계, 확장 기능 선택 기준까지의 입문 종합 노트.
-- [[02 CLI 레퍼런스]] — CLI 명령어·플래그 전체, 대화형 모드 단축키·vim 모드, keybindings.json 커스터마이징, 터미널 설정, 풀스크린 렌더링, 음성 받아쓰기.
+- [[02 CLI 레퍼런스]] — CLI 명령어·플래그 전체, 대화형 모드 단축키·vim 모드, keybindings.json 커스터마이징, 터미널 설정, 풀스크린 렌더링, 음성 받아쓰기, 접근성(스크린 리더 모드·화면 확대기·색약 테마).
 
 ### 설정·권한
 - [[03 메모리와 컨텍스트]] — CLAUDE.md 계층·auto memory, 컨텍스트 윈도우 동작·/compact 생존표, 세션 재개·체크포인팅(/rewind), 모노레포 스코핑, .claude 디렉터리 레퍼런스.
@@ -73,7 +73,7 @@ type: moc
 
 ### 자동화·통합
 - [[13 자동화와 스케줄링]] — headless 실행(claude -p, --bare), 세션 스코프 /loop·cron, 클라우드 Routines·Desktop scheduled tasks, Channels 이벤트 푸시, Remote Control·딥링크.
-- [[14 IDE와 데스크톱]] — VS Code/Cursor 확장, JetBrains 플러그인, 데스크톱 GUI(병렬 세션·worktree·PR 모니터링), .claude/launch.json, Enterprise managed settings.
+- [[14 IDE와 데스크톱]] — VS Code/Cursor 확장, JetBrains 플러그인, 데스크톱 GUI(병렬 세션·worktree·PR 모니터링, Linux 베타·Windows WSL 세션), .claude/launch.json, Enterprise managed settings.
 - [[15 웹과 모바일]] — claude.ai/code 클라우드 세션·GitHub 연결, 클라우드 환경 구성·네트워크 access level, --remote/--teleport 세션 이동, Auto-fix PR, 모바일 앱.
 - [[16 CI-CD와 팀 통합]] — GitHub Actions(claude-code-action v1)·GitLab CI/CD, 매니지드 Code Review, GHES 연결, Slack 라우팅 모드, Bedrock/Vertex OIDC 인증.
 

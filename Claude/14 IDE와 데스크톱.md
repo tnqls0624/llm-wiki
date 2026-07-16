@@ -1,8 +1,8 @@
 ---
 title: 14 IDE와 데스크톱
-updated: 2026-07-06
+updated: 2026-07-16
 type: reference
-sources: [vs-code, jetbrains, desktop, desktop-quickstart, platforms, desktop-linux]
+sources: [vs-code, jetbrains, desktop, desktop-quickstart, platforms, desktop-linux, desktop-wsl]
 ---
 
 # 14 IDE와 데스크톱
@@ -415,6 +415,18 @@ sudo apt update && sudo apt install claude-desktop
 **업데이트**: `sudo apt update && sudo apt upgrade` (앱 자체 자동 업데이트 없음). **제거**: `sudo apt remove claude-desktop` (저장소 등록도 했다면 `/etc/apt/sources.list.d/claude-desktop.list` 별도 삭제).
 
 **Linux 베타에 아직 없는 것**: [Computer use](#claude에게-컴퓨터-사용-허용-computer-use)(앱·화면 제어), 음성 받아쓰기([[02 CLI 레퍼런스]]의 CLI로 대체), 네이티브 Wayland에서의 Quick Entry 전역 단축키(데스크톱 환경의 GlobalShortcuts portal 필요, X11은 동작), Fedora/RHEL 지원. 이 기능들이 필요하면 같은 엔진을 쓰는 CLI를 사용.
+
+### Windows에서 WSL 세션 (desktop-wsl)
+
+Windows의 Code 탭은 세션을 Windows 자체가 아니라 **WSL 2 배포판 안에서** 실행할 수 있다. Claude Code 프로세스·도구·git이 모두 배포판 내부에서 그 Linux 툴체인과 네이티브 Linux 경로로 실행되므로, 프로젝트가 실제로 타깃하는 환경과 일치한다. 저장소가 배포판 파일시스템 안에 있으면 이 방식을 쓴다 — Windows에서 그 파일에 접근하면 네트워크 파일시스템을 경유해 느리고 파일 감시(file watching)도 깨진다.
+
+**요구사항**: [WSL 2](https://learn.microsoft.com/windows/wsl/install)가 설치된 Windows 10/11(WSL 1 불가), 설치된 배포판 1개 이상(예 Ubuntu), 배포판 내부에 `git` 설치.
+
+**세션 시작**: ① 새 세션 시작 후 환경 선택기를 열면 설치된 WSL 2 배포판들이 **WSL** 섹션에 나타난다 → 하나 선택. ② 세션은 배포판 홈 디렉터리에서 시작하므로 폴더 선택기로 프로젝트 폴더를 고른다(탐색은 배포판 내부에서 `/home/you/project` 같은 Linux 경로로 이뤄짐). ③ 배포판+폴더 조합마다 최초 1회 워크스페이스 신뢰 다이얼로그가 뜬다 — 한 배포판에서 신뢰한 폴더가 다른 배포판이나 Windows 쪽 동일 경로에는 적용되지 않는다. `\\wsl.localhost\...` 폴더를 일반 폴더 선택기에서 직접 열어도 해당 배포판 안에서 다시 열린다. 배포판별 최근 폴더가 선택기에 표시돼 재연결이 한 번의 클릭으로 된다.
+
+**동작하는 것**: 병렬 세션, side chat, 시각적 diff 리뷰, 브랜치·PR 상태, 워크트리 — 모두 배포판 내부의 git·툴체인 기반. **Open in editor**는 [Remote - WSL](https://code.visualstudio.com/docs/remote/wsl)로 연결된 VS Code를 연다. **아직 없는 것**: 통합 터미널, 커넥터·플러그인, session forking, 파일 브라우저 pane, 컴포저 `@` 파일 제안.
+
+**관리형 디바이스**: 조직이 관리하는 디바이스에서는 WSL 세션이 막힐 수 있다("device is managed" 메시지) — admin-setup의 [설정 전달 방식](https://code.claude.com/docs/en/admin-setup#decide-how-settings-reach-devices) 참고.
 
 ### 세 개의 탭
 
@@ -948,3 +960,4 @@ CLI가 터미널 네이티브 작업에 가장 완전(스크립팅·Agent SDK는
 - [desktop-quickstart](https://code.claude.com/docs/en/desktop-quickstart)
 - [platforms](https://code.claude.com/docs/en/platforms)
 - [desktop-linux](https://code.claude.com/docs/en/desktop-linux)
+- [desktop-wsl](https://code.claude.com/docs/en/desktop-wsl)

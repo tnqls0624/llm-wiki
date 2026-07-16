@@ -1,13 +1,13 @@
 ---
 title: 02 CLI 레퍼런스
-updated: 2026-06-07
+updated: 2026-07-16
 type: reference
-sources: [cli-reference, interactive-mode, keybindings, terminal-config, fullscreen, voice-dictation]
+sources: [cli-reference, interactive-mode, keybindings, terminal-config, fullscreen, voice-dictation, accessibility]
 ---
 
 # 02 CLI 레퍼런스
 
-Claude Code의 커맨드라인 인터페이스, 대화형 세션 단축키, 키바인딩 커스터마이징, 터미널 설정, 풀스크린 렌더링, 음성 받아쓰기에 대한 종합 레퍼런스다. 명령어·플래그·키·설정 키는 원문 그대로 유지하고 설명은 한국어로 정리했다. 허브는 [[Claude]], 시작은 [[01 시작하기]] 참고.
+Claude Code의 커맨드라인 인터페이스, 대화형 세션 단축키, 키바인딩 커스터마이징, 터미널 설정, 풀스크린 렌더링, 음성 받아쓰기, 접근성(스크린 리더 모드)에 대한 종합 레퍼런스다. 명령어·플래그·키·설정 키는 원문 그대로 유지하고 설명은 한국어로 정리했다. 허브는 [[Claude]], 시작은 [[01 시작하기]] 참고.
 
 ---
 
@@ -987,6 +987,34 @@ Voice mode enabled (hold). Hold Space to record. Dictation language: en (/config
 
 ---
 
+## 접근성 (accessibility)
+
+스크린 리더 모드는 박스 문자·진행 애니메이션·제자리 redraw 대신 VoiceOver·NVDA 같은 스크린 리더가 순서대로 읽는 평문 라인을 출력한다. v2.1.181 이상 필요. 활성화는 opt-in이며 우선순위는 CLI 플래그 > 환경변수 > 설정([[04 설정]]) 순:
+
+| 범위 | 방법 |
+| :--- | :--- |
+| 이번 세션만 | `claude --ax-screen-reader` |
+| 셸 세션 | `export CLAUDE_AX_SCREEN_READER=1` (PowerShell은 `$env:CLAUDE_AX_SCREEN_READER = "1"`) |
+| 머신 전체(VS Code 통합 터미널 포함) | 설정 파일에 `"axScreenReader": true` |
+
+SSH 사용 시 환경변수·설정은 원격 머신에 지정한다. 켜지면 시작 시 `[Screen Reader Mode: on via flag/env/settings]`로 활성화 방법을 알린다(v2.1.206+; 이전 버전은 `[Accessible screen reader mode: on]`).
+
+**동작 변화**: 인터페이스 박스 문자·색상 전용 신호·변경 없는 콘텐츠 redraw 제거(spinner는 정적 텍스트로), 응답 내 테이블은 `Header: value` 문장으로 렌더(v2.1.198+). 출력은 터미널 스크롤백에 누적되므로 스크린 리더의 review 명령이나 터미널 검색으로 재탐색 가능. 각 메시지는 `you:`/`claude:`/`tool:`/`tool error:`/`error:`/`Permission Required:`/`Cost:` 라벨로 시작해 스크롤백 검색으로 구간 점프가 된다. 턴 경계마다 OSC 133 마커를 emit해 iTerm2(`Cmd+Shift+Up`), VS Code 터미널(`Ctrl+Up`/`Cmd+Up`), Windows Terminal(`scrollToMark` 액션 바인딩 필요) 등의 "이전 프롬프트로 점프" 키가 동작한다(macOS Terminal·WezTerm은 미지원, `you:` 라벨 검색으로 대체).
+
+권한 프롬프트를 포함한 메뉴는 화살표 대신 번호 목록으로 바뀐다 — 번호 입력 후 Enter, 범위 밖 입력 시 재안내, dismissible 메뉴는 Escape로 취소. Yes/no 프롬프트는 `y`/`n`(또는 `yes`/`no`) 타이핑으로 답한다. 응답 완료·권한 프롬프트 등장·5초 넘게 걸린 도구 완료 시 터미널 벨을 울려 주의를 끈다(벨 끄기는 터미널 앱 설정; 스크린 리더 모드 없이도 `preferredNotifChannel: "terminal_bell"`로 유사 알림 가능 — 위 "터미널 벨·알림" 참고).
+
+**스크린 리더 모드 밖의 접근성 설정** — 모두 스크린 리더 모드와 병행 가능:
+
+| 대상 | 설정 |
+| :--- | :--- |
+| 화면 확대기(macOS Zoom 등) | `CLAUDE_CODE_ACCESSIBILITY=1` 환경변수로 네이티브 커서 유지(확대기가 커서 위치 추적) |
+| 애니메이션 감소 | `prefersReducedMotion` 설정으로 spinner·shimmer 등 감소/비활성화 |
+| 색약 친화 테마 | `theme` 설정의 `dark-daltonized`/`light-daltonized` |
+
+**알려진 한계**: 스크린 리더 실행 중이어도 모드가 자동으로 켜지지 않음, plan mode 등 모드 전환 미안내, agent view·`claude attach`로 백그라운드 세션에 연결하면 alternate screen 진입([[08 서브에이전트와 에이전트 팀]], [[14 IDE와 데스크톱]] — [[13 자동화와 스케줄링]]의 backgrounding과 별개), 비용은 턴별이 아닌 종료 시 요약에만 안내, [[13 자동화와 스케줄링]]의 headless(`-p`) 모드는 원래 평문 출력이라 영향 없음.
+
+---
+
 ## 원본 문서
 
 - [cli-reference](https://code.claude.com/docs/en/cli-reference)
@@ -995,3 +1023,4 @@ Voice mode enabled (hold). Hold Space to record. Dictation language: en (/config
 - [terminal-config](https://code.claude.com/docs/en/terminal-config)
 - [fullscreen](https://code.claude.com/docs/en/fullscreen)
 - [voice-dictation](https://code.claude.com/docs/en/voice-dictation)
+- [accessibility](https://code.claude.com/docs/en/accessibility)
