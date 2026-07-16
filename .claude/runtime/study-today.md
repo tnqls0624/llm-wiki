@@ -2,12 +2,11 @@
 # 오늘의 학습 — 2026-07-16 (목)
 
 ## 오늘 할 것 (평일 · 20~40분)
-**W3** · D1: NVIDIA 스택 지도 — 드라이버 vs CUDA 툴킷 vs 컨테이너 런타임 (retrieval-first)
+**W3** · D2: NVIDIA Container Toolkit 동작 원리 — `--gpus all`이 하는 일
 
 ### 학습 가이드
-- 🎯 개념: 호스트 커널 드라이버 / CUDA 런타임·툴킷 / 컨테이너의 경계. W2에서 목격한 "NVIDIA Driver was not detected" 경고가 정확히 어느 층의 부재인가
-- 📖 자료: **먼저 무자료로** log.md에 스택 그림+설명 → 그다음 NVIDIA Container Toolkit 공식 아키텍처 문서와 대조
-- ✅ 완료: log.md에 자기 말 스택 지도 + 대조에서 틀렸던 부분 수정 기록
+- 🎯 개념: nvidia-container-runtime이 컨테이너 시작 시점에 드라이버 라이브러리·`/dev/nvidia*`를 주입하는 구조(runc hook). "이미지에 드라이버를 안 굽는" 이유가 여기서 완성됨
+- ✅ 완료: log.md에 주입 흐름 요약 + Block 2 D1에서 실측할 체크리스트 3개
 
 > 피곤하면 10분 대안: 어제 셀/스크립트 1개 다시 실행 + 변수 1개 바꿔 결과 비교 후 커밋. 연속성만 유지.
 

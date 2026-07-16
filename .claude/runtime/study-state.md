@@ -60,7 +60,7 @@
 
 <!-- 다음 구간은 해당 블록 진입 직전에 /study-coach plan 또는 ROADMAP.md 주차 마일스톤 기준으로 일별 상세화한다. -->
 ## W3 — Block 1: NVIDIA Container Toolkit 원리 + NGC (상세화 2026-07-12)
-- [ ] [평일] D1: NVIDIA 스택 지도 — 드라이버 vs CUDA 툴킷 vs 컨테이너 런타임 (retrieval-first)
+- [x] [평일] D1: NVIDIA 스택 지도 — 드라이버 vs CUDA 툴킷 vs 컨테이너 런타임 (retrieval-first)
   - 🎯 개념: 호스트 커널 드라이버 / CUDA 런타임·툴킷 / 컨테이너의 경계. W2에서 목격한 "NVIDIA Driver was not detected" 경고가 정확히 어느 층의 부재인가
   - 📖 자료: **먼저 무자료로** log.md에 스택 그림+설명 → 그다음 NVIDIA Container Toolkit 공식 아키텍처 문서와 대조
   - ✅ 완료: log.md에 자기 말 스택 지도 + 대조에서 틀렸던 부분 수정 기록
@@ -215,3 +215,8 @@
 - 검토: `9c545da` 이후 새 커밋 없음, working tree clean — 채점 변동 없음(W2는 오후에 완료 확정). 저녁 작업은 블로그 파이프라인: TIL 6편 임시저장(soobindairy.tistory.com) + 이미지 3장 준비 완료([사진 1] 코치 자체 제작 다이어그램 / [사진 2]·[사진 3] 본인 캡처 — ctypes 재현 시 스테이지 혼동 1회·`python3--minimal` 오타 1회를 스스로 수습). 재현용 컨테이너·이미지 뒷정리까지 확인됨.
 - 관찰: 캡처 재현 중 `docker system prune -a`(추정)로 전체 이미지·빌드 캐시 소실 → 커밋된 Dockerfile에서 풀 재빌드로 복구(코치 실행). "이미지는 소스에서 재생 가능한 산출물, prune -a와 rmi <태그>의 차이"가 덤 학습 — 다음 세션에서 log.md에 남길 가치 있음(오늘은 미기록, 커밋 없었으므로 강제 아님).
 - 다음에 주의할 것: **W3(NVIDIA Container Toolkit + NGC)가 상세화 대기** — 일별 체크리스트가 없어 내일 아침 브리핑이 비어 나온다. `/study-coach plan`으로 W3~W4(Block 1 잔여) 상세화가 최우선. 블로그는 발행 전 최종 검토만 남음(발행은 본인).
+
+### 2026-07-16 — W3 D1 ✅ (`91eebcd`, `261b3d4`)
+- 잘한 점: retrieval-first 완전 이행 — 무자료 스택 지도(§1) → 공식 문서 대조(§2) → 틀린 부분 3건 명시 수정(§3). 7-12 "이론 verbatim 복붙"(감시 ①)의 정확한 교정. §3-1(경고=증상, 원인 6가지)·§3-2(커널모듈은 호스트, userspace driver lib/device는 Toolkit이 컨테이너에 제공)는 본인 최초 가설(§1.2 "드라이버는 전부 호스트에만")의 오류를 스스로 잡은 진단 사고. §5 진단 순서·§5.3 2×2 해석표·§6 nvcc/libcudart/libcuda 3층 구분표까지 요구 범위 초과.
+- 부족하거나 고칠 점: ① D1이 D2(Toolkit 주입 원리)·D3(진단)까지 흡수 — D2 완료 기준의 "Block 2 D1 실측 체크리스트 3개"만 남음(5분 산출물). ② 순수 개념 단계라 정상이나 "libcuda.so 접근 불가"를 글로만 확정 — CPU Mac 실측(D3, `ldconfig -p | grep cuda`·`ls /dev/nvidia*`)으로 눈 확인 필요. 예측→실측 대조가 이 트랙의 강점(batch·CoW 실측처럼).
+- 다음에 주의할 것: 다음 = D2 체크리스트 3개 → D3 CPU Mac 실측. D3는 에러가 정상인 실험이므로 그 에러를 §5의 6개 원인 중 하나에 연결해 log.md "발생한 문제" 칸에 기록(감시 ③).
