@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-07-20T09:03:48",
+ "updated": "2026-07-20T09:30:25",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -805,6 +805,20 @@
   "airel:KServe:v0.20.0-rc0": "2026-07-20",
   "devto:3867879": "2026-07-20",
   "npm:skills-stats": "2026-07-20",
-  "npm:@chatcut/skill": "2026-07-20"
+  "npm:@chatcut/skill": "2026-07-20",
+  "gh:vshulcz/deja-vu": "2026-07-20",
+  "gh:Fmarzochi/EGC": "2026-07-20",
+  "gh:anatolykoptev/vaelor": "2026-07-20",
+  "gh:SirAllap/agentglass": "2026-07-20",
+  "hn:48966044": "2026-07-20",
+  "hn:48964950": "2026-07-20",
+  "hn:48964755": "2026-07-20",
+  "hn:48964346": "2026-07-20",
+  "hn:48961288": "2026-07-20",
+  "hn:48961120": "2026-07-20",
+  "hn:48959392": "2026-07-20",
+  "hn:48957809": "2026-07-20",
+  "devto:4146054": "2026-07-20",
+  "devto:4134475": "2026-07-20"
  }
 }
