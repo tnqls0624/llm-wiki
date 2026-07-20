@@ -74,11 +74,11 @@ type: moc
 ### 자동화·통합
 - [[13 자동화와 스케줄링]] — headless 실행(claude -p, --bare), 세션 스코프 /loop·cron, 클라우드 Routines·Desktop scheduled tasks, Channels 이벤트 푸시, Remote Control·딥링크.
 - [[14 IDE와 데스크톱]] — VS Code/Cursor 확장, JetBrains 플러그인, 데스크톱 GUI(병렬 세션·worktree·PR 모니터링, Linux 베타·Windows WSL 세션), .claude/launch.json, Enterprise managed settings.
-- [[15 웹과 모바일]] — claude.ai/code 클라우드 세션·GitHub 연결, 클라우드 환경 구성·네트워크 access level, --remote/--teleport 세션 이동, Auto-fix PR, 모바일 앱.
+- [[15 웹과 모바일]] — claude.ai/code 클라우드 세션·GitHub 연결, 클라우드 환경 구성·네트워크 access level, --remote/--teleport 세션 이동, Auto-fix PR, 모바일 앱(클라우드 세션·Remote Control·Dispatch 클라이언트 비교).
 - [[16 CI-CD와 팀 통합]] — GitHub Actions(claude-code-action v1)·GitLab CI/CD, 매니지드 Code Review, GHES 연결, Slack 라우팅 모드, Bedrock/Vertex OIDC 인증.
 
 ### 운영 (보안·비용)
-- [[18 보안과 샌드박스]] — 권한 기반 보안 아키텍처·프롬프트 인젝션 방어, 샌드박스 격리 스펙트럼(/sandbox·dev container·VM), security-guidance 플러그인, 데이터·텔레메트리·BAA 정책.
+- [[18 보안과 샌드박스]] — 권한 기반 보안 아키텍처·프롬프트 인젝션 방어, 샌드박스 격리 스펙트럼(/sandbox·dev container·VM), security-guidance 플러그인, 데이터·텔레메트리·BAA 정책, corporate launcher(CLAUDE_CODE_PROCESS_WRAPPER) 프로세스 강제.
 - [[19 비용과 성능]] — 비용 추적(/usage)·토큰 절감, 프롬프트 캐싱 동작, fast mode, OpenTelemetry 모니터링·SIEM 감사, 팀 애널리틱스 대시보드.
 - [[17 클라우드 프로바이더]] — AWS Bedrock·Claude Platform on AWS·Vertex AI·Microsoft Foundry 배포, 환경변수·IAM/RBAC·모델 핀, 서드파티 LLM 게이트웨이 환경변수 설정(LiteLLM), 기업 네트워크 설정.
 - [[27 게이트웨이]] — Claude apps gateway(자체 셀프호스팅, `claude gateway` 서브커맨드) 퀵스타트·gateway.yaml 레퍼런스·배포(K8s/Cloud Run/GCP 예시)·지출 한도 Admin API, 서드파티 게이트웨이 프로토콜 계약·개발자 접속·조직 롤아웃 5단계.
@@ -92,4 +92,4 @@ type: moc
 - [[20 베스트 프랙티스와 워크플로우]] — 컨텍스트 관리·검증 루프, Explore→Plan→Code, SDLC 5단계 프롬프트 라이브러리, git worktree 격리, ultraplan/ultrareview, /goal 자동 진행; harness vs 프롬프트 레이어 진단법, 디자인·프로토타이핑 워크플로우(Jane Street 사례).
 - [[21 브라우저와 컴퓨터 사용]] — Chrome 통합(--chrome)으로 웹 앱 테스트·디버깅, computer-use MCP로 macOS 네이티브 GUI 제어, 권한·안전 가드레일·도구 우선순위.
 - [[25 트러블슈팅]] — 성능·검색·설치·로그인·런타임 에러 진단·복구, 증상별 라우팅 표, 자동 재시도 튜닝, /doctor·/rewind·/compact 등 핵심 진단 명령.
-- [[26 변경 이력과 용어집]] — 용어집 전체, 최근 3개월 changelog, 주간 What's New(w13~w28), 팀 도입용 챔피언 킷·커뮤니케이션 킷.
+- [[26 변경 이력과 용어집]] — 용어집 전체, 최근 3개월 changelog, 주간 What's New(w13~w29), 팀 도입용 챔피언 킷·커뮤니케이션 킷.

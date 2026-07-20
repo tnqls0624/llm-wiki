@@ -52,3 +52,4 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 === [2026-07-16 09:07:05] kb-sync run start ===
 백그라운드 작업(콘텐츠 드리프트 검사)이 아직 진행 중이다. 완료되면 알림이 올 것이므로 여기서 대기하겠다.
 === [2026-07-16 09:15:22] exit=0 ===
+=== [2026-07-20 09:07:05] kb-sync run start ===
