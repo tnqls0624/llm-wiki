@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-07-21T09:30:19",
+ "updated": "2026-07-22T09:34:33",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -836,6 +836,27 @@
   "gn:https://news.hada.io/topic?id=31618": "2026-07-21",
   "gn:https://news.hada.io/topic?id=31617": "2026-07-21",
   "gn:https://news.hada.io/topic?id=31604": "2026-07-21",
-  "gn:https://news.hada.io/topic?id=31603": "2026-07-21"
+  "gn:https://news.hada.io/topic?id=31603": "2026-07-21",
+  "gh:juanklagos/spec-driven-development-template": "2026-07-22",
+  "gh:gowtham-sai-yadav/claude-teleport": "2026-07-22",
+  "gh:cobusgreyling/loop-engineering": "2026-07-22",
+  "gn:https://news.hada.io/topic?id=31674": "2026-07-22",
+  "hn:48999928": "2026-07-22",
+  "hn:48998132": "2026-07-22",
+  "hn:48997881": "2026-07-22",
+  "hn:48996423": "2026-07-22",
+  "hn:48995775": "2026-07-22",
+  "hn:48992474": "2026-07-22",
+  "hn:48991998": "2026-07-22",
+  "hn:48991403": "2026-07-22",
+  "ghrel:v2.1.217": "2026-07-22",
+  "gn:https://news.hada.io/topic?id=31646": "2026-07-22",
+  "devto:4191520": "2026-07-22",
+  "devto:4191779": "2026-07-22",
+  "devto:4191986": "2026-07-22",
+  "devto:3890329": "2026-07-22",
+  "devto:4176964": "2026-07-22",
+  "devto:4147158": "2026-07-22",
+  "npm:roster-cli": "2026-07-22"
  }
 }
