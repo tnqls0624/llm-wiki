@@ -73,12 +73,12 @@ type: moc
 
 ### 자동화·통합
 - [[13 자동화와 스케줄링]] — headless 실행(claude -p, --bare), 세션 스코프 /loop·cron, 클라우드 Routines·Desktop scheduled tasks, Channels 이벤트 푸시, Remote Control·딥링크.
-- [[14 IDE와 데스크톱]] — VS Code/Cursor 확장, JetBrains 플러그인, 데스크톱 GUI(병렬 세션·worktree·PR 모니터링, Linux 베타·Windows WSL 세션), .claude/launch.json, Enterprise managed settings.
+- [[14 IDE와 데스크톱]] — VS Code/Cursor 확장, JetBrains 플러그인, 데스크톱 GUI(병렬 세션·worktree·PR 모니터링, Linux 베타·Windows WSL 세션, iOS 시뮬레이터 pane), .claude/launch.json, Enterprise managed settings.
 - [[15 웹과 모바일]] — claude.ai/code 클라우드 세션·GitHub 연결, 클라우드 환경 구성·네트워크 access level, --remote/--teleport 세션 이동, Auto-fix PR, 모바일 앱(클라우드 세션·Remote Control·Dispatch 클라이언트 비교).
 - [[16 CI-CD와 팀 통합]] — GitHub Actions(claude-code-action v1)·GitLab CI/CD, 매니지드 Code Review, GHES 연결, Slack 라우팅 모드, Bedrock/Vertex OIDC 인증.
 
 ### 운영 (보안·비용)
-- [[18 보안과 샌드박스]] — 권한 기반 보안 아키텍처·프롬프트 인젝션 방어, 샌드박스 격리 스펙트럼(/sandbox·dev container·VM), security-guidance 플러그인, 데이터·텔레메트리·BAA 정책, corporate launcher(CLAUDE_CODE_PROCESS_WRAPPER) 프로세스 강제.
+- [[18 보안과 샌드박스]] — 권한 기반 보안 아키텍처·프롬프트 인젝션 방어, 샌드박스 격리 스펙트럼(/sandbox·dev container·VM), security-guidance 플러그인, Claude Security 온디맨드 딥스캔 플러그인, 데이터·텔레메트리·BAA 정책, corporate launcher(CLAUDE_CODE_PROCESS_WRAPPER) 프로세스 강제.
 - [[19 비용과 성능]] — 비용 추적(/usage)·토큰 절감, 프롬프트 캐싱 동작, fast mode, OpenTelemetry 모니터링·SIEM 감사, 팀 애널리틱스 대시보드.
 - [[17 클라우드 프로바이더]] — AWS Bedrock·Claude Platform on AWS·Vertex AI·Microsoft Foundry 배포, 환경변수·IAM/RBAC·모델 핀, 서드파티 LLM 게이트웨이 환경변수 설정(LiteLLM), 기업 네트워크 설정.
 - [[27 게이트웨이]] — Claude apps gateway(자체 셀프호스팅, `claude gateway` 서브커맨드) 퀵스타트·gateway.yaml 레퍼런스·배포(K8s/Cloud Run/GCP 예시)·지출 한도 Admin API, 서드파티 게이트웨이 프로토콜 계약·개발자 접속·조직 롤아웃 5단계.

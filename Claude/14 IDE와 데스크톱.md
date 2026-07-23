@@ -1,8 +1,8 @@
 ---
 title: 14 IDE와 데스크톱
-updated: 2026-07-16
+updated: 2026-07-23
 type: reference
-sources: [vs-code, jetbrains, desktop, desktop-quickstart, platforms, desktop-linux, desktop-wsl]
+sources: [vs-code, jetbrains, desktop, desktop-quickstart, platforms, desktop-linux, desktop-wsl, desktop-ios-simulator]
 ---
 
 # 14 IDE와 데스크톱
@@ -616,6 +616,21 @@ Claude가 앱을 열고 화면을 제어해 GUI에서만 되는 작업(네이티
 
 처음 앱 사용 시 세션에 프롬프트 — **Allow for this session** / **Deny**. 승인은 현재 세션 동안(Dispatch-spawned 세션은 30분). 터미널·Finder/File Explorer·System Settings 같은 광범위 앱은 추가 경고 표시. Settings > General에서 **Denied apps**(프롬프트 없이 거부), **Unhide apps when Claude finishes**(작업 중 숨긴 창 복원) 구성.
 
+### iOS 시뮬레이터 pane (desktop-ios-simulator)
+
+> [!note] 퍼블릭 베타
+> macOS의 Claude Code Desktop 전용, Pro/Max/Team 플랜(Enterprise 불가). Claude Desktop **v1.24012.0+**, Xcode(iOS 플랫폼 포함)로 시뮬레이터 디바이스 제공.
+
+Claude가 앱을 시뮬레이터에서 빌드·설치·실행·점검할 때마다 자동으로 열려 디바이스 화면을 실시간 스트리밍하는 pane이다. Computer use와 달리 **시뮬레이터를 직접 구동**하므로 화면 전체를 장악하지 않고 다른 창을 가리지도 않는다 — 그래서 macOS Accessibility·Screen Recording 권한이 필요 없다. CLI에서는 이 경로가 없어 [[21 브라우저와 컴퓨터 사용]]의 computer-use로 시뮬레이터에 접근한다(마우스로 조작하듯 화면을 제어).
+
+**사용법**: iOS 프로젝트 폴더로 세션 시작 후 "시뮬레이터에서 빌드해서 온보딩 플로우 확인해줘"처럼 실행·검증을 요청하면 pane이 자동으로 열린다. 세션 툴바 **Views** 메뉴의 **iOS Simulator** 항목으로 직접 열 수도 있고(디바이스 미부착 시 **Attach simulator**), 특정 기기를 원하면 요청에 이름을 명시한다(예: "iPhone SE 시뮬레이터로 실행해줘"). 세션당 디바이스는 최대 4개, 각각 자기 pane을 가지며 [[#병렬 세션 (Git 격리)]]마다 별도 디바이스를 쓴다.
+
+**직접 조작** — 화면 클릭·드래그로 탭/스와이프, `Cmd+Shift+H`(홈)·`Cmd+L`(잠금)·`Cmd+Up/Down`(볼륨) 같은 Apple Simulator 단축키, `Cmd+Right Arrow`로 회전, `Cmd+S`/`Cmd+R`로 스크린샷·화면 녹화(데스크톱에 저장). 같은 디바이스를 Claude와 공유하므로 **Claude is using this device** 배지가 뜬 동안은 조작을 피해야 결과가 앱 상태를 정확히 반영한다.
+
+**동의·권한** — 디바이스 최초 사용 시 세션이 아니라 **디바이스당 한 번** 승인을 요청(스크린샷은 Anthropic에 전송·일반 대화 보존 정책 적용 → 실기기 계정 로그인 금지). 이후 탭·타이핑·스크린샷은 추가 프롬프트 없이 진행. 단 URL 열기(딥링크 검증 등 데이터가 기기 밖으로 나갈 수 있음)와 `xcodebuild` 빌드 실행은 세션의 [[05 권한]] 모드를 그대로 따른다. 조직은 `disableMobileSimulatorTools` managed 설정으로 전체 차단 가능(pane 자체는 수동 조작용으로 남음).
+
+**한계**: 실제 iPhone/iPad 제어 불가(시뮬레이터만). cloud·SSH 세션은 Mac의 시뮬레이터에 닿지 못해 로컬 세션 전용. Claude가 실행 의도를 못 알아채면 "run the app in the iOS Simulator and tap through X" 처럼 목표를 명시하면 된다.
+
 ### 세션 관리
 
 #### 병렬 세션 (Git 격리)
@@ -961,3 +976,4 @@ CLI가 터미널 네이티브 작업에 가장 완전(스크립팅·Agent SDK는
 - [platforms](https://code.claude.com/docs/en/platforms)
 - [desktop-linux](https://code.claude.com/docs/en/desktop-linux)
 - [desktop-wsl](https://code.claude.com/docs/en/desktop-wsl)
+- [desktop-ios-simulator](https://code.claude.com/docs/en/desktop-ios-simulator)
