@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-07-22T09:34:33",
+ "updated": "2026-07-23T09:17:22",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -894,6 +894,25 @@
   "devto:4176964": "2026-07-22",
   "devto:4147158": "2026-07-22",
   "npm:roster-cli": "2026-07-22",
-  "gh:V-Songbird/hush": "2026-07-22"
+  "gh:V-Songbird/hush": "2026-07-22",
+  "gh:tenequm/pond": "2026-07-23",
+  "gh:moonrunnerkc/swarm-orchestrator": "2026-07-23",
+  "hn:49014566": "2026-07-23",
+  "hn:49014059": "2026-07-23",
+  "hn:49013970": "2026-07-23",
+  "hn:49012330": "2026-07-23",
+  "hn:49012132": "2026-07-23",
+  "hn:49008916": "2026-07-23",
+  "hn:49006270": "2026-07-23",
+  "hn:49005076": "2026-07-23",
+  "ghrel:v2.1.218": "2026-07-23",
+  "gh:yvgude/lean-ctx": "2026-07-23",
+  "gh:multiplex-ai/muggle-ai-works": "2026-07-23",
+  "gn:https://news.hada.io/topic?id=31695": "2026-07-23",
+  "acl:July 22, 2026": "2026-07-23",
+  "devto:4209254": "2026-07-23",
+  "devto:4190399": "2026-07-23",
+  "devto:4159225": "2026-07-23",
+  "npm:@ryan_nookpi/pi-extension-claude-mcp-bridge": "2026-07-23"
  }
 }

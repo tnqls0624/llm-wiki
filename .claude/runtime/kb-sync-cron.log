@@ -83,3 +83,5 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 - 6단계 검증(`python3 .claude/kb-lint.py --online`)과 6b단계 콘텐츠 드리프트 감지(`kb-source-hashes.py`)도 이번 세션에서 Bash의 파일 기반 python3 스크립트 실행이 계속 승인 거부되어(반면 `curl`·`git status` 등은 정상 동작) 수행하지 못했습니다. `Bash(python3 -c ' *)` 패턴만 허용 목록에 있고 스크립트 파일 실행은 매번 별도 승인이 필요한데, 이 세션에서는 승인이 통과되지 않았습니다.
 
 두 가지 모두 재시도하지 않고 멈췄습니다. 인터랙티브 세션에서 직접 `python3 .claude/kb-lint.py --online`과 `hot.md` 갱신 한 줄을 확인해 주시거나, 이 권한 정책이 의도된 것인지 확인 부탁드립니다.
+SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] failed: Hook cancelled
+=== [2026-07-23 09:13:36] exit=0 ===
