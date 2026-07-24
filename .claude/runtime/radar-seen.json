@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-07-23T09:30:25",
+ "updated": "2026-07-24T09:30:20",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -912,6 +912,28 @@
   "devto:4209254": "2026-07-23",
   "devto:4190399": "2026-07-23",
   "devto:4159225": "2026-07-23",
-  "npm:@ryan_nookpi/pi-extension-claude-mcp-bridge": "2026-07-23"
+  "npm:@ryan_nookpi/pi-extension-claude-mcp-bridge": "2026-07-23",
+  "gh:mlava/scholar-sidekick-mcp": "2026-07-24",
+  "gh:sgx-labs/statelessagent": "2026-07-24",
+  "gh:oraios/serena": "2026-07-24",
+  "gh:Cassette-Editor/oh-my-cassette": "2026-07-24",
+  "gh:levi-qiao/octopus-skill": "2026-07-24",
+  "gh:davekilleen/Dex": "2026-07-24",
+  "gh:rimio-ai/rimz": "2026-07-24",
+  "hn:49028693": "2026-07-24",
+  "hn:49027698": "2026-07-24",
+  "hn:49027640": "2026-07-24",
+  "hn:49025471": "2026-07-24",
+  "hn:49025198": "2026-07-24",
+  "hn:49024833": "2026-07-24",
+  "hn:49023564": "2026-07-24",
+  "hn:49023551": "2026-07-24",
+  "gn:https://news.hada.io/topic?id=31719": "2026-07-24",
+  "gn:https://news.hada.io/topic?id=31710": "2026-07-24",
+  "devto:4216841": "2026-07-24",
+  "devto:4212159": "2026-07-24",
+  "devto:4215288": "2026-07-24",
+  "airel:vLLM:v0.26.0rc1": "2026-07-24",
+  "devto:4201255": "2026-07-24"
  }
 }
