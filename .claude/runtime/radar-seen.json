@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-07-24T09:17:22",
+ "updated": "2026-07-25T09:17:19",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -931,6 +931,24 @@
   "devto:4212159": "2026-07-24",
   "devto:4215288": "2026-07-24",
   "airel:vLLM:v0.26.0rc1": "2026-07-24",
-  "devto:4201255": "2026-07-24"
+  "devto:4201255": "2026-07-24",
+  "gh:Cassette-Editor/oh-my-cassette": "2026-07-25",
+  "gh:pouriamrt/claude-mesh": "2026-07-25",
+  "gn:https://news.hada.io/topic?id=31793": "2026-07-25",
+  "gn:https://news.hada.io/topic?id=31783": "2026-07-25",
+  "gn:https://news.hada.io/topic?id=31782": "2026-07-25",
+  "gn:https://news.hada.io/topic?id=31781": "2026-07-25",
+  "gn:https://news.hada.io/topic?id=31773": "2026-07-25",
+  "hn:49042653": "2026-07-25",
+  "hn:49042509": "2026-07-25",
+  "hn:49042416": "2026-07-25",
+  "hn:49037978": "2026-07-25",
+  "hn:49037829": "2026-07-25",
+  "hn:49035946": "2026-07-25",
+  "hn:49035786": "2026-07-25",
+  "hn:49035200": "2026-07-25",
+  "ghrel:v2.1.219": "2026-07-25",
+  "devto:4224703": "2026-07-25",
+  "devto:4188809": "2026-07-25"
  }
 }
