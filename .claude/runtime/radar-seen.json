@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-07-25T09:17:19",
+ "updated": "2026-07-26T09:17:39",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -949,6 +949,20 @@
   "hn:49035200": "2026-07-25",
   "ghrel:v2.1.219": "2026-07-25",
   "devto:4224703": "2026-07-25",
-  "devto:4188809": "2026-07-25"
+  "devto:4188809": "2026-07-25",
+  "gh:adlaiponderous700/claude-skill-cinematic-prompt": "2026-07-26",
+  "gh:chapmanjw/minecraft-java-fabric-mcp-server": "2026-07-26",
+  "gh:drayline/rootnode-skills": "2026-07-26",
+  "gh:Digital-Process-Tools/claude-remember": "2026-07-26",
+  "hn:49051072": "2026-07-26",
+  "hn:49048571": "2026-07-26",
+  "hn:49048051": "2026-07-26",
+  "hn:49048037": "2026-07-26",
+  "hn:49046592": "2026-07-26",
+  "hn:49046289": "2026-07-26",
+  "hn:49044662": "2026-07-26",
+  "hn:49043889": "2026-07-26",
+  "ghrel:v2.1.220": "2026-07-26",
+  "airel:vLLM:v0.26.0": "2026-07-26"
  }
 }
