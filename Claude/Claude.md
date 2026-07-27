@@ -1,12 +1,12 @@
 ---
 title: Claude Code 사용법
-updated: 2026-07-13
+updated: 2026-07-27
 type: moc
 ---
 
 # Claude Code 사용법
 
-이 노트는 Claude Code 공식 문서(code.claude.com/docs) 전체 페이지를 27개 노트로 종합한 지식 베이스의 중심 허브(MOC)다. 설치부터 CLI·설정·권한·확장(스킬·훅·MCP·플러그인·서브에이전트)·자동화·팀 통합·운영(보안·비용)·Agent SDK·레퍼런스까지 Claude Code의 모든 사용법을 다룬다. 명령어·플래그·설정 키·환경변수는 원문 영어 그대로, 맥락·트레이드오프·주의사항은 한국어로 정리했으며, 각 노트는 본문에서 `허브: [[Claude]]`로 이곳을 가리킨다. 아래 **용도별 학습 경로**로 목적에 맞는 노트를 순서대로 따라가거나, **전체 지도**에서 주제군별로 원하는 노트를 바로 찾아갈 수 있다.
+이 노트는 Claude Code 공식 문서(code.claude.com/docs)와 Anthropic 블로그를 28개 노트로 종합한 지식 베이스의 중심 허브(MOC)다. 설치부터 CLI·설정·권한·확장(스킬·훅·MCP·플러그인·서브에이전트)·자동화·팀 통합·운영(보안·비용)·Agent SDK·레퍼런스·실전 마이그레이션 가이드까지 Claude Code의 모든 사용법을 다룬다. 명령어·플래그·설정 키·환경변수는 원문 영어 그대로, 맥락·트레이드오프·주의사항은 한국어로 정리했으며, 각 노트는 본문에서 `허브: [[Claude]]`로 이곳을 가리킨다. 아래 **용도별 학습 경로**로 목적에 맞는 노트를 순서대로 따라가거나, **전체 지도**에서 주제군별로 원하는 노트를 바로 찾아갈 수 있다.
 
 ## 용도별 학습 경로
 
@@ -51,7 +51,7 @@ type: moc
 
 ## 전체 지도
 
-27개 노트를 주제군으로 묶어 각 노트당 한 줄 요약과 함께 나열한다.
+28개 노트를 주제군으로 묶어 각 노트당 한 줄 요약과 함께 나열한다.
 
 ### 시작·CLI
 - [[01 시작하기]] — 설치·업데이트·제거(바이너리 서명 검증), 로그인·인증, 에이전틱 루프·세션·컨텍스트·권한 모드, Quickstart 8단계, 확장 기능 선택 기준까지의 입문 종합 노트.
@@ -73,12 +73,12 @@ type: moc
 
 ### 자동화·통합
 - [[13 자동화와 스케줄링]] — headless 실행(claude -p, --bare), 세션 스코프 /loop·cron, 클라우드 Routines·Desktop scheduled tasks, Channels 이벤트 푸시, Remote Control·딥링크.
-- [[14 IDE와 데스크톱]] — VS Code/Cursor 확장, JetBrains 플러그인, 데스크톱 GUI(병렬 세션·worktree·PR 모니터링, Linux 베타·Windows WSL 세션), .claude/launch.json, Enterprise managed settings.
+- [[14 IDE와 데스크톱]] — VS Code/Cursor 확장, JetBrains 플러그인, 데스크톱 GUI(병렬 세션·worktree·PR 모니터링, Linux 베타·Windows WSL 세션, iOS 시뮬레이터 pane), .claude/launch.json, Enterprise managed settings.
 - [[15 웹과 모바일]] — claude.ai/code 클라우드 세션·GitHub 연결, 클라우드 환경 구성·네트워크 access level, --remote/--teleport 세션 이동, Auto-fix PR, 모바일 앱(클라우드 세션·Remote Control·Dispatch 클라이언트 비교).
 - [[16 CI-CD와 팀 통합]] — GitHub Actions(claude-code-action v1)·GitLab CI/CD, 매니지드 Code Review, GHES 연결, Slack 라우팅 모드, Bedrock/Vertex OIDC 인증.
 
 ### 운영 (보안·비용)
-- [[18 보안과 샌드박스]] — 권한 기반 보안 아키텍처·프롬프트 인젝션 방어, 샌드박스 격리 스펙트럼(/sandbox·dev container·VM), security-guidance 플러그인, 데이터·텔레메트리·BAA 정책, corporate launcher(CLAUDE_CODE_PROCESS_WRAPPER) 프로세스 강제.
+- [[18 보안과 샌드박스]] — 권한 기반 보안 아키텍처·프롬프트 인젝션 방어, 샌드박스 격리 스펙트럼(/sandbox·dev container·VM), security-guidance 플러그인 + Claude Security 멀티에이전트 취약점 스캔 플러그인, 데이터·텔레메트리·BAA 정책, corporate launcher(CLAUDE_CODE_PROCESS_WRAPPER) 프로세스 강제.
 - [[19 비용과 성능]] — 비용 추적(/usage)·토큰 절감, 프롬프트 캐싱 동작, fast mode, OpenTelemetry 모니터링·SIEM 감사, 팀 애널리틱스 대시보드.
 - [[17 클라우드 프로바이더]] — AWS Bedrock·Claude Platform on AWS·Vertex AI·Microsoft Foundry 배포, 환경변수·IAM/RBAC·모델 핀, 서드파티 LLM 게이트웨이 환경변수 설정(LiteLLM), 기업 네트워크 설정.
 - [[27 게이트웨이]] — Claude apps gateway(자체 셀프호스팅, `claude gateway` 서브커맨드) 퀵스타트·gateway.yaml 레퍼런스·배포(K8s/Cloud Run/GCP 예시)·지출 한도 Admin API, 서드파티 게이트웨이 프로토콜 계약·개발자 접속·조직 롤아웃 5단계.
@@ -93,3 +93,4 @@ type: moc
 - [[21 브라우저와 컴퓨터 사용]] — Chrome 통합(--chrome)으로 웹 앱 테스트·디버깅, computer-use MCP로 macOS 네이티브 GUI 제어, 권한·안전 가드레일·도구 우선순위.
 - [[25 트러블슈팅]] — 성능·검색·설치·로그인·런타임 에러 진단·복구, 증상별 라우팅 표, 자동 재시도 튜닝, /doctor·/rewind·/compact 등 핵심 진단 명령.
 - [[26 변경 이력과 용어집]] — 용어집 전체, 최근 3개월 changelog, 주간 What's New(w13~w29), 팀 도입용 챔피언 킷·커뮤니케이션 킷.
+- [[28 대규모 코드 마이그레이션]] — 판정자(judge) 사전 준비부터 규칙집·의존성 맵·갭 인벤토리, 규칙 스트레스 테스트, 다중 에이전트 번역 루프, 컴파일·실행·동작 비교까지 6단계 워크플로우; Bun(Zig→Rust)·Python→TypeScript 실사례와 모델 역할 분담·비용-편익 판단.

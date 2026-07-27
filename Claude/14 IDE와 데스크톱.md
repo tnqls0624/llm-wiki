@@ -1,8 +1,8 @@
 ---
 title: 14 IDE와 데스크톱
-updated: 2026-07-16
+updated: 2026-07-27
 type: reference
-sources: [vs-code, jetbrains, desktop, desktop-quickstart, platforms, desktop-linux, desktop-wsl]
+sources: [vs-code, jetbrains, desktop, desktop-quickstart, platforms, desktop-linux, desktop-wsl, desktop-ios-simulator]
 ---
 
 # 14 IDE와 데스크톱
@@ -907,6 +907,24 @@ git checkout <branch-name>
 ```
 - **여전히 막히면**: [GitHub Issues](https://github.com/anthropics/claude-code/issues), [지원 센터](https://support.claude.com/). 버그 신고 시 앱 버전·OS·정확한 에러·로그(macOS는 Console.app, Windows는 Event Viewer) 포함.
 
+### iOS 시뮬레이터 pane (desktop-ios-simulator)
+
+> [!note] public beta (macOS Desktop) — Pro/Max/Team 플랜, Enterprise 미제공.
+
+Claude가 앱을 **빌드·실행·확인**할 때 대화 옆에 Apple iOS Simulator 화면을 라이브로 띄우는 pane. Claude가 앱을 설치→탭→화면을 읽어 자기 변경을 검증하는 걸 지켜보거나, 직접 조작할 수 있다. pane이 시뮬레이터를 **직접 구동**하므로 [computer use](https://code.claude.com/docs/en/computer-use)가 불필요하고 화면을 가로채지 않는다(반면 CLI에서는 computer use로 시뮬레이터에 닿음).
+
+**요구사항**: Claude Desktop **v1.24012.0+**, Mac(iOS Simulator는 macOS 전용), [Xcode](https://developer.apple.com/xcode/) + iOS 플랫폼(시뮬레이터 없으면 `xcodebuild -downloadPlatform iOS`). **로컬 세션 전용** — cloud/SSH 세션은 Mac의 시뮬레이터에 닿을 수 없다.
+
+**실행**: 별도 명령·설정 없이 Claude가 시뮬레이터로 앱을 띄우면 pane이 자동으로 열린다("Build the app and run it in the simulator to check the onboarding flow"). 특정 기기는 요청에 명시("run it on the iPhone SE simulator"). 직접 열려면 세션에 시뮬레이터가 붙었거나 Swift 파일을 편집한 뒤 툴바 **Views → iOS Simulator**.
+
+**직접 조작**: 화면 클릭/드래그로 탭·스와이프, 하드웨어 버튼(**Cmd+Shift+H** Home, **Cmd+L** lock, **Cmd+↑/↓** 볼륨, **Cmd+→** 회전), **Cmd+S** 스크린샷·**Cmd+R** 녹화(Desktop에 저장), **Detach simulator**로 종료 없이 스트리밍만 중단. Frame rate·Resolution·Encoding(H.264/JPEG)은 표시 방식만 바꾸고 앱 동작엔 무관. 나와 Claude가 같은 기기를 구동하므로, Claude가 조작 중엔 **Claude is using this device** 배지가 사라질 때까지 기다렸다 탭한다.
+
+**세션↔기기**: 각 기기는 그것을 띄운 세션 소유 — [병렬 세션](https://code.claude.com/docs/en/desktop)은 기기를 공유하지 않고, 사이드바에서 세션 전환 시 시뮬레이터 뷰도 함께 전환된다. 세션당 최대 **4개** pane. Claude가 부팅한 기기는 앱 종료·세션 아카이브·detach 10분 후 자동 종료(사용자가 직접 부팅한 기기는 자동 종료 안 함).
+
+**접근 권한**: Claude가 기기를 제어하기 전 **기기당 1회** 동의(제어 + 스크린샷 커버). 스크린샷은 Anthropic에 전송되어 일반 대화 보존 설정을 따르므로 **실계정 로그인 금지**. URL 열기·앱 빌드(`xcodebuild`가 Mac에서 빌드 스크립트 실행)는 1회 동의가 아니라 세션 **permission mode**를 따른다. 조직은 `disableMobileSimulatorTools`(관리 설정, 시뮬레이터 툴 차단·앱 내 override 불가) 또는 `requireCoworkFullVmSandbox`(격리 VM 강제 → pane·툴 전면 비활성) 키로 끌 수 있다.
+
+**한계**: 시뮬레이터 기기만 — 실물 iPhone/iPad 제어 불가(실물은 Xcode로 직접 실행 후 스크린샷 첨부). → [[21 브라우저와 컴퓨터 사용]]
+
 ---
 
 ## 플랫폼과 통합 (어디서 실행할지 고르기)
@@ -961,3 +979,4 @@ CLI가 터미널 네이티브 작업에 가장 완전(스크립팅·Agent SDK는
 - [platforms](https://code.claude.com/docs/en/platforms)
 - [desktop-linux](https://code.claude.com/docs/en/desktop-linux)
 - [desktop-wsl](https://code.claude.com/docs/en/desktop-wsl)
+- [desktop-ios-simulator](https://code.claude.com/docs/en/desktop-ios-simulator)
