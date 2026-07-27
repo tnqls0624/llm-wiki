@@ -85,3 +85,4 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 두 가지 모두 재시도하지 않고 멈췄습니다. 인터랙티브 세션에서 직접 `python3 .claude/kb-lint.py --online`과 `hot.md` 갱신 한 줄을 확인해 주시거나, 이 권한 정책이 의도된 것인지 확인 부탁드립니다.
 SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] failed: Hook cancelled
 === [2026-07-23 09:13:36] exit=0 ===
+=== [2026-07-27 09:07:00] kb-sync run start ===

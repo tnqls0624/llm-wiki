@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-07-26T09:17:39",
+ "updated": "2026-07-27T09:17:16",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -963,6 +963,23 @@
   "hn:49044662": "2026-07-26",
   "hn:49043889": "2026-07-26",
   "ghrel:v2.1.220": "2026-07-26",
-  "airel:vLLM:v0.26.0": "2026-07-26"
+  "airel:vLLM:v0.26.0": "2026-07-26",
+  "gh:nikolai-vysotskyi/trace-mcp": "2026-07-27",
+  "gh:LuiggiVal08/toon-memory": "2026-07-27",
+  "gh:Czarnak/tia-portal-mcp": "2026-07-27",
+  "hn:49063529": "2026-07-27",
+  "hn:49063186": "2026-07-27",
+  "hn:49063069": "2026-07-27",
+  "hn:49061784": "2026-07-27",
+  "hn:49058547": "2026-07-27",
+  "hn:49058441": "2026-07-27",
+  "hn:49058217": "2026-07-27",
+  "hn:49056689": "2026-07-27",
+  "gh:opencue/cuecards": "2026-07-27",
+  "gh:Digital-Process-Tools/claude-supertool": "2026-07-27",
+  "devto:4231605": "2026-07-27",
+  "devto:3797575": "2026-07-27",
+  "devto:4170346": "2026-07-27",
+  "devto:4198114": "2026-07-27"
  }
 }
