@@ -1,6 +1,6 @@
 ---
 title: 00 LLM Wiki 아키텍처와 OKF 자기진단
-updated: 2026-06-19
+updated: 2026-07-27
 type: explanation
 sources:
   - https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md
@@ -54,7 +54,7 @@ sources:
 ## 의도적 non-goal (안 하기로 한 것 = 강점)
 > [!note] 재논의 차단
 > 아래는 45노트 규모에서 **콜드스타트 비용 > 효용**이라 의도적으로 배제한다. 정본은 `.claude/rules/vault-rules.md`의 "Explicit non-goals".
-- **임베딩/벡터검색/RAG**: 수작업 MOC+wikilink가 이미 GraphRAG community-summary 자산. 트리거(100+노트 AND "이름 모르는 개념 의미검색" 빈발) 전엔 코드 변경 0.
+- **임베딩/벡터검색/RAG**: 수작업 MOC+wikilink가 이미 GraphRAG community-summary 자산. 트리거(100+노트 AND "이름 모르는 개념 의미검색" 빈발) 전엔 코드 변경 0. 넘어갈 때의 **참조 설계**는 [[04 RAG 지식베이스 검색 아키텍처 (Cerebras 사례)]] — vault-rules가 제시한 L2.5 스택(FTS+embedding+RRF)의 프로덕션 구현 사례(단, 엔터프라이즈 규모 전제라 콜드스타트 논거는 유효).
 - **RDF/JSON-LD/온톨로지**: 시맨틱웹의 운영비용 함정.
 - **typed-relation frontmatter**(related/up/part-of): 본문 wikilink가 이미 담당 — double-entry 부채. `type`만 추가.
 - **OKF export 스크립트·AGENTS.md**: 외부 발행/타에이전트 협업 수요 실재 시까지 보류. vault는 source-of-truth, wikilink→md-link는 export 경계 관심사.
