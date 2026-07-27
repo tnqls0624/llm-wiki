@@ -1,6 +1,6 @@
 ---
 title: AI-Infra
-updated: 2026-06-09
+updated: 2026-07-27
 type: moc
 sources: []
 ---
@@ -23,6 +23,9 @@ GPU 서버도 컨테이너도 결국 리눅스 위에서 돈다 — [[Infra]] KB
 ## 핸즈온
 - **[[10 핸즈온 vLLM 스팟 서빙 벤치마크]]** — 0-3개월 첫 산출물 step-by-step (스팟 GPU 확보·vLLM 서빙·부하테스트·리포 구조·비용 안전).
 - **[[11 캡스톤 학습 가이드 — vLLM 벤치로 배우는 시스템 CS]]** — 캡스톤을 "복붙"이 아니라 CS 기초로 이해하며 진행하는 학습 동반 가이드(단계 ↔ OS 페이징·스케줄링·큐잉이론 매핑 + 실무·면접·이해체크). 실행 레포 `~/Desktop/Project/vllm-spot-bench`.
+
+## 사례 연구
+- **[[04 RAG 지식베이스 검색 아키텍처 (Cerebras 사례)]]** — Cerebras 사내 지식베이스(하루 15k 질의) 아키텍처: 단일 pgvector 테이블·소스당 커넥터, Slack hybrid 검색(FTS+embedding+IDF+age decay)·distillation·bursting, CocoIndex 코드 임베딩, RRF(k=60)+LLM rerank, MCP(LLM-free 도구)를 Claude Code가 오케스트레이션. 우리 vault의 RAG 비-목표([[00 LLM Wiki 아키텍처와 OKF 자기진단]]) 재검토 시 참조 설계.
 
 ## 자료
 - **[[99 학습 리소스와 추적 소스]]** — 공식 docs·강의·랩·자격증 + `claude-radar`에 등록한 매일 추적 소스.

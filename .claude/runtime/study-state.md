@@ -1,4 +1,4 @@
-<!-- study-state v1 | block=0 | last_brief_date=2026-07-20 | repo_path=~/Desktop/Project/ai-infra-lab -->
+<!-- study-state v1 | block=0 | last_brief_date=2026-07-27 | repo_path=~/Desktop/Project/ai-infra-lab -->
 <!--
   AI Infra 학습 진도 정본. git 추적됨 → 두 Mac(회사/집)이 push/pull로 공유.
   study-brief.py(무인 cron)가 이 파일을 읽어 요일별 다음 미완료 항목 + 그 아래 들여쓴 학습 가이드를
@@ -220,3 +220,8 @@
 - 잘한 점: retrieval-first 완전 이행 — 무자료 스택 지도(§1) → 공식 문서 대조(§2) → 틀린 부분 3건 명시 수정(§3). 7-12 "이론 verbatim 복붙"(감시 ①)의 정확한 교정. §3-1(경고=증상, 원인 6가지)·§3-2(커널모듈은 호스트, userspace driver lib/device는 Toolkit이 컨테이너에 제공)는 본인 최초 가설(§1.2 "드라이버는 전부 호스트에만")의 오류를 스스로 잡은 진단 사고. §5 진단 순서·§5.3 2×2 해석표·§6 nvcc/libcudart/libcuda 3층 구분표까지 요구 범위 초과.
 - 부족하거나 고칠 점: ① D1이 D2(Toolkit 주입 원리)·D3(진단)까지 흡수 — D2 완료 기준의 "Block 2 D1 실측 체크리스트 3개"만 남음(5분 산출물). ② 순수 개념 단계라 정상이나 "libcuda.so 접근 불가"를 글로만 확정 — CPU Mac 실측(D3, `ldconfig -p | grep cuda`·`ls /dev/nvidia*`)으로 눈 확인 필요. 예측→실측 대조가 이 트랙의 강점(batch·CoW 실측처럼).
 - 다음에 주의할 것: 다음 = D2 체크리스트 3개 → D3 CPU Mac 실측. D3는 에러가 정상인 실험이므로 그 에러를 §5의 6개 원인 중 하나에 연결해 log.md "발생한 문제" 칸에 기록(감시 ③).
+
+### 2026-07-24 — 새 산출물 없음 (W3 D1 이후 8일째 커밋 공백)
+- 검토: 마지막 커밋(7-16 `261b3d4`, W3 D1) 이후 새 커밋 없음 → 진도 W3 D1 유지, 억지 체크 안 함. 미커밋 `docs/log.md` 수정 1건은 W3 D2 학습이 아니라 에디터발 포매팅 변경(이어지는 불릿 de-indent + 표 재정렬)이라 채점 대상 아님.
+- 짚을 점(주의): 그 미커밋 diff에 손상 1건 — `apt update && apt install`이 `&amp;&amp;`로 HTML escape됨(Obsidian 등 렌더 과정 혼입 추정). 커밋하면 로그에 `&amp;`가 박제되니 커밋 전 `git checkout docs/log.md`로 되돌리거나 정정할 것. 포매팅 변경은 학습 커밋과 섞지 말 것.
+- 다음에 주의할 것: W3 D2는 무자료 산출물(log.md에 `--gpus all` 주입 흐름 요약 + Block 2 D1 실측 체크리스트 3개)이라 5분 산출물. D1에서 §3-2(userspace driver lib은 Toolkit이 컨테이너에 제공)까지 이해했으니, D2는 그 "제공"이 runc prestart hook으로 언제/어떻게 일어나는지만 자기 말로 붙이면 완료. 8일 공백 재개는 D1 §5 진단표 1분 훑고 시작하면 매끄럽다.

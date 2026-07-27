@@ -95,3 +95,5 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 인자 지시대로 KB 노트·MOC·`hot.md`는 전혀 건드리지 않았습니다. 유일하게 생긴 파일은 `.claude/runtime/kb-source-hashes.json`이며(`git status --short`로 확인), 이건 다음 sync의 드리프트 비교 기준선이라 방금 만든 게 맞습니다 — KB 콘텐츠가 아닌 `runtime/` 상태 파일이라 automation-safety-rules의 "least authority" 범위 안입니다.
 
 참고로 SessionStart 훅이 git 발산 경고(로컬 11 ahead·원격 8 behind)를 띄웠는데, 이번 작업과 무관하니 별도로 처리 여부를 알려주세요.
+SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] failed: Hook cancelled
+=== [2026-07-27 09:21:09] exit=0 ===

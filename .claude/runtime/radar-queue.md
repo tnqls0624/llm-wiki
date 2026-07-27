@@ -13,6 +13,20 @@
      - **제안**: <무엇을 어떻게 만들지/박제할지>
 -->
 
+## 2026-07-27
+
+### [done] kb-ingest · Claude Code로 대규모 코드 마이그레이션을 수행한 방법
+- **source**: GeekNews
+- **url**: https://news.hada.io/topic?id=31855
+- **근거**: Claude Code를 대규모 코드베이스 마이그레이션에 실전 적용한 워크플로우 글(한국어). `Claude/` KB의 활용 패턴/서브에이전트·워크플로우 노트에 박제할 사용법 지식.
+- **제안**: `/kb-ingest`로 `Claude/`에 박제(마이그레이션 워크플로우 사례). 기존 워크플로우/서브에이전트 노트에 사례 섹션으로 붙일지 별도 노트로 낼지는 분량 보고 판단.
+
+### [dismissed] kb-ingest · obsidian-llm-wiki — markdown vault → 6-persona MCP team
+- **source**: GitHub topic:mcp-server+topic:claude-code (★24)
+- **url**: https://github.com/2233admin/obsidian-llm-wiki
+- **근거**: 우리 vault(obsidian_sync = Claude Code KB + 포터블 프레임워크)와 **정면으로 인접한** 프로젝트 — markdown vault를 6-페르소나 MCP 팀으로 컴파일해 Claude Code·Codex·OpenCode·Gemini CLI에서 headless로 공용. 우리가 `EXTENSIBILITY.md`/vault-rules non-goal에서 **의도적으로 보류한** "타 에이전트 interop(AGENTS.md)"을 실제로 구현한 레퍼런스라 그 결정 재검토 근거가 됨.
+- **제안**: `Claude/`(또는 Meta/ 자기진단) 레퍼런스로 박제 — 6-persona MCP 방식 vs 우리 MOC+wikilink 방식 대조. 즉시 채택이 아니라 "관찰·비교"용. review에서 위치(Claude vs Meta) 확정.
+
 ## 2026-06-08
 
 ### [done] kb-ingest · claude-code 최신 릴리스 신기능 (v2.1.160–166)
