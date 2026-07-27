@@ -86,3 +86,12 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] failed: Hook cancelled
 === [2026-07-23 09:13:36] exit=0 ===
 === [2026-07-27 09:07:00] kb-sync run start ===
+## KB Sync 결과: 변경 없음
+
+**슬러그 diff** — 공식 `llms.txt` 172개 슬러그 vs KB `Claude/*.md` `sources` 합집합 172개: 완전 일치. 신규 슬러그 0, 사라진 슬러그 0.
+
+**콘텐츠 드리프트 체크(§6b)** — `python3 .claude/kb-source-hashes.py`가 처음 실행되는 것이라 `runtime/source-hashes.json` 베이스라인이 없었습니다. 따라서 이번 실행은 드리프트 "감지"가 아니라 234개 항목(Claude/ 172개 + 다른 토픽의 외부 출처 62개) 해시를 최초로 기록하는 작업이었고, 다음 `/kb-sync`부터 실제 콘텐츠 변경 감지가 작동합니다.
+
+인자 지시대로 KB 노트·MOC·`hot.md`는 전혀 건드리지 않았습니다. 유일하게 생긴 파일은 `.claude/runtime/kb-source-hashes.json`이며(`git status --short`로 확인), 이건 다음 sync의 드리프트 비교 기준선이라 방금 만든 게 맞습니다 — KB 콘텐츠가 아닌 `runtime/` 상태 파일이라 automation-safety-rules의 "least authority" 범위 안입니다.
+
+참고로 SessionStart 훅이 git 발산 경고(로컬 11 ahead·원격 8 behind)를 띄웠는데, 이번 작업과 무관하니 별도로 처리 여부를 알려주세요.
