@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-07-27T10:44:24",
+ "updated": "2026-07-28T09:30:23",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -981,6 +981,26 @@
   "hn:49046592": "2026-07-27",
   "hn:49046289": "2026-07-27",
   "hn:49044662": "2026-07-27",
-  "hn:49043889": "2026-07-27"
+  "hn:49043889": "2026-07-27",
+  "gh:mozilla/firefox-devtools-mcp": "2026-07-28",
+  "gh:gowtham-sai-yadav/entangle": "2026-07-28",
+  "gh:Hainrixz/the-architect": "2026-07-28",
+  "gn:https://news.hada.io/topic?id=31886": "2026-07-28",
+  "hn:49074995": "2026-07-28",
+  "hn:49074964": "2026-07-28",
+  "hn:49073914": "2026-07-28",
+  "hn:49070661": "2026-07-28",
+  "hn:49070470": "2026-07-28",
+  "hn:49069982": "2026-07-28",
+  "hn:49069202": "2026-07-28",
+  "hn:49068803": "2026-07-28",
+  "gn:https://news.hada.io/topic?id=31873": "2026-07-28",
+  "gn:https://news.hada.io/topic?id=31859": "2026-07-28",
+  "devto:4246806": "2026-07-28",
+  "devto:4219301": "2026-07-28",
+  "devto:4241006": "2026-07-28",
+  "airel:vLLM:v0.26.1rc0": "2026-07-28",
+  "devto:3905055": "2026-07-28",
+  "npm:@dataforxyz/agent-intercom-claude": "2026-07-28"
  }
 }
