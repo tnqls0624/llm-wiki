@@ -98,3 +98,14 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] failed: Hook cancelled
 === [2026-07-27 09:21:09] exit=0 ===
 === [2026-07-30 09:07:05] kb-sync run start ===
+백그라운드 명령이 끝나면 자동으로 알림이 오므로 별도 폴링 없이 대기하겠습니다. 지금까지 진행 상황을 요약드립니다.
+
+**완료된 작업:**
+- 슬러그 diff 결과: 신규 2개(`claude-apps-gateway-on-aws`, `cloud-environments`), 소실 0개
+- `Claude/27 게이트웨이.md`에 AWS 배포 예시 섹션 추가, `Claude/15 웹과 모바일.md`에 Default/조직 공유 환경 섹션 추가 (둘 다 `sources`/`updated` 갱신)
+- MOC(`Claude/Claude.md`) 갱신 완료
+- `kb-lint.py --online` 재실행 → 174/174 슬러그 정합, 문제 0건
+
+**보류 중:**
+- `hot.md` 한 줄 추가(Update duty ③)가 "민감 파일" 권한 요청으로 거부됨 — 승인해주시면 마저 반영하겠습니다.
+- `kb-source-hashes.py --json`(콘텐츠 드리프트 감지)이 172개 슬러그를 순차 fetch 중이라 백그라운드로 넘어감 — 완료되면 이어서 처리하겠습니다.
