@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-07-29T09:17:18",
+ "updated": "2026-07-30T09:17:30",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -1022,6 +1022,25 @@
   "gn:https://news.hada.io/topic?id=31897": "2026-07-29",
   "devto:4255173": "2026-07-29",
   "devto:4236652": "2026-07-29",
-  "devto:4233274": "2026-07-29"
+  "devto:4233274": "2026-07-29",
+  "hn:49104686": "2026-07-30",
+  "gh:nicknisi/sessions": "2026-07-30",
+  "gh:dinglebear-ai/unraid": "2026-07-30",
+  "hn:49102406": "2026-07-30",
+  "hn:49100378": "2026-07-30",
+  "hn:49099924": "2026-07-30",
+  "hn:49099308": "2026-07-30",
+  "hn:49098665": "2026-07-30",
+  "hn:49097777": "2026-07-30",
+  "hn:49097162": "2026-07-30",
+  "gh:aerovato/magic-compact": "2026-07-30",
+  "ghc:hesreallyhim/awesome-claude-code:a86f58767c": "2026-07-30",
+  "gn:https://news.hada.io/topic?id=31946": "2026-07-30",
+  "gn:https://news.hada.io/topic?id=31945": "2026-07-30",
+  "devto:4262999": "2026-07-30",
+  "devto:4263172": "2026-07-30",
+  "devto:4263777": "2026-07-30",
+  "devto:4266292": "2026-07-30",
+  "devto:4263160": "2026-07-30"
  }
 }
