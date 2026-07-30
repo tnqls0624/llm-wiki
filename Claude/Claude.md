@@ -81,7 +81,7 @@ type: moc
 - [[18 보안과 샌드박스]] — 권한 기반 보안 아키텍처·프롬프트 인젝션 방어, 샌드박스 격리 스펙트럼(/sandbox·dev container·VM), security-guidance 플러그인 + Claude Security 멀티에이전트 취약점 스캔 플러그인, 데이터·텔레메트리·BAA 정책, corporate launcher(CLAUDE_CODE_PROCESS_WRAPPER) 프로세스 강제.
 - [[19 비용과 성능]] — 비용 추적(/usage)·토큰 절감, 프롬프트 캐싱 동작, fast mode, OpenTelemetry 모니터링·SIEM 감사, 팀 애널리틱스 대시보드.
 - [[17 클라우드 프로바이더]] — AWS Bedrock·Claude Platform on AWS·Vertex AI·Microsoft Foundry 배포, 환경변수·IAM/RBAC·모델 핀, 서드파티 LLM 게이트웨이 환경변수 설정(LiteLLM), 기업 네트워크 설정.
-- [[27 게이트웨이]] — Claude apps gateway(자체 셀프호스팅, `claude gateway` 서브커맨드) 퀵스타트·gateway.yaml 레퍼런스·배포(K8s/Cloud Run/GCP 예시)·지출 한도 Admin API, 서드파티 게이트웨이 프로토콜 계약·개발자 접속·조직 롤아웃 5단계.
+- [[27 게이트웨이]] — Claude apps gateway(자체 셀프호스팅, `claude gateway` 서브커맨드) 퀵스타트·gateway.yaml 레퍼런스·배포(K8s/Cloud Run/GCP·AWS 예시)·지출 한도 Admin API, 서드파티 게이트웨이 프로토콜 계약·개발자 접속·조직 롤아웃 5단계.
 
 ### Agent SDK
 - [[22 Agent SDK — 시작]] — 설치·인증·query() 진입점, 내장 도구·권한 모드, 에이전트 루프(턴·메시지·컴팩션), settingSources 통합, claude-code-sdk→claude-agent-sdk 마이그레이션.

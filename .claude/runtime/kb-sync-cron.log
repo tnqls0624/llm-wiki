@@ -97,3 +97,4 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 참고로 SessionStart 훅이 git 발산 경고(로컬 11 ahead·원격 8 behind)를 띄웠는데, 이번 작업과 무관하니 별도로 처리 여부를 알려주세요.
 SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] failed: Hook cancelled
 === [2026-07-27 09:21:09] exit=0 ===
+=== [2026-07-30 09:07:05] kb-sync run start ===
