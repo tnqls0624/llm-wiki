@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-07-30T09:30:20",
+ "updated": "2026-07-31T09:30:22",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -1040,6 +1040,25 @@
   "devto:4263172": "2026-07-30",
   "devto:4263777": "2026-07-30",
   "devto:4266292": "2026-07-30",
-  "devto:4263160": "2026-07-30"
+  "devto:4263160": "2026-07-30",
+  "hn:49117510": "2026-07-31",
+  "gh:ZahiriNatZuke/local-delegate": "2026-07-31",
+  "gh:IgorGanapolsky/ThumbGate": "2026-07-31",
+  "gh:bagidea/bagidea-office": "2026-07-31",
+  "gh:terrylica/cc-skills": "2026-07-31",
+  "gh:pacphi/agentic-kit": "2026-07-31",
+  "gn:https://news.hada.io/topic?id=31995": "2026-07-31",
+  "hn:49113559": "2026-07-31",
+  "hn:49112732": "2026-07-31",
+  "hn:49112467": "2026-07-31",
+  "hn:49111019": "2026-07-31",
+  "hn:49110007": "2026-07-31",
+  "hn:49109315": "2026-07-31",
+  "hn:49107749": "2026-07-31",
+  "devto:4272738": "2026-07-31",
+  "devto:4266639": "2026-07-31",
+  "devto:4265412": "2026-07-31",
+  "devto:4233442": "2026-07-31",
+  "npm:augmentclaude-mcp": "2026-07-31"
  }
 }
