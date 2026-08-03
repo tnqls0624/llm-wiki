@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-08-02T09:30:22",
+ "updated": "2026-08-03T09:30:25",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -1081,6 +1081,19 @@
   "hn:49134381": "2026-08-02",
   "hn:49133255": "2026-08-02",
   "hn:49130127": "2026-08-02",
-  "devto:4283495": "2026-08-02"
+  "devto:4283495": "2026-08-02",
+  "hn:49149800": "2026-08-03",
+  "gh:peopleworks/SignsofAI": "2026-08-03",
+  "gh:hope1026/weppy-roblox-mcp": "2026-08-03",
+  "hn:49149111": "2026-08-03",
+  "hn:49146780": "2026-08-03",
+  "hn:49146674": "2026-08-03",
+  "hn:49144960": "2026-08-03",
+  "hn:49144843": "2026-08-03",
+  "hn:49144669": "2026-08-03",
+  "hn:49142870": "2026-08-03",
+  "npm:@desago/desago-graphs": "2026-08-03",
+  "npm:@polderlabs/bizar-sdk": "2026-08-03",
+  "devto:4285504": "2026-08-03"
  }
 }
