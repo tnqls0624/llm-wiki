@@ -111,3 +111,4 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 - `kb-source-hashes.py --json`(콘텐츠 드리프트 감지)이 172개 슬러그를 순차 fetch 중이라 백그라운드로 넘어감 — 완료되면 이어서 처리하겠습니다.
 SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] failed: Hook cancelled
 === [2026-07-30 09:14:24] exit=0 ===
+=== [2026-08-03 09:07:02] kb-sync run start ===
