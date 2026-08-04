@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-08-03T09:30:25",
+ "updated": "2026-08-04T09:30:25",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -1094,6 +1094,25 @@
   "hn:49142870": "2026-08-03",
   "npm:@desago/desago-graphs": "2026-08-03",
   "npm:@polderlabs/bizar-sdk": "2026-08-03",
-  "devto:4285504": "2026-08-03"
+  "devto:4285504": "2026-08-03",
+  "ghrel:v2.1.221": "2026-08-04",
+  "gh:ejklock/living-docs-skill": "2026-08-04",
+  "gh:aimasteracc/tree-sitter-analyzer": "2026-08-04",
+  "gh:shaqmughal/seekstone": "2026-08-04",
+  "gh:ihabkhaled/ClawAI": "2026-08-04",
+  "gh:weltern/Clawdmeter": "2026-08-04",
+  "airel:KServe:v0.20.0-rc1": "2026-08-04",
+  "hn:49161957": "2026-08-04",
+  "hn:49157807": "2026-08-04",
+  "hn:49157496": "2026-08-04",
+  "hn:49156779": "2026-08-04",
+  "hn:49156473": "2026-08-04",
+  "hn:49156454": "2026-08-04",
+  "hn:49155922": "2026-08-04",
+  "hn:49154689": "2026-08-04",
+  "ghc:hesreallyhim/awesome-claude-code:8fc2634fb9": "2026-08-04",
+  "ghc:hesreallyhim/awesome-claude-code:41289b0002": "2026-08-04",
+  "devto:4289294": "2026-08-04",
+  "devto:4302227": "2026-08-04"
  }
 }
