@@ -2,7 +2,7 @@
 
 ## 준비할 이미지
 1. `1. nvidia-container-toolkit-arch.png` — NVIDIA Container Toolkit 공식 아키텍처 다이어그램(런타임/hook/CLI 구성) (web: NVIDIA 공식 문서)
-2. `2. aws-g4dn-instance-spec.png` — AWS g4dn.xlarge(T4 16GB, Turing) 인스턴스 스펙 공식 페이지 (shot: 직접 캡처 — 선택 사항, 없어도 본문은 성립)
+2. `2. aws-g4dn-instance-spec.png` — GPU 인스턴스 후보 비교표(t3.large·g4dn·g5·g6·p3) (자체 제작 — 준비됨)
 
 7월 중순에 CUDA 컨테이너를 띄웠을 때 뜨는 `NVIDIA Driver was not detected` 경고가 정확히 어느 계층의 부재를 뜻하는지 스택을 그려가며 정리했다. 결론은 "커널 드라이버 모듈은 호스트에 남고, 사용자 공간 드라이버 라이브러리와 `/dev/nvidia*`는 NVIDIA Container Toolkit이 컨테이너에 연결해준다"는 것이었다. 그런데 그 정리에는 구멍이 하나 있었다 — "언제" 연결되는지, 즉 `docker run --gpus all`을 치는 순간부터 컨테이너 안에서 `nvidia-smi`가 뜨는 순간까지 실제로 어떤 순서로 일이 벌어지는지가 빠져 있었다. 이번 글은 그 빈칸을 채운 기록이다. 그리고 그 사이에 있었던, 조금 민망하지만 솔직하게 남겨야 할 이야기도 하나 있다. 그 정리 이후 20일 동안 커밋이 하나도 없었는데, 원인이 의지 부족이 아니라 파일 하나가 텅 비어 있었기 때문이었다는 것이다.
 
@@ -93,7 +93,7 @@ GPU 실습을 시작하려면 어떤 클라우드에, 어떤 인스턴스로, �
 - **AMI**: 드라이버가 이미 깔려 있는 이미지 대신, 드라이버가 없는 순수 Ubuntu 24.04로 시작해서 드라이버 설치부터 직접 해보기로 했다. 스택을 이해하는 게 목적이면 이미 다 세팅된 이미지를 쓰는 게 오히려 손해라고 판단했다.
 - **주의할 것**: 신규 계정은 이런 GPU 인스턴스 종류의 vCPU 쿼터가 기본 0으로 잡혀 있는 경우가 많아서, 증설 승인부터 제일 먼저 신청해두기로 했다. 승인에 시간이 걸릴 수 있어서 실습 시작보다 먼저 처리해야 한다.
 
-> 🖼️ **[사진 2]** AWS g4dn.xlarge 인스턴스 스펙 — T4 16GB, Turing 아키텍처인 것을 확인한 공식 페이지
+> 🖼️ **[사진 2]** 후보로 놓고 비교한 인스턴스들 — GPU 모델·아키텍처(`sm`)와 각각을 고르거나 뺀 이유
 > → 업로드: `2. aws-g4dn-instance-spec.png`
 
 이 문서를 채우고 나서야 왜 3주 동안 진도가 이론에서만 맴돌았는지가 명확해졌다. 원인을 "의지가 부족했다"로 규정했으면 다음에도 똑같이 막혔을 거고, 반대로 "20일이나 쉬었으니 괜찮다"고 넘겼으면 이 문서가 왜 비어 있었는지 다시 안 봤을 것이다. 실제로 도움이 된 건 둘 다 아니고, **막혀 있는 지점이 정확히 어디인지 찾는 것**이었다. 이번 경우엔 그게 텅 빈 결정 문서 한 장이었다.
@@ -115,4 +115,4 @@ GPU 실습을 시작하려면 어떤 클라우드에, 어떤 인스턴스로, �
 
 <!-- BLOG-IMAGES (blog-collect.py가 이 아래를 떼어냄) -->
 <!-- IMG: 1 | nvidia-container-toolkit-arch | web | NVIDIA Container Toolkit 공식 아키텍처 다이어그램(runtime/hook/CLI 구성) | https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/_images/runtime-architecture.png | NVIDIA Container Toolkit 공식 문서(arch-overview) · © NVIDIA — 출처 표기 후 인용 -->
-<!-- IMG: 2 | aws-g4dn-instance-spec | shot | AWS g4dn.xlarge(T4 16GB, Turing) 인스턴스 스펙 공식 문서 페이지 캡처 (선택 — 없으면 마커 줄만 삭제) -->
+<!-- IMG: 2 | aws-g4dn-instance-spec | shot | GPU 인스턴스 후보 비교표 — 자체 제작(PIL). 스펙 출처: AWS EC2 인스턴스 타입 공식 문서 · sm 버전은 NVIDIA CUDA 문서. 파일 이미 준비됨 -->
