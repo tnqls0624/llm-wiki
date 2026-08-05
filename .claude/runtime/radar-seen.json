@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-08-04T09:17:26",
+ "updated": "2026-08-05T09:17:22",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -1109,6 +1109,24 @@
   "ghc:hesreallyhim/awesome-claude-code:8fc2634fb9": "2026-08-04",
   "ghc:hesreallyhim/awesome-claude-code:41289b0002": "2026-08-04",
   "devto:4289294": "2026-08-04",
-  "devto:4302227": "2026-08-04"
+  "devto:4302227": "2026-08-04",
+  "gh:ymxlx/polis-protocol": "2026-08-05",
+  "hn:49176574": "2026-08-05",
+  "hn:49173799": "2026-08-05",
+  "hn:49173386": "2026-08-05",
+  "hn:49171464": "2026-08-05",
+  "hn:49171369": "2026-08-05",
+  "hn:49170443": "2026-08-05",
+  "hn:49169930": "2026-08-05",
+  "hn:49169640": "2026-08-05",
+  "ghrel:v2.1.222": "2026-08-05",
+  "gh:ozankasikci/sol-skill": "2026-08-05",
+  "gh:tjboudreaux/cc-thinking-skills": "2026-08-05",
+  "ghc:hesreallyhim/awesome-claude-code:49d51b604a": "2026-08-05",
+  "gn:https://news.hada.io/topic?id=32134": "2026-08-05",
+  "devto:4308345": "2026-08-05",
+  "devto:4308344": "2026-08-05",
+  "devto:4307152": "2026-08-05",
+  "devto:4313826": "2026-08-05"
  }
 }
