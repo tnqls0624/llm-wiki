@@ -1,8 +1,8 @@
 ---
 title: 16 CI-CD와 팀 통합
-updated: 2026-06-07
+updated: 2026-08-06
 type: reference
-sources: [github-actions, github-enterprise-server, gitlab-ci-cd, code-review, slack]
+sources: [github-actions, github-enterprise-server, gitlab-ci-cd, code-review, slack, github-actions-cloud-providers, claude-tag]
 ---
 
 # 16 CI-CD와 팀 통합
@@ -173,47 +173,84 @@ jobs:
 @claude fix the TypeError in the user dashboard component
 ```
 
-### Bedrock / Vertex AI 인증 (엔터프라이즈)
+### Bedrock / Vertex AI / Foundry 인증 (엔터프라이즈, github-actions-cloud-providers)
 
-엔터프라이즈에서는 자체 클라우드 인프라로 Claude Code Action을 돌려 데이터 거주지·청구를 통제할 수 있다. 인증 모델 자체는 [[17 클라우드 프로바이더]]를 참고하고, 여기서는 GitHub Actions 관점의 핵심만 정리한다.
+엔터프라이즈에서는 자체 클라우드 인프라로 Claude Code Action을 돌려 데이터 거주지·청구를 통제할 수 있다. 인증 모델 자체는 [[17 클라우드 프로바이더]]를 참고하고, 여기서는 GitHub Actions 관점의 핵심만 정리한다. 프로바이더는 `anthropics/claude-code-action` 스텝의 `with:` 입력 하나로 고른다: **Amazon Bedrock**은 `use_bedrock: "true"`, **Google Cloud Agent Platform(Vertex AI)**은 `use_vertex: "true"`, **Microsoft Foundry**는 `use_foundry: "true"`.
 
-권장 흐름은 **자체 GitHub App을 만들어** OIDC로 인증하는 것이다(정적 키 없음). 자체 App을 만들면 `actions/create-github-app-token` 액션으로 워크플로 안에서 토큰을 생성한다. 자체 App을 원치 않으면 공식 Anthropic App(https://github.com/apps/claude)을 쓴다.
+**GitHub identity 선택** — 이 identity로 커밋을 푸시하고 댓글을 게시한다.
 
-필요한 시크릿:
+| Identity | 절차 | 비고 |
+|---|---|---|
+| 공식 [Claude GitHub App](https://github.com/apps/claude) | 저장소에 설치만 | 가장 빠른 경로, 넓은 권한 세트 |
+| 커스텀 GitHub App | 앱 등록(webhook 비활성) → Contents/Issues/Pull requests 각 Read & write 3권한만 부여 → private key 발급·App ID 확인 | 공식 앱보다 **좁은 권한**만 필요할 때 |
+| GitHub 기본 `GITHUB_TOKEN` | 앱 생성 불필요 | 이 토큰으로 만든 커밋은 CI를 트리거하지 못함 |
 
-| 프로바이더 | 시크릿 |
-|---|---|
-| Claude API | `ANTHROPIC_API_KEY` (+ 자체 App 시 `APP_ID`, `APP_PRIVATE_KEY`) |
-| Amazon Bedrock | `AWS_ROLE_TO_ASSUME` (+ `APP_ID`, `APP_PRIVATE_KEY`) |
-| Google Vertex AI | `GCP_WORKLOAD_IDENTITY_PROVIDER`, `GCP_SERVICE_ACCOUNT` (+ `APP_ID`, `APP_PRIVATE_KEY`) |
+필요한 시크릿(프로바이더별 + 커스텀 App 시 공통 2개):
 
-- **Bedrock**: GitHub을 OIDC IdP(`https://token.actions.githubusercontent.com`, audience `sts.amazonaws.com`)로 등록 → `AmazonBedrockFullAccess` IAM Role 생성 → trust policy를 해당 저장소로 제한. OIDC는 정적 키보다 안전하다(임시·자동 로테이션). 모델 ID는 리전 프리픽스를 포함(`us.anthropic.claude-sonnet-4-6`).
-- **Vertex AI**: IAM Credentials / STS / Vertex AI API 활성화 → Workload Identity Pool + GitHub OIDC provider → `Vertex AI User` 롤만 가진 전용 서비스 계정 → IAM 바인딩으로 풀이 SA를 임퍼소네이트. WIF는 다운로드 키가 불필요하다. project ID는 인증 단계에서 자동 추출된다.
+| 시크릿 | 필요 대상 | 값 |
+|---|---|---|
+| `AWS_ROLE_TO_ASSUME` | Amazon Bedrock | IAM Role의 ARN |
+| `GCP_WORKLOAD_IDENTITY_PROVIDER` | Google Cloud Agent Platform | provider 전체 리소스 이름 |
+| `GCP_SERVICE_ACCOUNT` | Google Cloud Agent Platform | 서비스 계정 이메일 |
+| `AZURE_CLIENT_ID` | Microsoft Foundry | Entra 애플리케이션 client ID |
+| `AZURE_TENANT_ID` | Microsoft Foundry | Microsoft Entra tenant ID |
+| `AZURE_SUBSCRIPTION_ID` | Microsoft Foundry | Azure subscription ID |
+| `APP_ID` / `APP_PRIVATE_KEY` | 커스텀 GitHub App | App ID / `.pem` 파일 내용 |
 
-**Bedrock 워크플로 (요지):** `actions/checkout` → `actions/create-github-app-token@v2` → `aws-actions/configure-aws-credentials@v4`(role-to-assume) → `claude-code-action@v1`에 `use_bedrock: "true"`. `id-token: write` 권한과 `AWS_REGION` env 필요.
+- **Bedrock**: GitHub을 OIDC IdP(`https://token.actions.githubusercontent.com`, audience `sts.amazonaws.com`)로 등록 → IAM Role 생성해 [[17 클라우드 프로바이더]]의 스코프 정책(`bedrock:InvokeModel`·`InvokeModelWithResponseStream`·`ListInferenceProfiles`·`GetInferenceProfile` + `aws-marketplace` 구독 액션 2개) attach → trust policy를 `repo:your-org/your-repo:*` 서브젝트 조건으로 해당 저장소에 제한. 모델 ID는 리전 프리픽스를 포함(`us.anthropic.claude-sonnet-4-6`).
+- **Google Cloud Agent Platform (Vertex AI)**: IAM Credentials / STS / Agent Platform API(`aiplatform.googleapis.com`) 활성화 → Workload Identity Pool + GitHub OIDC provider(저장소로 제한하는 attribute condition) → `Vertex AI User`(`roles/aiplatform.user`) 롤만 가진 전용 서비스 계정 → 풀이 SA를 임퍼소네이트하도록 허용. WIF는 다운로드 키가 불필요하고, project ID는 인증 단계 출력에서 자동 추출된다.
+- **Microsoft Foundry**: Microsoft Entra 애플리케이션 등록 + 해당 저장소를 신뢰하는 federated identity credential 추가(user-assigned managed identity로도 대체 가능) → Foundry 리소스에 `Azure AI User` 롤 할당([[17 클라우드 프로바이더]]의 더 좁은 커스텀 롤도 가능).
 
+각 워크플로는 `actions/checkout` → (커스텀 App이면 `actions/create-github-app-token@v2`) → 프로바이더별 인증 액션 → `claude-code-action@v1` 순서이며, 모두 `id-token: write` 권한이 필요하다.
+
+**Bedrock:**
 ```yaml
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: us-west-2
       - uses: anthropics/claude-code-action@v1
         with:
           github_token: ${{ steps.app-token.outputs.token }}
           use_bedrock: "true"
-          claude_args: '--model us.anthropic.claude-sonnet-4-6 --max-turns 10'
+          claude_args: '--model us.anthropic.claude-sonnet-4-6'
 ```
 
-**Vertex AI 워크플로 (요지):** `google-github-actions/auth@v2`(workload_identity_provider + service_account) 후 `use_vertex: "true"`. 관련 env: `ANTHROPIC_VERTEX_PROJECT_ID`, `CLOUD_ML_REGION`, `VERTEX_REGION_CLAUDE_4_5_SONNET`.
-
+**Google Cloud Agent Platform:**
 ```yaml
+      - uses: google-github-actions/auth@v2
+        id: auth
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
       - uses: anthropics/claude-code-action@v1
         with:
           github_token: ${{ steps.app-token.outputs.token }}
-          trigger_phrase: "@claude"
           use_vertex: "true"
-          claude_args: '--model claude-sonnet-4-5@20250929 --max-turns 10'
+          claude_args: '--model claude-sonnet-5'
         env:
           ANTHROPIC_VERTEX_PROJECT_ID: ${{ steps.auth.outputs.project_id }}
           CLOUD_ML_REGION: us-east5
-          VERTEX_REGION_CLAUDE_4_5_SONNET: us-east5
 ```
+
+**Microsoft Foundry** — Foundry 리소스 이름으로 endpoint URL을 구성하고, `azure/login`이 OIDC로 인증해 Claude Code가 Azure [default credential chain](https://learn.microsoft.com/en-us/azure/developer/javascript/sdk/authentication/credential-chains#defaultazurecredential-overview)으로 자격증명을 얻는다:
+```yaml
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - uses: anthropics/claude-code-action@v1
+        with:
+          github_token: ${{ steps.app-token.outputs.token }}
+          use_foundry: "true"
+          claude_args: '--model claude-sonnet-5'
+        env:
+          ANTHROPIC_FOUNDRY_RESOURCE: your-resource-name
+```
+
+> [!warning] Public 저장소 — 자격증명 소모가 권한 체크보다 먼저 일어남
+> `issue_comment` 트리거로 트리거 문구를 검사하는 워크플로는 **App 토큰 생성·클라우드 로그인이 먼저 실행되고, 댓글 작성자의 write 권한 체크는 그다음**이다. Public 저장소면 누구나 트리거 문구가 담긴 댓글로 이 순서를 밟게 만들어 Actions 분·클라우드 자격증명 교환을 소모시키고 감사 로그 항목을 남길 수 있다(Claude Code Action 자체는 결국 미승인으로 거부하지만, 비용은 그 전에 이미 발생). 크리덴셜 스텝 **앞**에 커밋 작성자의 write 접근을 검증하는 스텝을 추가해 막는다.
 
 ### 베스트 프랙티스 · 비용 · 트러블슈팅
 
@@ -760,6 +797,16 @@ Code + Chat에서 Chat으로 갔는데 코딩을 원했다면 **"Retry as Code"*
 
 ---
 
+## Claude Tag — 조직 공유 Slack identity (claude-tag)
+
+Claude Tag는 Slack 채널에서 `@Claude`를 조직의 **공유 identity**로 태그해 작업을 맡기는 별도 통합이다. 채널의 누구든 스레드에 `@Claude`를 태그해 작업을 할당할 수 있고, 접근 범위는 admin이 구성한다. 위 [Slack 통합](#slack-통합)(Claude Code in Slack)은 각 세션이 **개인 사용자 계정**으로 도는 반면, Claude Tag는 조직이 admin-configured access로 관리하는 하나의 공유 identity라는 점이 다르다.
+
+Claude Tag는 **Team·Enterprise 플랜 전용**이다. Pro·Max 플랜에는 없으므로 해당 플랜은 계속 개인 계정형 Slack 통합(위 절)을 쓴다.
+
+설정·사용법은 이 문서(code.claude.com/docs)가 아니라 **claude.com의 별도 문서**([claude.com/docs/claude-tag/overview](https://claude.com/docs/claude-tag/overview))에서 관리한다 — Claude Code 공식 문서 인덱스에는 소개 페이지만 있다.
+
+---
+
 ## 통합 경로 비교
 
 | 통합 | 실행 위치 | 청구 | 트리거 | 주 용도 |
@@ -768,7 +815,8 @@ Code + Chat에서 Chat으로 갔는데 코딩을 원했다면 **"Retry as Code"*
 | GitLab CI/CD (beta) | 자기 GitLab 러너 | 러너 분 + API 토큰 | `@claude` 멘션 / MR 이벤트 / 수동·web | 커스텀 자동화, MR 워크플로 |
 | Code Review (preview) | Anthropic 인프라 | usage credits(리뷰당 $15-25) | PR open / push / `@claude review` | 매니지드 자동 PR 리뷰 |
 | GHES | Anthropic 인프라(웹 세션·리뷰) | 플랜·기능별 | admin 연결 후 자동 | 자체 호스팅 GitHub |
-| Slack | Anthropic 인프라(웹 세션) | 개인 플랜 한도 | `@Claude` 멘션 | 채널에서 작업 위임 |
+| Slack (Claude Code in Slack) | Anthropic 인프라(웹 세션) | 개인 플랜 한도 | `@Claude` 멘션 | 채널에서 작업 위임, 개인 계정 |
+| Claude Tag | Anthropic 인프라 | Team·Enterprise 플랜 | 채널의 `@Claude` 태그 | 조직 공유 identity로 작업 위임 |
 
 ---
 
@@ -779,5 +827,7 @@ Code + Chat에서 Chat으로 갔는데 코딩을 원했다면 **"Retry as Code"*
 - [gitlab-ci-cd](https://code.claude.com/docs/en/gitlab-ci-cd)
 - [code-review](https://code.claude.com/docs/en/code-review)
 - [slack](https://code.claude.com/docs/en/slack)
+- [github-actions-cloud-providers](https://code.claude.com/docs/en/github-actions-cloud-providers)
+- [claude-tag](https://code.claude.com/docs/en/claude-tag)
 
 관련 허브: [[Claude]]

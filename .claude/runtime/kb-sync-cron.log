@@ -114,3 +114,4 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 === [2026-08-03 09:07:02] kb-sync run start ===
 콘텐츠 드리프트 해시 검사(174개 공식 문서 재fetch)가 백그라운드에서 진행 중입니다. 완료되면 결과를 이어서 보고하겠습니다.
 === [2026-08-03 09:12:04] exit=0 ===
+=== [2026-08-06 09:07:05] kb-sync run start ===

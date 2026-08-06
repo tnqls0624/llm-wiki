@@ -75,7 +75,7 @@ type: moc
 - [[13 자동화와 스케줄링]] — headless 실행(claude -p, --bare), 세션 스코프 /loop·cron, 클라우드 Routines·Desktop scheduled tasks, Channels 이벤트 푸시, Remote Control·딥링크.
 - [[14 IDE와 데스크톱]] — VS Code/Cursor 확장, JetBrains 플러그인, 데스크톱 GUI(병렬 세션·worktree·PR 모니터링, Linux 베타·Windows WSL 세션, iOS 시뮬레이터 pane), .claude/launch.json, Enterprise managed settings.
 - [[15 웹과 모바일]] — claude.ai/code 클라우드 세션·GitHub 연결, 클라우드 환경 구성·네트워크 access level, --remote/--teleport 세션 이동, Auto-fix PR, 모바일 앱(클라우드 세션·Remote Control·Dispatch 클라이언트 비교).
-- [[16 CI-CD와 팀 통합]] — GitHub Actions(claude-code-action v1)·GitLab CI/CD, 매니지드 Code Review, GHES 연결, Slack 라우팅 모드, Bedrock/Vertex OIDC 인증.
+- [[16 CI-CD와 팀 통합]] — GitHub Actions(claude-code-action v1)·GitLab CI/CD, 매니지드 Code Review, GHES 연결, Slack 라우팅 모드 vs Claude Tag(조직 공유 identity), Bedrock/Vertex/Foundry OIDC 인증.
 
 ### 운영 (보안·비용)
 - [[18 보안과 샌드박스]] — 권한 기반 보안 아키텍처·프롬프트 인젝션 방어, 샌드박스 격리 스펙트럼(/sandbox·dev container·VM), security-guidance 플러그인 + Claude Security 멀티에이전트 취약점 스캔 플러그인, 데이터·텔레메트리·BAA 정책, corporate launcher(CLAUDE_CODE_PROCESS_WRAPPER) 프로세스 강제.
@@ -86,7 +86,7 @@ type: moc
 ### Agent SDK
 - [[22 Agent SDK — 시작]] — 설치·인증·query() 진입점, 내장 도구·권한 모드, 에이전트 루프(턴·메시지·컴팩션), settingSources 통합, claude-code-sdk→claude-agent-sdk 마이그레이션.
 - [[23 Agent SDK — 핵심 기능]] — 권한 평가·모드, 세션 영속화(SessionStore), 훅, MCP·in-process 커스텀 도구, 서브에이전트, 사용자 입력 처리, 파일 체크포인트.
-- [[24 Agent SDK — 고급과 레퍼런스]] — 입력/출력 스트리밍, 구조화 출력, 시스템 프롬프트 커스터마이징, 관측성·비용 추적, 자체 호스팅·보안 배포, TypeScript/Python API 레퍼런스.
+- [[24 Agent SDK — 고급과 레퍼런스]] — 입력/출력 스트리밍, 구조화 출력, 시스템 프롬프트 커스터마이징, 관측성·비용 추적, 자체 호스팅·보안 배포, TypeScript/Python API 레퍼런스, 에러별 트러블슈팅.
 
 ### 레퍼런스
 - [[20 베스트 프랙티스와 워크플로우]] — 컨텍스트 관리·검증 루프, Explore→Plan→Code, SDLC 5단계 프롬프트 라이브러리, git worktree 격리, ultraplan/ultrareview, /goal 자동 진행; harness vs 프롬프트 레이어 진단법, 디자인·프로토타이핑 워크플로우(Jane Street 사례).

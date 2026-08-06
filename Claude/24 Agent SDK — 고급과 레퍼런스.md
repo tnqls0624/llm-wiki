@@ -1,8 +1,8 @@
 ---
 title: 24 Agent SDK — 고급과 레퍼런스
-updated: 2026-06-07
+updated: 2026-08-06
 type: reference
-sources: [agent-sdk/streaming-output, agent-sdk/streaming-vs-single-mode, agent-sdk/structured-outputs, agent-sdk/modifying-system-prompts, agent-sdk/observability, agent-sdk/cost-tracking, agent-sdk/hosting, agent-sdk/secure-deployment, agent-sdk/typescript, agent-sdk/typescript-v2-preview, agent-sdk/python]
+sources: [agent-sdk/streaming-output, agent-sdk/streaming-vs-single-mode, agent-sdk/structured-outputs, agent-sdk/modifying-system-prompts, agent-sdk/observability, agent-sdk/cost-tracking, agent-sdk/hosting, agent-sdk/secure-deployment, agent-sdk/typescript, agent-sdk/typescript-v2-preview, agent-sdk/python, agent-sdk/troubleshooting]
 ---
 
 # 24 Agent SDK — 고급과 레퍼런스
@@ -665,6 +665,30 @@ for await (const msg of session.stream()) { /* ... */ }
 
 ---
 
+## 트러블슈팅 (agent-sdk/troubleshooting)
+
+에러 메시지별로 원인과 조치를 정리한다. TypeScript/Python SDK 공통.
+
+### CLI 실행 실패
+
+| 에러 | 원인 | 조치 |
+| :-- | :-- | :-- |
+| `CLINotFoundError` | Python SDK가 `claude` 실행파일을 못 찾음(`cli_path` 미지정 시 PATH·기본 설치 경로를 탐색) | Claude Code 설치 확인. `cli_path` 지정 시 그 경로가 실제 `claude` 실행파일인지 확인. PATH 의존이면 SDK를 구동하는 프로세스와 **같은 환경**에서 `claude --version`이 동작하는지 확인(IDE·서비스 매니저는 셸과 다른 PATH를 쓰는 경우가 흔함) |
+| `CLIConnectionError: Refusing to execute batch script` | Windows에서 CLI 경로가 `.bat`/`.cmd`(npm의 `claude.cmd` shim 포함). `cmd.exe`가 명령줄을 재파싱해 인자로 명령 주입이 가능하므로 SDK가 의도적으로 거부(보안 강화, 오작동 아님) | 네이티브 실행파일 사용 — `cli_path`를 `claude.exe`로 지정하거나 옵션 제거, PowerShell에서 네이티브 설치(`irm https://claude.ai/install.ps1 \| iex`), 또는 `claude.exe`를 번들한 Windows x64 wheel 설치 |
+
+> [!note] Windows 배치 스크립트 거부를 만나는 경우
+> Windows x64 wheel은 `claude.exe`를 번들해 대부분 이 에러를 겪지 않는다. `cli_path`를 `.bat`/`.cmd`로 직접 지정했거나, ARM64 Windows 소스 설치처럼 네이티브 바이너리가 없어 PATH의 유일한 `claude`가 npm shim뿐인 경우에만 해당. `claude-agent-sdk` 0.2.124 이전 버전은 이 검사 없이 배치 스크립트를 `cmd.exe`로 그대로 실행했다.
+
+### 구조화 출력: `structured_output`이 `None`인데 성공
+
+result 메시지가 `subtype: "success"`로 끝나도 `structured_output`이 Python은 `None`, TypeScript는 `undefined`일 수 있다 — 실행은 끝났지만 검증된 출력이 없는 상태다. 스키마가 충족 불가능(예: 상충하는 길이 제약)해도 검증 에러 없이 이렇게 끝날 수 있어, 누락된 `structured_output`이 유일한 신호다.
+
+애플리케이션 코드에서는 `subtype`이 `success`인 것과 `structured_output`이 존재하는 것을 **둘 다** 확인해야 성공으로 간주할 수 있다(위 [에러 처리](#에러-처리) 표 참고). 신뢰하는 스키마에서 반복되면, 스키마가 실제로 충족 가능한지 의심하고 제약을 단순화한 뒤 하나씩 되돌리며 검증한다.
+
+이 목록에 없는 에러는 전체 에러 텍스트와 SDK 버전을 포함해 [claude-agent-sdk-typescript](https://github.com/anthropics/claude-agent-sdk-typescript/issues) 또는 [claude-agent-sdk-python](https://github.com/anthropics/claude-agent-sdk-python/issues)에 새 이슈로 남긴다.
+
+---
+
 ## 원본 문서
 
 - https://code.claude.com/docs/en/agent-sdk/streaming-output
@@ -678,3 +702,4 @@ for await (const msg of session.stream()) { /* ... */ }
 - https://code.claude.com/docs/en/agent-sdk/typescript
 - https://code.claude.com/docs/en/agent-sdk/typescript-v2-preview
 - https://code.claude.com/docs/en/agent-sdk/python
+- https://code.claude.com/docs/en/agent-sdk/troubleshooting
