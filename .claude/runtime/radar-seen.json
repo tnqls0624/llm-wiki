@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-08-05T09:17:22",
+ "updated": "2026-08-06T09:17:17",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -1127,6 +1127,24 @@
   "devto:4308345": "2026-08-05",
   "devto:4308344": "2026-08-05",
   "devto:4307152": "2026-08-05",
-  "devto:4313826": "2026-08-05"
+  "devto:4313826": "2026-08-05",
+  "hn:49190726": "2026-08-06",
+  "gh:lukethecat/aperture": "2026-08-06",
+  "gh:sara-star-quant/presence": "2026-08-06",
+  "gh:ihabkhaled/ClawAI": "2026-08-06",
+  "gh:frankxai/claude-skills-library": "2026-08-06",
+  "hn:49190381": "2026-08-06",
+  "hn:49190182": "2026-08-06",
+  "hn:49189657": "2026-08-06",
+  "hn:49188359": "2026-08-06",
+  "hn:49184388": "2026-08-06",
+  "hn:49183972": "2026-08-06",
+  "hn:49182323": "2026-08-06",
+  "gh:orchidfiles/ungate": "2026-08-06",
+  "ghc:hesreallyhim/awesome-claude-code:e208042cb6": "2026-08-06",
+  "gn:https://news.hada.io/topic?id=32174": "2026-08-06",
+  "acl:August 5, 2026": "2026-08-06",
+  "devto:4323580": "2026-08-06",
+  "devto:3869421": "2026-08-06"
  }
 }
