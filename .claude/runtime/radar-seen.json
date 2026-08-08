@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-08-07T09:17:20",
+ "updated": "2026-08-08T09:17:18",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -1165,6 +1165,23 @@
   "devto:4328103": "2026-08-07",
   "devto:4327432": "2026-08-07",
   "airel:KServe:v0.20.0": "2026-08-07",
-  "npm:@purplehaxttv/skillscan": "2026-08-07"
+  "npm:@purplehaxttv/skillscan": "2026-08-07",
+  "gh:curie-eng/curie": "2026-08-08",
+  "hn:49217306": "2026-08-08",
+  "hn:49215812": "2026-08-08",
+  "hn:49214994": "2026-08-08",
+  "hn:49214118": "2026-08-08",
+  "hn:49211443": "2026-08-08",
+  "hn:49211265": "2026-08-08",
+  "hn:49210611": "2026-08-08",
+  "hn:49209747": "2026-08-08",
+  "ghrel:v2.1.224": "2026-08-08",
+  "gh:BackTrackCo/tenjin-agent": "2026-08-08",
+  "acl:August 7, 2026": "2026-08-08",
+  "devto:4342741": "2026-08-08",
+  "devto:4341537": "2026-08-08",
+  "npm:lupin-code": "2026-08-08",
+  "airel:vLLM:v0.27.0rc1": "2026-08-08",
+  "devto:4293527": "2026-08-08"
  }
 }
