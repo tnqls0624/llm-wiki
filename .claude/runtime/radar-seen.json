@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-08-08T09:17:18",
+ "updated": "2026-08-09T09:17:20",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -1182,6 +1182,25 @@
   "devto:4341537": "2026-08-08",
   "npm:lupin-code": "2026-08-08",
   "airel:vLLM:v0.27.0rc1": "2026-08-08",
-  "devto:4293527": "2026-08-08"
+  "devto:4293527": "2026-08-08",
+  "gh:open-latch/latch": "2026-08-09",
+  "gh:PangenomeAI/academic-skills-food-nutrition": "2026-08-09",
+  "gh:BaseInfinity/claude-sdlc-harness": "2026-08-09",
+  "hn:49226627": "2026-08-09",
+  "hn:49226076": "2026-08-09",
+  "hn:49224464": "2026-08-09",
+  "hn:49222824": "2026-08-09",
+  "hn:49220827": "2026-08-09",
+  "hn:49220546": "2026-08-09",
+  "hn:49219485": "2026-08-09",
+  "hn:49218268": "2026-08-09",
+  "ghrel:v2.1.226": "2026-08-09",
+  "ghrel:v2.1.225": "2026-08-09",
+  "gh:maxwellsdm1867/wheeler": "2026-08-09",
+  "gh:yantrikos/yantrikdb-mcp": "2026-08-09",
+  "gn:https://news.hada.io/topic?id=32254": "2026-08-09",
+  "devto:4349097": "2026-08-09",
+  "devto:4346100": "2026-08-09",
+  "devto:4322964": "2026-08-09"
  }
 }
