@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-08-09T09:17:20",
+ "updated": "2026-08-10T09:17:22",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -1201,6 +1201,27 @@
   "gn:https://news.hada.io/topic?id=32254": "2026-08-09",
   "devto:4349097": "2026-08-09",
   "devto:4346100": "2026-08-09",
-  "devto:4322964": "2026-08-09"
+  "devto:4322964": "2026-08-09",
+  "gh:Q00/ouroboros": "2026-08-10",
+  "gh:mblode/agent-skills": "2026-08-10",
+  "gh:arhxam/whoburnedmore": "2026-08-10",
+  "gh:damusix/atomic-claude": "2026-08-10",
+  "hn:49235255": "2026-08-10",
+  "hn:49234877": "2026-08-10",
+  "hn:49230984": "2026-08-10",
+  "hn:49230943": "2026-08-10",
+  "hn:49229204": "2026-08-10",
+  "hn:49228883": "2026-08-10",
+  "hn:49228375": "2026-08-10",
+  "hn:49228173": "2026-08-10",
+  "gh:OSideMedia/higgsfield-ai-prompt-skill": "2026-08-10",
+  "gh:777genius/plugin-kit-ai": "2026-08-10",
+  "gh:LunarWerxs/AgentHydra": "2026-08-10",
+  "gh:nanvon/cc-bar": "2026-08-10",
+  "ghc:hesreallyhim/awesome-claude-code:5df9e12f8b": "2026-08-10",
+  "ghc:hesreallyhim/awesome-claude-code:12a3a1522f": "2026-08-10",
+  "devto:4353969": "2026-08-10",
+  "devto:4354337": "2026-08-10",
+  "airel:vLLM:v0.27.0rc2": "2026-08-10"
  }
 }

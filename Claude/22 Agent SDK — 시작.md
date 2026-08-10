@@ -1,8 +1,8 @@
 ---
 title: 22 Agent SDK — 시작
-updated: 2026-06-07
+updated: 2026-08-10
 type: reference
-sources: [agent-sdk/overview, agent-sdk/quickstart, agent-sdk/agent-loop, agent-sdk/claude-code-features, agent-sdk/migration-guide]
+sources: [agent-sdk/overview, agent-sdk/quickstart, agent-sdk/agent-loop, agent-sdk/claude-code-features, agent-sdk/migration-guide, agent-sdk/examples]
 ---
 
 # 22 Agent SDK — 시작
@@ -904,11 +904,23 @@ Claude Code SDK는 원래 코딩 작업용이었지만 모든 종류의 AI 에�
 
 ---
 
+## 6. 예제 찾기 (examples)
+
+빈 화면에서 시작하기보다 완성된 프로젝트나 레시피에서 출발하고 싶을 때 두 갈래가 있다.
+
+- **미니멀 시작** — 아직 아무것도 안 만들었다면 이 노트의 [[#2. 퀵스타트 — 버그 수정 에이전트 만들기 (quickstart)|퀵스타트]]나, 레포 코드에서 바로 시작하는 최소 TypeScript 프로젝트 [`hello-world`](https://github.com/anthropics/claude-agent-sdk-demos/tree/main/hello-world).
+- **TypeScript 애플리케이션** — [`claude-agent-sdk-demos`](https://github.com/anthropics/claude-agent-sdk-demos) 레포의 로컬 개발용 데모(이메일 클라이언트~멀티에이전트 리서치 시스템). 만들려는 모양과 맞는 데모를 클론해 시작.
+- **Python 레시피** — [Claude Cookbook](https://platform.claude.com/cookbook)의 Agent SDK 시리즈: 각각 Python 노트북인 레시피가 [단순 리서치 에이전트](https://platform.claude.com/cookbook/claude-agent-sdk-00-the-one-liner-research-agent)에서 정교한 멀티에이전트 시스템까지 앞 노트북을 이어받아 개념을 하나씩 쌓는다.
+
+Claude 제품 전반의 레시피는 Cookbook 전체를 참고.
+
+---
+
 ## 다음 단계
 
 - 핵심 기능(스트리밍, 시스템 프롬프트, custom tools, 사용자 입력/승인 등): [[23 Agent SDK — 핵심 기능]]
 - 고급 주제와 Python/TypeScript API 레퍼런스, 호스팅·세션·보안 배포: [[24 Agent SDK — 고급과 레퍼런스]]
-- 예제 에이전트: anthropics/claude-agent-sdk-demos (이메일 어시스턴트, 리서치 에이전트 등)
+- 예제 에이전트: anthropics/claude-agent-sdk-demos (이메일 어시스턴트, 리서치 에이전트 등), Claude Cookbook Agent SDK 시리즈
 
 ## 원본 문서
 
@@ -917,3 +929,4 @@ Claude Code SDK는 원래 코딩 작업용이었지만 모든 종류의 AI 에�
 - https://code.claude.com/docs/en/agent-sdk/agent-loop
 - https://code.claude.com/docs/en/agent-sdk/claude-code-features
 - https://code.claude.com/docs/en/agent-sdk/migration-guide
+- https://code.claude.com/docs/en/agent-sdk/examples
