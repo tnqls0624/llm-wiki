@@ -1,12 +1,12 @@
 ---
 title: Claude Code 사용법
-updated: 2026-07-27
+updated: 2026-08-10
 type: moc
 ---
 
 # Claude Code 사용법
 
-이 노트는 Claude Code 공식 문서(code.claude.com/docs)와 Anthropic 블로그를 28개 노트로 종합한 지식 베이스의 중심 허브(MOC)다. 설치부터 CLI·설정·권한·확장(스킬·훅·MCP·플러그인·서브에이전트)·자동화·팀 통합·운영(보안·비용)·Agent SDK·레퍼런스·실전 마이그레이션 가이드까지 Claude Code의 모든 사용법을 다룬다. 명령어·플래그·설정 키·환경변수는 원문 영어 그대로, 맥락·트레이드오프·주의사항은 한국어로 정리했으며, 각 노트는 본문에서 `허브: [[Claude]]`로 이곳을 가리킨다. 아래 **용도별 학습 경로**로 목적에 맞는 노트를 순서대로 따라가거나, **전체 지도**에서 주제군별로 원하는 노트를 바로 찾아갈 수 있다.
+이 노트는 Claude Code 공식 문서(code.claude.com/docs)와 Anthropic 블로그를 29개 노트로 종합한 지식 베이스의 중심 허브(MOC)다. 설치부터 CLI·설정·권한·확장(스킬·훅·MCP·플러그인·서브에이전트)·자동화·팀 통합·운영(보안·비용)·Agent SDK·레퍼런스·실전 마이그레이션 가이드까지 Claude Code의 모든 사용법을 다룬다. 명령어·플래그·설정 키·환경변수는 원문 영어 그대로, 맥락·트레이드오프·주의사항은 한국어로 정리했으며, 각 노트는 본문에서 `허브: [[Claude]]`로 이곳을 가리킨다. 아래 **용도별 학습 경로**로 목적에 맞는 노트를 순서대로 따라가거나, **전체 지도**에서 주제군별로 원하는 노트를 바로 찾아갈 수 있다.
 
 ## 용도별 학습 경로
 
@@ -38,10 +38,11 @@ type: moc
 2. [[05 권한]] — managed settings와 권한 거버넌스
 3. [[17 클라우드 프로바이더]] — Bedrock/Vertex AI/Foundry 배포
 4. [[27 게이트웨이]] — Claude apps gateway 자체 호스팅 또는 서드파티 LLM 게이트웨이로 인증·비용·감사를 중앙화
-5. [[18 보안과 샌드박스]] — 보안 모델·격리·데이터 정책
-6. [[19 비용과 성능]] — 팀 rate limit·OpenTelemetry·애널리틱스
-7. [[11 플러그인]] — 마켓플레이스로 조직 표준 배포
-8. [[26 변경 이력과 용어집]] — 챔피언 킷·커뮤니케이션 킷으로 도입 추진
+5. [[29 자체 호스팅 환경]] — 클라우드 세션 실행 자체를 조직 인프라로 옮기는 러너·환경 배포(공개 베타)
+6. [[18 보안과 샌드박스]] — 보안 모델·격리·데이터 정책
+7. [[19 비용과 성능]] — 팀 rate limit·OpenTelemetry·애널리틱스
+8. [[11 플러그인]] — 마켓플레이스로 조직 표준 배포
+9. [[26 변경 이력과 용어집]] — 챔피언 킷·커뮤니케이션 킷으로 도입 추진
 
 ### Agent SDK 개발 (Claude Code를 코드에 임베드하는 경우)
 1. [[22 Agent SDK — 시작]] — 설치·query()·에이전트 루프
@@ -51,7 +52,7 @@ type: moc
 
 ## 전체 지도
 
-28개 노트를 주제군으로 묶어 각 노트당 한 줄 요약과 함께 나열한다.
+29개 노트를 주제군으로 묶어 각 노트당 한 줄 요약과 함께 나열한다.
 
 ### 시작·CLI
 - [[01 시작하기]] — 설치·업데이트·제거(바이너리 서명 검증), 로그인·인증, 에이전틱 루프·세션·컨텍스트·권한 모드, Quickstart 8단계, 확장 기능 선택 기준까지의 입문 종합 노트.
@@ -72,7 +73,7 @@ type: moc
 - [[12 출력 스타일과 상태줄]] — 시스템 프롬프트를 바꾸는 출력 스타일(내장/커스텀)과 stdin JSON으로 컨텍스트·비용·git을 렌더링하는 statusLine 스크립트.
 
 ### 자동화·통합
-- [[13 자동화와 스케줄링]] — headless 실행(claude -p, --bare), 세션 스코프 /loop·cron, 클라우드 Routines·Desktop scheduled tasks, Channels 이벤트 푸시, Remote Control·딥링크.
+- [[13 자동화와 스케줄링]] — headless 실행(claude -p, --bare), 세션 스코프 /loop·cron, 클라우드 Routines·Desktop scheduled tasks, Channels 이벤트 푸시, Remote Control·딥링크, 내 세션 간 메시지 전달(cross-session messaging).
 - [[14 IDE와 데스크톱]] — VS Code/Cursor 확장, JetBrains 플러그인, 데스크톱 GUI(병렬 세션·worktree·PR 모니터링, Linux 베타·Windows WSL 세션, iOS 시뮬레이터 pane), .claude/launch.json, Enterprise managed settings.
 - [[15 웹과 모바일]] — claude.ai/code 클라우드 세션·GitHub 연결, 클라우드 환경 구성·네트워크 access level, --remote/--teleport 세션 이동, Auto-fix PR, 모바일 앱(클라우드 세션·Remote Control·Dispatch 클라이언트 비교).
 - [[16 CI-CD와 팀 통합]] — GitHub Actions(claude-code-action v1)·GitLab CI/CD, 매니지드 Code Review, GHES 연결, Slack 라우팅 모드 vs Claude Tag(조직 공유 identity), Bedrock/Vertex/Foundry OIDC 인증.
@@ -82,9 +83,10 @@ type: moc
 - [[19 비용과 성능]] — 비용 추적(/usage)·토큰 절감, 프롬프트 캐싱 동작, fast mode, OpenTelemetry 모니터링·SIEM 감사, 팀 애널리틱스 대시보드.
 - [[17 클라우드 프로바이더]] — AWS Bedrock·Claude Platform on AWS·Vertex AI·Microsoft Foundry 배포, 환경변수·IAM/RBAC·모델 핀, 서드파티 LLM 게이트웨이 환경변수 설정(LiteLLM), 기업 네트워크 설정.
 - [[27 게이트웨이]] — Claude apps gateway(자체 셀프호스팅, `claude gateway` 서브커맨드) 퀵스타트·gateway.yaml 레퍼런스·배포(K8s/Cloud Run/GCP·AWS 예시)·지출 한도 Admin API, 서드파티 게이트웨이 프로토콜 계약·개발자 접속·조직 롤아웃 5단계.
+- [[29 자체 호스팅 환경]] — 클라우드 세션을 조직 인프라에서 실행하는 환경·러너·on-demand 오케스트레이터 모델(공개 베타), 하드닝·네트워크 요구사항·git 자격증명 3방식·K8s/Compose 배포, wrapper·lifecycle 훅 커스터마이즈, JWT 세션 신원 검증, CI E2E 스모크 테스트.
 
 ### Agent SDK
-- [[22 Agent SDK — 시작]] — 설치·인증·query() 진입점, 내장 도구·권한 모드, 에이전트 루프(턴·메시지·컴팩션), settingSources 통합, claude-code-sdk→claude-agent-sdk 마이그레이션.
+- [[22 Agent SDK — 시작]] — 설치·인증·query() 진입점, 내장 도구·권한 모드, 에이전트 루프(턴·메시지·컴팩션), settingSources 통합, claude-code-sdk→claude-agent-sdk 마이그레이션, 예제 프로젝트·Cookbook 레시피 찾기.
 - [[23 Agent SDK — 핵심 기능]] — 권한 평가·모드, 세션 영속화(SessionStore), 훅, MCP·in-process 커스텀 도구, 서브에이전트, 사용자 입력 처리, 파일 체크포인트.
 - [[24 Agent SDK — 고급과 레퍼런스]] — 입력/출력 스트리밍, 구조화 출력, 시스템 프롬프트 커스터마이징, 관측성·비용 추적, 자체 호스팅·보안 배포, TypeScript/Python API 레퍼런스, 에러별 트러블슈팅.
 
