@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-08-10T09:17:22",
+ "updated": "2026-08-11T09:17:26",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -1222,6 +1222,23 @@
   "ghc:hesreallyhim/awesome-claude-code:12a3a1522f": "2026-08-10",
   "devto:4353969": "2026-08-10",
   "devto:4354337": "2026-08-10",
-  "airel:vLLM:v0.27.0rc2": "2026-08-10"
+  "airel:vLLM:v0.27.0rc2": "2026-08-10",
+  "gh:Thepizzapie/BuildersGate": "2026-08-11",
+  "gh:dcostenco/prism-coder": "2026-08-11",
+  "gn:https://news.hada.io/topic?id=32369": "2026-08-11",
+  "gn:https://news.hada.io/topic?id=32365": "2026-08-11",
+  "hn:49248636": "2026-08-11",
+  "hn:49247202": "2026-08-11",
+  "hn:49246281": "2026-08-11",
+  "hn:49245608": "2026-08-11",
+  "hn:49244313": "2026-08-11",
+  "hn:49244211": "2026-08-11",
+  "hn:49243797": "2026-08-11",
+  "hn:49242993": "2026-08-11",
+  "ghrel:v2.1.227": "2026-08-11",
+  "gn:https://news.hada.io/topic?id=32346": "2026-08-11",
+  "devto:4361740": "2026-08-11",
+  "devto:4356707": "2026-08-11",
+  "airel:vLLM:v0.27.0": "2026-08-11"
  }
 }

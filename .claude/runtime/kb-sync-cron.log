@@ -161,3 +161,4 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 **콘텐츠 드리프트 체크 이상 징후**: `kb-source-hashes.py`가 거의 전 슬러그(189/249)를 "본문 변경 의심"으로 보고했는데, 원문을 직접 fetch해 확인해보니 실제 내용이 아니라 **공식 사이트가 모든 페이지 상단에 "Documentation Index" 안내 배너 3줄을 추가**해서 생긴 가짜 신호였다(2026-07-27 이전 스냅샷에는 없었음). 189개를 전부 `radar-queue.md`에 적재하는 건 노이즈만 키우므로 큐에는 아무것도 안 남기고, 대신 해시 baseline만 `--update`로 갱신해뒀다(다음 kb-sync부터는 진짜 드리프트만 잡힘).
 
 **커밋/푸시**: 세션 중 auto-commit 훅이 이미 note 13/22 변경분을 `wip: update 4 files`(370e8e2)로 커밋함. `Claude.md`·`README.md`·신규 note 29는 아직 미커밋 — 자동 훅이 다음 체크포인트에서 처리할 것. 단 **로컬 29 ahead / 원격 13 behind로 발산 중이라 자동 push가 보류돼 있음**(세션 시작 경고 그대로) — `git pull --rebase` 충돌 해결이 별도로 필요.
+=== [2026-08-10 09:28:06] exit=0 ===
