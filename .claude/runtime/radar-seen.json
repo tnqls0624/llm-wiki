@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-08-11T09:17:26",
+ "updated": "2026-08-12T09:17:23",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -1239,6 +1239,33 @@
   "gn:https://news.hada.io/topic?id=32346": "2026-08-11",
   "devto:4361740": "2026-08-11",
   "devto:4356707": "2026-08-11",
-  "airel:vLLM:v0.27.0": "2026-08-11"
+  "airel:vLLM:v0.27.0": "2026-08-11",
+  "gh:ds-vibe/html-explainer": "2026-08-12",
+  "gh:jgravelle/jdocmunch-mcp": "2026-08-12",
+  "gh:dejuknow/md-redline": "2026-08-12",
+  "gh:MaxFreedomPollard/Compartment": "2026-08-12",
+  "gh:Wolfe-Jam/faf-cli": "2026-08-12",
+  "gh:aeonfun/aeon": "2026-08-12",
+  "gh:rtk-ai/rtk": "2026-08-12",
+  "gn:https://news.hada.io/topic?id=32413": "2026-08-12",
+  "hn:49261122": "2026-08-12",
+  "hn:49260004": "2026-08-12",
+  "hn:49258898": "2026-08-12",
+  "hn:49258881": "2026-08-12",
+  "hn:49258409": "2026-08-12",
+  "hn:49256835": "2026-08-12",
+  "hn:49256258": "2026-08-12",
+  "hn:49255546": "2026-08-12",
+  "ghrel:v2.1.228": "2026-08-12",
+  "gh:brissonjo-sudo/droit-francais-skill": "2026-08-12",
+  "gh:mykpono/ultimate-seo-geo": "2026-08-12",
+  "gh:waybarrios/vllm-mlx": "2026-08-12",
+  "gn:https://news.hada.io/topic?id=32409": "2026-08-12",
+  "acl:August 11, 2026": "2026-08-12",
+  "devto:4372132": "2026-08-12",
+  "devto:4365345": "2026-08-12",
+  "npm:@minimallism/claude-code-monitor": "2026-08-12",
+  "airel:vLLM:v0.27.1": "2026-08-12",
+  "devto:4356708": "2026-08-12"
  }
 }
