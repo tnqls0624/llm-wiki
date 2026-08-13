@@ -162,3 +162,4 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 
 **커밋/푸시**: 세션 중 auto-commit 훅이 이미 note 13/22 변경분을 `wip: update 4 files`(370e8e2)로 커밋함. `Claude.md`·`README.md`·신규 note 29는 아직 미커밋 — 자동 훅이 다음 체크포인트에서 처리할 것. 단 **로컬 29 ahead / 원격 13 behind로 발산 중이라 자동 push가 보류돼 있음**(세션 시작 경고 그대로) — `git pull --rebase` 충돌 해결이 별도로 필요.
 === [2026-08-10 09:28:06] exit=0 ===
+=== [2026-08-13 09:07:01] kb-sync run start ===
