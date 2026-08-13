@@ -163,3 +163,4 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 **커밋/푸시**: 세션 중 auto-commit 훅이 이미 note 13/22 변경분을 `wip: update 4 files`(370e8e2)로 커밋함. `Claude.md`·`README.md`·신규 note 29는 아직 미커밋 — 자동 훅이 다음 체크포인트에서 처리할 것. 단 **로컬 29 ahead / 원격 13 behind로 발산 중이라 자동 push가 보류돼 있음**(세션 시작 경고 그대로) — `git pull --rebase` 충돌 해결이 별도로 필요.
 === [2026-08-10 09:28:06] exit=0 ===
 === [2026-08-13 09:07:01] kb-sync run start ===
+This 명령은 사용자 승인이 필요한 상태로 걸려 있습니다. 계속 진행하기 전에 확인 부탁드립니다: `python3 /tmp/kbsync_diff.py` 를 실행해서 공식 문서 슬러그(126개, `/tmp/llms.txt`에서 추출)와 KB `sources` 합집합(`Claude/*.md` frontmatter)을 diff하려고 합니다. 승인해 주시면 계속 진행하겠습니다.
