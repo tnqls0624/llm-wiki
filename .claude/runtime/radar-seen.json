@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-08-13T09:17:18",
+ "updated": "2026-08-14T09:17:20",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -1298,6 +1298,25 @@
   "acl:July 15, 2026": "2026-08-13",
   "acl:July 14, 2026": "2026-08-13",
   "acl:July 10, 2026": "2026-08-13",
-  "acl:July 8, 2026": "2026-08-13"
+  "acl:July 8, 2026": "2026-08-13",
+  "gh:samson-art/transcriptor-mcp": "2026-08-14",
+  "gh:shopwareLabs/ai-coding-tools": "2026-08-14",
+  "gh:wei18/Upkeep": "2026-08-14",
+  "gh:Sma1lboy/rove": "2026-08-14",
+  "hn:49291723": "2026-08-14",
+  "hn:49288724": "2026-08-14",
+  "hn:49286929": "2026-08-14",
+  "hn:49286056": "2026-08-14",
+  "hn:49284362": "2026-08-14",
+  "hn:49283885": "2026-08-14",
+  "hn:49280400": "2026-08-14",
+  "ghrel:v2.1.232": "2026-08-14",
+  "ghrel:v2.1.231": "2026-08-14",
+  "gh:sanshengai/sansheng-distill": "2026-08-14",
+  "gh:vibheksoni/session-export": "2026-08-14",
+  "ghc:hesreallyhim/awesome-claude-code:e352687cb5": "2026-08-14",
+  "gn:https://news.hada.io/topic?id=32462": "2026-08-14",
+  "devto:4388668": "2026-08-14",
+  "hn:49271123": "2026-08-14"
  }
 }
