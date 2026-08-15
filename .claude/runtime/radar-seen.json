@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-08-14T09:17:20",
+ "updated": "2026-08-15T09:17:20",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -1317,6 +1317,24 @@
   "ghc:hesreallyhim/awesome-claude-code:e352687cb5": "2026-08-14",
   "gn:https://news.hada.io/topic?id=32462": "2026-08-14",
   "devto:4388668": "2026-08-14",
-  "hn:49271123": "2026-08-14"
+  "hn:49271123": "2026-08-14",
+  "gh:agentrq/agentrq-claude-extension": "2026-08-15",
+  "gh:costiash/claude-code-docs": "2026-08-15",
+  "gh:runtm-ai/runtm": "2026-08-15",
+  "gh:rizwan3d/StemCode": "2026-08-15",
+  "hn:49305190": "2026-08-15",
+  "hn:49304849": "2026-08-15",
+  "hn:49301230": "2026-08-15",
+  "hn:49300800": "2026-08-15",
+  "hn:49299985": "2026-08-15",
+  "hn:49296844": "2026-08-15",
+  "hn:49295177": "2026-08-15",
+  "hn:49294922": "2026-08-15",
+  "ghrel:v2.1.233": "2026-08-15",
+  "gh:ProductOfAmerica/mcp-server-kicad": "2026-08-15",
+  "devto:4382886": "2026-08-15",
+  "devto:4397308": "2026-08-15",
+  "devto:4397578": "2026-08-15",
+  "devto:4389858": "2026-08-15"
  }
 }
