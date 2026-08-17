@@ -165,3 +165,4 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 === [2026-08-13 09:07:01] kb-sync run start ===
 This 명령은 사용자 승인이 필요한 상태로 걸려 있습니다. 계속 진행하기 전에 확인 부탁드립니다: `python3 /tmp/kbsync_diff.py` 를 실행해서 공식 문서 슬러그(126개, `/tmp/llms.txt`에서 추출)와 KB `sources` 합집합(`Claude/*.md` frontmatter)을 diff하려고 합니다. 승인해 주시면 계속 진행하겠습니다.
 === [2026-08-13 09:07:54] exit=0 ===
+=== [2026-08-17 09:07:00] kb-sync run start ===
