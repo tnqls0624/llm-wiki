@@ -166,3 +166,27 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 This 명령은 사용자 승인이 필요한 상태로 걸려 있습니다. 계속 진행하기 전에 확인 부탁드립니다: `python3 /tmp/kbsync_diff.py` 를 실행해서 공식 문서 슬러그(126개, `/tmp/llms.txt`에서 추출)와 KB `sources` 합집합(`Claude/*.md` frontmatter)을 diff하려고 합니다. 승인해 주시면 계속 진행하겠습니다.
 === [2026-08-13 09:07:54] exit=0 ===
 === [2026-08-17 09:07:00] kb-sync run start ===
+`kb-source-hashes.py --json` 전체 결과(251개 소스)가 나왔다. 결론부터: **이번 회차 해시 점검 결과는 신뢰할 수 없다** — 스냅샷을 갱신하지 않았다.
+
+## 왜 신뢰할 수 없나
+`changed`로 잡힌 게 251개 중 약 160개다. 그런데 그 목록에 **`https://www.rfc-editor.org/rfc/rfc9293`**가 들어 있다 — RFC는 발행 후 본문이 절대 바뀌지 않는 표준 문서다. 이게 "본문 변경"으로 잡혔다는 것 자체가 진짜 콘텐츠 드리프트가 아니라 **이번 실행의 fetch/해시 메커니즘이 뭔가 잘못됐다는 확증**이다. 목록엔 kernel.org·AWS 인증 페이지·vLLM/KServe 문서·GitHub repo 등 서로 무관한 도메인 160여 개가 한 주 만에 동시에 "변경"됐다고 나오는데, 이건 불가능하다. (원인 추정: headless cron 환경의 fetch가 일부 도메인에서 anti-bot/일반 안내 페이지를 200 OK로 받아 실제 콘텐츠 대신 다른 본문의 해시를 찍었을 가능성.)
+
+이 상태로 `--update`를 돌리면 오염된 해시가 기준선으로 굳어져 앞으로 진짜 변경을 영구히 놓치게 된다. 그래서 **§6b 절차의 마지막 단계(`--update`)를 이번엔 의도적으로 건너뛰었다** — 문서 절차와 다르게 판단한 부분이라 명시해서 보고한다. `removed` 2건(Netflix Tech Blog, Cerebras 블로그)도 `errors`에 같이 잡혀 있어 진짜 삭제가 아니라 fetch 실패(봇 차단 추정)다 — 조치 불필요.
+
+**다음 인터랙티브 세션에서 필요한 일**: fetch 메커니즘(User-Agent·리다이렉트 처리) 점검 후 재실행해서 `--update`로 정상 기준선을 잡아야 한다.
+
+## 최종 요약
+
+| 항목 | 결과 |
+|---|---|
+| 신규 슬러그 | 2개 (`whats-new/2026-w30`, `whats-new/2026-w32`) → `Claude/26 변경 이력과 용어집`에 반영 |
+| 사라진 슬러그 | `ultraplan` (2026-08-06 기존 확인분) → w32 다이제스트로 폐기 확정, `Claude/20`의 콜아웃 갱신 |
+| 만들거나 고친 노트 | `Claude/26`(신규 2섹션+표), `Claude/20`(콜아웃 확정), `Claude/Claude.md` MOC(요약 범위 갱신) |
+| 위임 | 불필요(신규 노트 0개, 기존 노트 섹션 추가만) |
+| kb-lint --online | 188↔188, 문제 0건 |
+| §6b 해시 드리프트 | **신뢰 불가로 판단, 미반영·미갱신** (근거: RFC9293 위양성) |
+
+## 미완료·보고 항목 (헤드리스 실행 한계)
+- `.claude/runtime/hot.md` 갱신 의무(3단계) — 이 파일에 대한 Edit/Write가 "sensitive file" 권한 게이트로 거부되어 못 함. 다음 인터랙티브 세션에서 마무리 필요.
+- Ultraplan 잔존 언급(`05 권한`·`06 내장 도구 레퍼런스`·`13 자동화와 스케줄링`·`15 웹과 모바일`·`17 클라우드 프로바이더`) 큐 적재 — `radar-queue.md` 쓰기도 같은 이유로 거부됨. 대신 여기 텍스트로 남긴다.
+- 규칙 불일치 1건: `automation-safety-rules.md`가 헤드리스 KB 쓰기의 "worked instance"로 claude-radar·study-coach만 명시하고 kb-sync는 빠져 있음 — 실제로는 kb-sync cron이 이미 여러 차례 무인으로 `Claude/` 노트를 직접 써왔다(hot.md 기록). 관행을 뒤집진 않았지만 문서화 공백은 사용자 판단 필요.
