@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-08-17T09:17:22",
+ "updated": "2026-08-18T09:17:51",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -1359,6 +1359,16 @@
   "gh:expropriationhoorayhenry64/social-media-scraper-skill": "2026-08-17",
   "devto:4410548": "2026-08-17",
   "npm:agent-mcfly": "2026-08-17",
-  "devto:4404281": "2026-08-17"
+  "devto:4404281": "2026-08-17",
+  "hn:49337325": "2026-08-18",
+  "hn:49336452": "2026-08-18",
+  "hn:49336157": "2026-08-18",
+  "hn:49330285": "2026-08-18",
+  "hn:49326393": "2026-08-18",
+  "ghrel:v2.1.234": "2026-08-18",
+  "gh:muchiny/bridge-mcp": "2026-08-18",
+  "gn:https://news.hada.io/topic?id=32579": "2026-08-18",
+  "gn:https://news.hada.io/topic?id=32570": "2026-08-18",
+  "devto:4399379": "2026-08-18"
  }
 }

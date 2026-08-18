@@ -190,3 +190,4 @@ This 명령은 사용자 승인이 필요한 상태로 걸려 있습니다. 계�
 - `.claude/runtime/hot.md` 갱신 의무(3단계) — 이 파일에 대한 Edit/Write가 "sensitive file" 권한 게이트로 거부되어 못 함. 다음 인터랙티브 세션에서 마무리 필요.
 - Ultraplan 잔존 언급(`05 권한`·`06 내장 도구 레퍼런스`·`13 자동화와 스케줄링`·`15 웹과 모바일`·`17 클라우드 프로바이더`) 큐 적재 — `radar-queue.md` 쓰기도 같은 이유로 거부됨. 대신 여기 텍스트로 남긴다.
 - 규칙 불일치 1건: `automation-safety-rules.md`가 헤드리스 KB 쓰기의 "worked instance"로 claude-radar·study-coach만 명시하고 kb-sync는 빠져 있음 — 실제로는 kb-sync cron이 이미 여러 차례 무인으로 `Claude/` 노트를 직접 써왔다(hot.md 기록). 관행을 뒤집진 않았지만 문서화 공백은 사용자 판단 필요.
+=== [2026-08-17 09:22:49] exit=0 ===
