@@ -1,6 +1,6 @@
 ---
 title: 23 Agent SDK — 핵심 기능
-updated: 2026-06-07
+updated: 2026-08-20
 type: reference
 sources: [agent-sdk/permissions, agent-sdk/sessions, agent-sdk/session-storage, agent-sdk/hooks, agent-sdk/mcp, agent-sdk/custom-tools, agent-sdk/subagents, agent-sdk/skills, agent-sdk/slash-commands, agent-sdk/plugins, agent-sdk/user-input, agent-sdk/todo-tracking, agent-sdk/tool-search, agent-sdk/file-checkpointing]
 ---
@@ -539,6 +539,9 @@ options = ClaudeAgentOptions(
 ---
 
 ## 슬래시 명령 (slash-commands)
+
+> [!warning] deprecated
+> `agent-sdk/slash-commands` 슬러그가 공식 문서 인덱스(`llms.txt`)에서 사라진 것을 2026-08-20 `/kb-sync`가 감지했다. 해당 URL(`agent-sdk/slash-commands.md`)은 이제 `agent-sdk/skills.md`와 **바이트 단위로 동일한 콘텐츠**("Extend agents with skills")를 반환한다 — 슬래시 명령 문서가 스킬 문서로 병합된 것으로 보인다. 아래 내용은 병합 이전 마지막 기록으로 남기고 삭제하지 않는다.
 
 `/`로 시작하는 명령으로 세션을 제어한다(compaction, 컨텍스트 사용량 조회, 커스텀 명령 등). **대화형 터미널 없이 동작하는 명령만** SDK로 dispatch 가능하며, `system/init` 메시지가 세션의 가용 명령을 나열한다.
 

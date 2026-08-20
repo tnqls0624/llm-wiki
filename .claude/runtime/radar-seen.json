@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-08-19T09:17:25",
+ "updated": "2026-08-20T09:17:23",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -1388,6 +1388,26 @@
   "devto:4423861": "2026-08-19",
   "devto:4422863": "2026-08-19",
   "devto:4415463": "2026-08-19",
-  "devto:4418895": "2026-08-19"
+  "devto:4418895": "2026-08-19",
+  "hn:49368038": "2026-08-20",
+  "hn:49367419": "2026-08-20",
+  "hn:49367350": "2026-08-20",
+  "hn:49366812": "2026-08-20",
+  "hn:49366658": "2026-08-20",
+  "hn:49364871": "2026-08-20",
+  "hn:49364658": "2026-08-20",
+  "hn:49363138": "2026-08-20",
+  "ghrel:v2.1.236": "2026-08-20",
+  "gh:peopleworks/SignsofAI": "2026-08-20",
+  "gh:mishahanin/heading-os": "2026-08-20",
+  "gh:majiayu000/ccstats": "2026-08-20",
+  "gh:Djarvur/go-ultimate": "2026-08-20",
+  "gn:https://news.hada.io/topic?id=32652": "2026-08-20",
+  "acl:August 19, 2026": "2026-08-20",
+  "devto:4432146": "2026-08-20",
+  "devto:4436200": "2026-08-20",
+  "devto:4435375": "2026-08-20",
+  "devto:4399412": "2026-08-20",
+  "npm:claude-cursor-agent-skill": "2026-08-20"
  }
 }
