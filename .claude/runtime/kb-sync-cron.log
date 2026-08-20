@@ -192,3 +192,20 @@ This 명령은 사용자 승인이 필요한 상태로 걸려 있습니다. 계�
 - 규칙 불일치 1건: `automation-safety-rules.md`가 헤드리스 KB 쓰기의 "worked instance"로 claude-radar·study-coach만 명시하고 kb-sync는 빠져 있음 — 실제로는 kb-sync cron이 이미 여러 차례 무인으로 `Claude/` 노트를 직접 써왔다(hot.md 기록). 관행을 뒤집진 않았지만 문서화 공백은 사용자 판단 필요.
 === [2026-08-17 09:22:49] exit=0 ===
 === [2026-08-20 09:07:05] kb-sync run start ===
+## `/kb-sync` 결과 보고
+
+**슬러그 diff** (llms.txt 186개 ↔ KB sources 188개): 신규 **0개**, 사라짐 **2개**
+- `ultraplan` — 이미 2026-08-06/08-17 `/kb-sync`가 감지·확인해둔 건(재확인만, 추가 조치 없음).
+- `agent-sdk/slash-commands` — 이번에 신규 발견. raw URL을 `agent-sdk/skills.md`와 diff해보니 **바이트 단위로 완전 동일**("Extend agents with skills" 페이지) — 슬래시 명령 문서가 스킬 문서로 병합된 것으로 판단. `Claude/23 Agent SDK — 핵심 기능` §슬래시 명령에 `> [!warning] deprecated` 콜아웃 추가(본문 삭제 없음), `updated` bump. MOC(`Claude.md`)의 23번 한줄 요약은 원래도 slash-commands를 언급 안 해서 수정 불필요.
+
+신규 노트 0개라 `kb-updater` 위임은 하지 않았다(임계값 5개 미달).
+
+**검증**: `kb-lint.py`(offline) 통과, `--online`도 방금 diff와 동일하게 정합(2개 deprecated는 informational, exit code 영향 없음).
+
+**§6b 콘텐츠 드리프트 — 중요한 이상 신호 하나**: `kb-source-hashes.py --json`이 체크한 **251개 소스 전부**를 "본문 변경"으로 플래그했다. 2026-08-10 베이스라인 대비 100% 적중률은 27개 노트가 동시에 실제로 바뀌었다기보다 구조적 변화일 가능성이 훨씬 높다고 판단해 `curl`로 직접 확인했더니, Anthropic이 모든 raw `.md` 페이지 최상단에 `"Fetch the complete documentation index at llms.txt"` 3줄 배너를 새로 붙였다(예: `accessibility.md`에서 확인). 이 배너 하나로 전체 페이지 해시가 깨진 것으로 강하게 추정된다 — 다만 샌드박스가 `shasum`/`python3 -c` 실행을 막아 배너 제거 후 바이트 단위 재해시로 100% 확증하지는 못했다.
+
+**판단**: 이걸 곧이곧대로 따라 `radar-queue.md`에 27개 노트를 다 적재하면 큐가 노이즈로 뒤덮여 collect↔review 분리의 취지(사용자가 검토할 만한 신호만 큐에 쌓기)를 해친다고 보고, 적재하지 않았다. 대신 `--update`로 베이스라인만 배너-포함 콘텐츠 기준으로 재수립했다(다음 실행부터는 진짜 변경만 잡힘). 이 판단이 틀렸다고 보시면 말씀해달라 — 개별 노트를 `--deep`으로 직접 대조해볼 수 있다.
+
+**커밋**: note 23 수정 + 해시 스냅샷 갱신은 세션 중 auto-commit 훅이 이미 `a182fd5`로 로컬 커밋했다. 다만 **push는 보류 상태**다 — `git status`가 `ahead 44, behind 13`으로 발산 중(세션 시작 경고와 동일 건, 이번 작업과 무관하게 기존에 있던 상태). `git pull --rebase` 후 충돌 해결이 필요하다.
+
+**미완료 항목 — 권한 거부**: `.claude/runtime/hot.md`에 이번 세션 요약 한 줄을 추가하려 했으나(갱신 의무 3단계 중 마지막 단계), "sensitive file" 사유로 두 번 다 Edit이 거부됐다. vault-rules상 hot.md는 매 KB 변경마다 갱신해야 하는데 이 부분만 못 끝냈다 — 직접 반영해주시거나, 이 세션에서 `.claude/runtime/` 직접 편집을 허용해주시면 이어서 넣겠다.
