@@ -39,11 +39,16 @@ def _write(p, s):
 
 
 def note(slug, updated="2026-01-01", sources="[]", body="본문 내용이 충분히 길어서 빈 노트로 잡히지 않는다.", extra_fm=""):
-    """KB 노트 frontmatter(title/updated/sources/type) + 본문 생성.
-    extra_fm에 'type:'이 있으면(예: MOC) 기본 type을 생략하고 그것을 쓴다."""
-    fm = f"title: {slug}\nupdated: {updated}\nsources: {sources}"
+    """KB 노트 frontmatter(§12 11필드) + 본문 생성.
+    2026-08-22: 메타프롬프트 §12 전면 채택에 맞춰 4필드 -> 11필드. `sources` kwarg는
+    호출부 호환을 위해 이름을 유지하고 값은 `source_urls` 필드로 쓴다.
+    extra_fm에 'type:'이 있으면 기본 type을 생략하고 그것을 쓴다."""
+    fm = (f"id: {slug}\ntitle: {slug}")
     if "type:" not in extra_fm:
-        fm += "\ntype: reference"  # 기본 type (extra_fm이 type을 주면 그쪽 우선)
+        fm += "\ntype: playbook"  # 기본 type (extra_fm이 type을 주면 그쪽 우선)
+    fm += (f"\nstatus: growing\ncreated: 2026-01-01\nupdated: {updated}"
+           f"\narea: 개발자 학습\ntags: [test]\nsource_urls: {sources}"
+           f'\nnotion_url: ""\nconfidentiality: public')
     if extra_fm:
         fm += "\n" + extra_fm
     return f"---\n{fm}\n---\n{body}\n"
@@ -103,13 +108,13 @@ class TestKbLint(VaultTest):
         if os.path.exists(src_fields):
             shutil.copy(src_fields, os.path.join(self.d, ".claude", "kb-required-fields.txt"))
         else:
-            _write(os.path.join(self.d, ".claude", "kb-required-fields.txt"), "title\nupdated\nsources\ntype\n")
+            _write(os.path.join(self.d, ".claude", "kb-required-fields.txt"), "id\ntitle\ntype\nstatus\ncreated\nupdated\narea\ntags\nsource_urls\nnotion_url\nconfidentiality\n")
         # type enum 정본 파일도 복사 — 없으면 fallback이지만 정본 경로를 테스트.
         src_types = os.path.join(CLAUDE, "kb-allowed-types.txt")
         if os.path.exists(src_types):
             shutil.copy(src_types, os.path.join(self.d, ".claude", "kb-allowed-types.txt"))
         else:
-            _write(os.path.join(self.d, ".claude", "kb-allowed-types.txt"), "reference\nexplanation\nhow-to\ntutorial\nmoc\n")
+            _write(os.path.join(self.d, ".claude", "kb-allowed-types.txt"), "evergreen\nconcept\narchitecture\ncomparison\nplaybook\ncareer\n")
 
     def lint(self, *extra):
         """격리 vault의 kb-lint.py 를 --json 으로 실행 → (rc, parsed_json)."""
@@ -133,7 +138,7 @@ class TestKbLint(VaultTest):
         # 콘텐츠 노트는 자기 토픽 MOC([[Claude]])를 백링크해야 한다(update duty ② 기계 강제).
         self.kbnote("a", body="정상 노트 A. 허브: [[Claude]] · [[b]] 참조.")
         self.kbnote("b", body="정상 노트 B. 허브: [[Claude]] · [[a]] 참조.")
-        self.kbnote("Claude", sources="", body="허브. [[a]] [[b]]", extra_fm="type: moc")
+        self.kbnote("Claude", sources="", body="허브. [[a]] [[b]]", extra_fm="type: evergreen")
         rc, data = self.lint()
         self.assertEqual(rc, 0, f"정상 vault는 통과해야: {data['files_with_issues']}")
         self.assertEqual(data["issue_count"], 0)
@@ -148,14 +153,14 @@ class TestKbLint(VaultTest):
         self.assertEqual(rc, 1)
         iss = self.issues_for(data, "bad.md")
         self.assertIsNotNone(iss)
-        self.assertTrue(any("sources" in x for x in iss), f"sources 누락 검출: {iss}")
+        self.assertTrue(any("source_urls" in x for x in iss), f"source_urls 누락 검출: {iss}")
 
     def test_moc_sources_exempt(self):
-        # type: moc 노트는 sources 면제 → 누락이어도 이슈 없음 (positive control: 비-MOC는 잡힘)
-        _write(os.path.join(self.d, "Claude", "hub.md"),
-               "---\ntitle: hub\nupdated: 2026-01-01\ntype: moc\n---\n허브 노트, 본문 충분.")
+        # MOC(파일명==부모디렉터리명)는 source_urls 면제 → 누락이어도 이슈 없음 (positive control: 비-MOC는 잡힘)
+        _write(os.path.join(self.d, "Claude", "Claude.md"),
+               "---\nid: Claude\ntitle: Claude\ntype: evergreen\nstatus: evergreen\ncreated: 2026-01-01\nupdated: 2026-01-01\narea: 개발자 학습\ntags: [test]\nnotion_url: \"\"\nconfidentiality: public\n---\n허브 노트, 본문 충분.")
         rc, data = self.lint()
-        self.assertEqual(rc, 0, f"MOC는 sources 면제: {data['files_with_issues']}")
+        self.assertEqual(rc, 0, f"MOC는 source_urls 면제: {data['files_with_issues']}")
 
     def test_broken_link_detected(self):
         self.kbnote("a", body="끊긴 링크 [[does-not-exist]] 참조.")
@@ -215,8 +220,8 @@ class TestKbLint(VaultTest):
     def test_type_missing_detected(self):
         # type 필수 — 누락 시 검출 (note() 기본은 type 포함이므로 직접 작성)
         _write(os.path.join(self.d, "Claude", "notype.md"),
-               "---\ntitle: notype\nupdated: 2026-01-01\nsources: []\n---\n허브: [[Claude]] 본문 충분히 김.")
-        self.kbnote("Claude", sources="", body="허브 [[notype]]", extra_fm="type: moc")
+               "---\nid: notype\ntitle: notype\nstatus: growing\ncreated: 2026-01-01\nupdated: 2026-01-01\narea: 개발자 학습\ntags: [test]\nsource_urls: []\nnotion_url: \"\"\nconfidentiality: public\n---\n허브: [[Claude]] 본문 충분히 김.")
+        self.kbnote("Claude", sources="", body="허브 [[notype]]", extra_fm="type: evergreen")
         rc, data = self.lint()
         self.assertEqual(rc, 1)
         iss = self.issues_for(data, "notype.md")
@@ -224,10 +229,10 @@ class TestKbLint(VaultTest):
 
     def test_type_enum_invalid_detected(self):
         # 허용 enum 밖 type 값은 어휘 드리프트로 검출 (positive control: 유효 type은 통과)
-        self.kbnote("good", body="허브: [[Claude]] 유효 type.", extra_fm="type: explanation")
+        self.kbnote("good", body="허브: [[Claude]] 유효 type.", extra_fm="type: concept")
         _write(os.path.join(self.d, "Claude", "bogus.md"),
-               "---\ntitle: bogus\nupdated: 2026-01-01\nsources: []\ntype: BigQuery Table\n---\n허브: [[Claude]] 본문.")
-        self.kbnote("Claude", sources="", body="허브 [[good]] [[bogus]]", extra_fm="type: moc")
+               "---\nid: bogus\ntitle: bogus\ntype: BigQuery Table\nstatus: growing\ncreated: 2026-01-01\nupdated: 2026-01-01\narea: 개발자 학습\ntags: [test]\nsource_urls: []\nnotion_url: \"\"\nconfidentiality: public\n---\n허브: [[Claude]] 본문.")
+        self.kbnote("Claude", sources="", body="허브 [[good]] [[bogus]]", extra_fm="type: evergreen")
         rc, data = self.lint()
         self.assertEqual(rc, 1)
         self.assertIsNone(self.issues_for(data, "good.md"), "유효 type(explanation)은 통과해야")
@@ -239,8 +244,8 @@ class TestKbLint(VaultTest):
         # 콘텐츠 노트가 자기 토픽 MOC를 백링크 안 하면 검출 (positive control: 백링크 있으면 통과)
         self.kbnote("linked", body="허브: [[Claude]] 백링크 있음.")
         _write(os.path.join(self.d, "Claude", "orphan.md"),
-               "---\ntitle: orphan\nupdated: 2026-01-01\nsources: []\ntype: reference\n---\nMOC 백링크 없는 본문.")
-        self.kbnote("Claude", sources="", body="허브 [[linked]] [[orphan]]", extra_fm="type: moc")
+               "---\nid: orphan\ntitle: orphan\ntype: playbook\nstatus: growing\ncreated: 2026-01-01\nupdated: 2026-01-01\narea: 개발자 학습\ntags: [test]\nsource_urls: []\nnotion_url: \"\"\nconfidentiality: public\n---\nMOC 백링크 없는 본문.")
+        self.kbnote("Claude", sources="", body="허브 [[linked]] [[orphan]]", extra_fm="type: evergreen")
         rc, data = self.lint()
         self.assertEqual(rc, 1)
         self.assertIsNone(self.issues_for(data, "linked.md"), "MOC 백링크 있으면 통과")
@@ -250,7 +255,7 @@ class TestKbLint(VaultTest):
     def test_moc_itself_exempt_from_backlink(self):
         # MOC 자신은 자기를 백링크할 필요 없음(면제)
         self.kbnote("a", body="허브: [[Claude]] 본문.")
-        self.kbnote("Claude", sources="", body="허브 [[a]]", extra_fm="type: moc")
+        self.kbnote("Claude", sources="", body="허브 [[a]]", extra_fm="type: evergreen")
         rc, data = self.lint()
         self.assertEqual(rc, 0, f"MOC 자신은 백링크 면제: {data['files_with_issues']}")
 
@@ -259,7 +264,7 @@ class TestKbLint(VaultTest):
         # 오래된 updated는 governance.stale에 올라오되 exit code는 0(정보성)
         self.kbnote("old", updated="2020-01-01", body="허브: [[Claude]] 오래된 노트.")
         self.kbnote("fresh", updated="2099-01-01", body="허브: [[Claude]] 신선한 노트.")
-        self.kbnote("Claude", sources="", body="허브 [[old]] [[fresh]]", extra_fm="type: moc")
+        self.kbnote("Claude", sources="", body="허브 [[old]] [[fresh]]", extra_fm="type: evergreen")
         rc, data = self.lint()
         self.assertEqual(rc, 0, "신선도는 정보성 — exit code 미반영")
         stale_notes = [s["note"] for s in data["governance"]["stale"]]
@@ -270,7 +275,7 @@ class TestKbLint(VaultTest):
         # 거버넌스 집계: type coverage + 모순 콜아웃 카운트
         self.kbnote("a", body="허브: [[Claude]] 본문.")
         self.kbnote("conf", body="허브: [[Claude]]\n\n> [!warning] 모순\n> [[a]]는 X, [[a]]는 Y.")
-        self.kbnote("Claude", sources="", body="허브 [[a]] [[conf]]", extra_fm="type: moc")
+        self.kbnote("Claude", sources="", body="허브 [[a]] [[conf]]", extra_fm="type: evergreen")
         rc, data = self.lint()
         gov = data["governance"]
         self.assertEqual(gov["with_type"], gov["total"], "모든 노트 type 보유")
@@ -286,7 +291,7 @@ class TestKbLintCheck(VaultTest):
     def setUp(self):
         super().setUp()
         # 정본 필드 스키마를 격리 vault에 둠 (없으면 하드코딩 fallback)
-        _write(os.path.join(self.d, ".claude", "kb-required-fields.txt"), "title\nupdated\nsources\n")
+        _write(os.path.join(self.d, ".claude", "kb-required-fields.txt"), "id\ntitle\ntype\nstatus\ncreated\nupdated\narea\ntags\nsource_urls\nnotion_url\nconfidentiality\n")
 
     def fire(self, relpath, env_extra=None):
         """relpath(vault 기준)을 file_path로 전달."""
@@ -300,30 +305,30 @@ class TestKbLintCheck(VaultTest):
 
     def test_missing_field_warns(self):
         _write(os.path.join(self.d, "Claude", "bad.md"),
-               "---\ntitle: bad\nupdated: 2026-01-01\n---\n본문")  # sources 누락
+               "---\nid: bad\ntitle: bad\ntype: playbook\nstatus: growing\ncreated: 2026-01-01\nupdated: 2026-01-01\narea: 개발자 학습\ntags: [test]\nnotion_url: \"\"\nconfidentiality: public\n---\n본문")  # sources 누락
         rc, _, err = self.fire("Claude/bad.md")
         self.assertEqual(rc, 2)
-        self.assertIn("sources", err)
+        self.assertIn("source_urls", err)
 
     def test_moc_sources_exempt(self):
-        # type: moc 노트는 sources 면제 → 깨끗한 MOC(Claude/Claude.md)는 무출력 exit 0이어야.
+        # MOC(파일명==부모디렉터리명)는 source_urls 면제 → 깨끗한 MOC(Claude/Claude.md)는 무출력 exit 0이어야.
         # 배치 린터 TestKbLint.test_moc_sources_exempt 와 동일 계약을 훅 쪽에서도 고정.
         _write(os.path.join(self.d, "Claude", "Claude.md"),
-               "---\ntitle: Claude\nupdated: 2026-01-01\ntype: moc\n---\n허브 노트, 본문 충분.")
+               "---\nid: Claude\ntitle: Claude\ntype: evergreen\nstatus: evergreen\ncreated: 2026-01-01\nupdated: 2026-01-01\narea: 개발자 학습\ntags: [test]\nnotion_url: \"\"\nconfidentiality: public\n---\n허브 노트, 본문 충분.")
         rc, _, err = self.fire("Claude/Claude.md")
-        self.assertEqual(rc, 0, f"MOC는 sources 면제 → 통과해야: {err}")
+        self.assertEqual(rc, 0, f"MOC는 source_urls 면제 → 통과해야: {err}")
 
     def test_non_moc_sources_still_warns(self):
-        # positive control: type가 moc가 아니면 sources 누락은 여전히 잡혀야 (면제가 과도하지 않음 증명)
+        # positive control: MOC가 아니면 source_urls 누락은 여전히 잡혀야 (면제가 과도하지 않음 증명)
         _write(os.path.join(self.d, "Claude", "notmoc.md"),
                "---\ntitle: notmoc\nupdated: 2026-01-01\ntype: note\n---\n본문이 충분히 길다.")
         rc, _, err = self.fire("Claude/notmoc.md")
         self.assertEqual(rc, 2)
-        self.assertIn("sources", err, f"비-MOC는 sources 누락 검출돼야: {err}")
+        self.assertIn("source_urls", err, f"비-MOC는 source_urls 누락 검출돼야: {err}")
 
     def test_schema_file_respected(self):
         # 격리 vault에 커스텀 필드셋을 두고 그것을 읽는지(하드코딩 fallback 아님) 확인
-        _write(os.path.join(self.d, ".claude", "kb-required-fields.txt"), "title\nupdated\nsources\nzzz_custom\n")
+        _write(os.path.join(self.d, ".claude", "kb-required-fields.txt"), "id\ntitle\ntype\nstatus\ncreated\nupdated\narea\ntags\nsource_urls\nnotion_url\nconfidentiality\nzzz_custom\n")
         _write(os.path.join(self.d, "Claude", "c.md"), note("c"))  # zzz_custom 없음
         rc, _, err = self.fire("Claude/c.md")
         self.assertEqual(rc, 2)
@@ -358,9 +363,11 @@ class TestKbLintCheck(VaultTest):
         self.assertIn("enum", err, f"허용값 밖 type 경고: {err}")
 
     def test_type_enum_valid_silent(self):
-        # positive control: 유효 type(reference)은 통과.
+        # positive control: 유효 type(playbook)은 통과.
         _write(os.path.join(self.d, "Claude", "okk.md"),
-               "---\ntitle: okk\nupdated: 2026-01-01\nsources: []\ntype: reference\n---\n본문 충분히 김.")
+               "---\nid: okk\ntitle: okk\ntype: playbook\nstatus: growing\ncreated: 2026-01-01"
+               "\nupdated: 2026-01-01\narea: 개발자 학습\ntags: [test]\nsource_urls: []"
+               "\nnotion_url: \"\"\nconfidentiality: public\n---\n본문 충분히 김.")
         rc, _, err = self.fire("Claude/okk.md")
         self.assertEqual(rc, 0, f"유효 type은 통과: {err}")
 
@@ -775,7 +782,7 @@ class TestParseFrontmatter(unittest.TestCase):
 
     def test_inline_list_still_parsed(self):
         # positive control: inline 배열도 여전히 정상
-        c = "---\ntitle: t\nupdated: 2026-01-01\ntype: reference\nsources: [a, b]\n---\n본문"
+        c = "---\ntitle: t\nupdated: 2026-01-01\ntype: playbook\nsources: [a, b]\n---\n본문"
         _, fm = self.m.parse_frontmatter(c)
         self.assertEqual(fm["sources"], ["a", "b"])
 

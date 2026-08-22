@@ -72,7 +72,8 @@ if not m:
     warnings.append("프론트매터(---) 블록 없음")
 else:
     fm = m.group(1)
-    required = ("title", "updated", "sources")
+    required = ("id", "title", "type", "status", "created", "updated",
+                "area", "tags", "source_urls", "notion_url", "confidentiality")
     try:
         with open(os.path.join(vault_root, ".claude", "kb-required-fields.txt"), encoding="utf-8") as sf:
             loaded = [ln.strip() for ln in sf if ln.strip() and not ln.lstrip().startswith("#")]
@@ -80,19 +81,20 @@ else:
             required = loaded
     except Exception:
         pass
-    # type: moc 노트는 sources 면제 — MOC는 원본을 가리키지 않는 허브.
-    # 배치 린터 kb-lint.py(is_moc 로직)와 동일하게 맞춘다.
+    # MOC(파일명 == 부모 디렉터리명) 노트는 source_urls 면제 — 원본을 가리키지 않는 허브.
+    # §12 enum에 `moc` 값이 없어 판정을 경로 기준으로 이전했다. kb-lint.py와 동일 기준.
     tm = re.search(r"^type:\s*(.+)$", fm, re.M)
     type_val = tm.group(1).strip().strip("'\"") if tm else None
-    is_moc = type_val == "moc"
+    is_moc = (os.path.splitext(os.path.basename(fp))[0]
+              == os.path.basename(os.path.dirname(fp)))
     for field in required:
-        if field == "sources" and is_moc:
+        if field == "source_urls" and is_moc:
             continue
         if not re.search(rf"^{re.escape(field)}:", fm, re.M):
             warnings.append(f"프론트매터 필수 필드 누락: {field}")
     # type 닫힌 enum 검증 — kb-allowed-types.txt 런타임 로드(없으면 fallback). kb-lint.py와 동일.
     if type_val is not None:
-        allowed = ("reference", "explanation", "how-to", "tutorial", "moc")
+        allowed = ("evergreen", "concept", "architecture", "comparison", "playbook", "career")
         try:
             with open(os.path.join(vault_root, ".claude", "kb-allowed-types.txt"), encoding="utf-8") as tf:
                 loaded = [ln.strip() for ln in tf if ln.strip() and not ln.lstrip().startswith("#")]

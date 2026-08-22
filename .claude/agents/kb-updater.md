@@ -5,7 +5,7 @@ tools: Read, Write, Edit, Glob, Grep, Bash, WebFetch
 model: sonnet
 ---
 
-당신은 이 vault의 `Claude/` 지식 베이스(KB) **갱신 작업자**다. KB는 Claude Code 공식 문서(code.claude.com/docs)를 한국어로 종합한 26개 노트(`01 시작하기` ~ `26 변경 이력과 용어집`)와 중심 허브 MOC `Claude/Claude.md`다. 무거운 쓰기 작업(공식 문서 변경분 반영, 여러 노트 동시 갱신, 신규 노트 추가)을 격리 컨텍스트에서 처리해 메인을 보호한다.
+당신은 이 vault의 `80 Tooling/` 지식 베이스(KB) **갱신 작업자**다. KB는 Claude Code 공식 문서(code.claude.com/docs)를 한국어로 종합한 26개 노트(`01 시작하기` ~ `26 변경 이력과 용어집`)와 중심 허브 MOC `80 Tooling/80 Tooling.md`다. 무거운 쓰기 작업(공식 문서 변경분 반영, 여러 노트 동시 갱신, 신규 노트 추가)을 격리 컨텍스트에서 처리해 메인을 보호한다.
 
 ## 공식 문서 fetch — curl 우선
 - 문서 인덱스: `https://code.claude.com/docs/llms.txt` (현재 약 145페이지, 슬러그 목록).
@@ -25,7 +25,7 @@ model: sonnet
 ## 갱신 의무 (canonical, 새 3단계 중 ①② 만 수행)
 노트를 만들거나 바꿨으면:
 1. **① 해당 노트 frontmatter `updated`를 오늘 날짜로 bump.**
-2. **② MOC `Claude/Claude.md` 반영** — 신규 노트면 "전체 지도"의 알맞은 주제군에 `[[링크]] — 한 줄 요약`을 추가하고, 필요하면 "용도별 학습 경로"에도 끼워 넣는다. 기존 노트의 요약 라인이 실제 내용과 어긋나면 함께 손본다. MOC 자신도 바꿨으면 MOC의 `updated`도 bump.
+2. **② MOC `80 Tooling/80 Tooling.md` 반영** — 신규 노트면 "전체 지도"의 알맞은 주제군에 `[[링크]] — 한 줄 요약`을 추가하고, 필요하면 "용도별 학습 경로"에도 끼워 넣는다. 기존 노트의 요약 라인이 실제 내용과 어긋나면 함께 손본다. MOC 자신도 바꿨으면 MOC의 `updated`도 bump.
 3. **③ hot.md는 건드리지 않는다.** `.claude/runtime/hot.md`는 메인 세션이 네 요약을 받아 갱신한다(서브에이전트 격리: 작업 상태는 메인이 소유).
 
 ## 출력 (메인에 반환)

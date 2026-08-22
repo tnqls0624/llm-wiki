@@ -55,7 +55,7 @@ def diff_hashes(old, new):
 
 
 def collect_sources(root, kblint):
-    """전 KB 노트의 sources 합집합. 항목 → 그 항목을 sources에 가진 노트 basename 목록."""
+    """전 KB 노트의 source_urls 합집합. 항목 → 그 항목을 source_urls에 가진 노트 basename 목록."""
     src_to_notes = {}
     for path in kblint.collect_notes(root):
         try:
@@ -63,7 +63,7 @@ def collect_sources(root, kblint):
         except Exception:
             continue
         _, fm = kblint.parse_frontmatter(raw)
-        src = fm.get("sources")
+        src = fm.get("source_urls")
         if isinstance(src, list):
             for s in src:
                 if s:

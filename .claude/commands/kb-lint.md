@@ -7,7 +7,7 @@ argument-hint: [--online]
 
 인자: `$ARGUMENTS`
 
-`Claude/` KB의 정합성을 기계 점검하고, 출력된 문제를 사람 판단으로 고친다. 점검 자체는 LLM이 필요 없는 기계 작업이므로 스크립트에 맡긴다(비용 사다리: 기계 린트 → LLM 수정).
+`80 Tooling/` KB의 정합성을 기계 점검하고, 출력된 문제를 사람 판단으로 고친다. 점검 자체는 LLM이 필요 없는 기계 작업이므로 스크립트에 맡긴다(비용 사다리: 기계 린트 → LLM 수정).
 
 ## 1. 실행
 - `bash`로 `python3 .claude/kb-lint.py`를 실행한다.
@@ -17,7 +17,7 @@ argument-hint: [--online]
 - 스크립트가 내는 문제 유형(예: frontmatter 누락 필드, 끊긴 `[[위키링크]]`, MOC에서 링크 안 된 고아 노트, `허브: [[Claude]]` 누락, `## 원본 문서` 누락, `--online`일 때 sources 슬러그 ↔ 공식 인덱스 불일치)을 읽고, 각각이 무엇을 뜻하는지 파악한다.
 
 ## 3. 수정
-- 문제를 **직접 고친다**. 끊긴 링크는 올바른 노트명으로, 누락 frontmatter 필드는 채우고, MOC 고아는 `Claude/Claude.md`에 링크+한 줄 요약으로 편입한다.
+- 문제를 **직접 고친다**. 끊긴 링크는 올바른 노트명으로, 누락 frontmatter 필드는 채우고, MOC 고아는 `80 Tooling/80 Tooling.md`에 링크+한 줄 요약으로 편입한다.
 - 노트를 고쳤으면 그 노트 `updated`를 bump한다(갱신 의무는 `.claude/rules/vault-rules.md`가 정본). 단, lint는 새 지식 노트를 만드는 작업이 아니므로 보통 MOC/`hot.md` 단계는 구조 변경이 있었을 때만 건드린다.
 
 ## 4. 재실행으로 0 확인

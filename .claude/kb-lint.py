@@ -7,14 +7,14 @@
 
 검사 항목:
   a. 프론트매터 필수 필드 — .claude/kb-required-fields.txt 를 런타임에 읽고
-     (없으면 하드코딩 fallback [title, updated, sources]) 각 노트에 존재하는지.
-     단 type: moc 노트는 sources 면제(MOC는 원본을 가리키지 않는 허브).
+     (없으면 하드코딩 fallback = §12 11필드) 각 노트에 존재하는지.
+     단 MOC(파일명==부모디렉터리명) 노트는 source_urls 면제(원본을 가리키지 않는 허브).
   b. updated 형식 YYYY-MM-DD.
   c. 끊긴 [[위키링크]] — 코드펜스/인라인코드 제거 후 추출, [[타깃#앵커]]·[[타깃|별칭]] 처리,
      [[#...]] 같은-문서 앵커는 스킵, 타깃이 vault 내 .md 파일명(확장자 제외)과 일치하는지.
   d. 0-byte / 사실상 빈(<50자) 노트.
   e. 코드펜스(```) 홀수 — 닫히지 않음.
-  f. --online: 공식 문서 인덱스(llms.txt)와 KB의 sources 슬러그 집합 비교.
+  f. --online: 공식 문서 인덱스(llms.txt)와 KB의 source_urls 슬러그 집합 비교.
      네트워크 실패는 경고만, exit code 미반영.
 
 CLI: python3 .claude/kb-lint.py [--online] [--json]
@@ -30,9 +30,12 @@ import urllib.request
 import urllib.error
 
 LLMS_TXT_URL = "https://code.claude.com/docs/llms.txt"
-FALLBACK_REQUIRED = ["title", "updated", "sources", "type"]
-FALLBACK_TYPES = ["reference", "explanation", "how-to", "tutorial", "moc"]
+FALLBACK_REQUIRED = ["id", "title", "type", "status", "created", "updated",
+                     "area", "tags", "source_urls", "notion_url", "confidentiality"]
+FALLBACK_TYPES = ["evergreen", "concept", "architecture", "comparison", "playbook", "career"]
+# Templates/·Attachments/·00 Inbox/ 는 §11 폴더지만 KB 노트가 아니다(템플릿·첨부·미처리 수집).
 EXCLUDE_DIR_NAMES = {".claude", ".codex", ".obsidian", ".git", ".agents", ".trash",
+                     "Templates", "Attachments", "00 Inbox",
                      "Projects", "blog"}  # Projects/=사업 워크스페이스, blog/=블로그 초안+수집 이미지(SOURCES.md 등) — 둘 다 KB 콘텐츠 아님(hot.md 계약)
 MIN_BODY_CHARS = 50
 AGE_WARN_DAYS = 90  # updated가 이보다 오래되면 stale 후보(정보성 — exit code 미반영)
@@ -194,7 +197,10 @@ def lint_note(path, root, required, page_names, allowed_types):
 
     # a/b. 프론트매터
     block, fm = parse_frontmatter(raw)
-    is_moc = fm.get("type") == "moc"
+    # is_moc: 파일명 == 부모 디렉터리명. §12 enum에 `moc` 값이 없으므로 판정 근거를
+    # type에서 경로로 이전했다 — 아래 백링크 강제가 이미 쓰는 기준이라 판정이 한 곳으로 합쳐진다.
+    is_moc = (os.path.splitext(os.path.basename(path))[0]
+              == os.path.basename(os.path.dirname(path)))
     meta["is_moc"] = is_moc
     meta["has_type"] = "type" in fm
     meta["updated"] = fm.get("updated")
@@ -202,8 +208,8 @@ def lint_note(path, root, required, page_names, allowed_types):
         issues.append("프론트매터(---) 블록 없음")
     else:
         for field in required:
-            # MOC는 원본 슬러그가 없으므로 sources 면제
-            if field == "sources" and is_moc:
+            # MOC는 원본 슬러그가 없으므로 source_urls 면제
+            if field == "source_urls" and is_moc:
                 continue
             if field not in fm:
                 issues.append("프론트매터 필수 필드 누락: %s" % field)
@@ -286,9 +292,9 @@ def extract_index_slugs(text):
 
 
 def check_online(root, notes):
-    """공식 인덱스 슬러그 ↔ KB sources 슬러그 비교. (info, network_failed)."""
+    """공식 인덱스 슬러그 ↔ KB source_urls 슬러그 비교. (info, network_failed)."""
     info = {"new_in_docs": [], "missing_from_index": [], "network_error": None}
-    # KB sources 합집합 (Claude/*.md 만 sources 를 가짐; 그래도 전 노트에서 모은다)
+    # KB source_urls 합집합 (80 Tooling/*.md 만 공식 슬러그를 가짐; 그래도 전 노트에서 모은다)
     kb_slugs = set()
     for path in notes:
         try:
@@ -296,7 +302,7 @@ def check_online(root, notes):
         except Exception:
             continue
         _, fm = parse_frontmatter(raw)
-        src = fm.get("sources")
+        src = fm.get("source_urls")
         if isinstance(src, list):
             # 공식 docs 슬러그만 비교 대상 — 외부 URL(http(s), 예: AI-Infra/Infra의 vLLM·AWS 문서)은
             # code.claude.com 인덱스에 없는 게 당연하므로 제외(missing_from_index 노이즈 방지).

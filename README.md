@@ -2,10 +2,10 @@
 
 Obsidian vault 하나에 **두 가지**가 들어 있다:
 
-1. **토픽 디렉토리 — 지식 베이스(콘텐츠)**: 각 `<Topic>/`는 한국어 노트 + `<Topic>/<Topic>.md` MOC 허브. `Claude/`(Claude Code 공식문서 29) · `AI-Infra/`(8) · `Infra/`(10) · `Meta/`(vault 자기진단). 노트 frontmatter는 4필드 `title`/`updated`/`sources`/`type`(닫힌 enum).
+1. **토픽 디렉토리 — 지식 베이스(콘텐츠)**: 각 `<Topic>/`는 한국어 노트 + `<Topic>/<Topic>.md` MOC 허브. `80 Tooling/`(Claude Code 공식문서 29) · `30 AI Infrastructure/`(8) · `20 Architecture/`(10) · `80 Tooling/`(vault 자기진단). 노트 frontmatter는 4필드 `title`/`updated`/`sources`/`type`(닫힌 enum).
 2. **`.claude/` — 포터블 프레임워크 패키지(메커니즘)**: KB를 묻고·갱신·점검·박제하고, Claude 생태계를 매일 자동 수집하는 커스텀 커맨드·에이전트·스킬·룰·훅·cron. 다른 vault로 그대로 복사 가능.
 
-> 이 README는 **Claude Code 기본 기능이 아닌, 이 프로젝트가 추가한 것**의 사용법만 정리한다. 기본 CLI 사용법은 `Claude/` KB를 참고한다.
+> 이 README는 **Claude Code 기본 기능이 아닌, 이 프로젝트가 추가한 것**의 사용법만 정리한다. 기본 CLI 사용법은 `80 Tooling/` KB를 참고한다.
 
 핵심 원칙(메커니즘 vs 콘텐츠 분리, 갱신 의무 등)의 정본은 `.claude/rules/vault-rules.md`이고, **변경 동기화 의무**(무언가 추가·수정하면 관련 문서도 같은 변경에서 갱신)는 루트 `CLAUDE.md`가 정의한다. 셋 다 매 세션 자동 로드된다(`CLAUDE.md`는 프로젝트 메모리, 충돌 시 우선).
 
@@ -18,10 +18,10 @@ obsidian_sync/
 ├── Claude/                      # 콘텐츠: Claude Code 공식문서 KB (29 노트 + MOC)
 │   ├── 01 시작하기.md … 29 자체 호스팅 환경.md
 │   └── Claude.md                # MOC 허브 (학습 경로 + 전체 지도)
-├── AI-Infra/                    # 콘텐츠: 백엔드→AI인프라 학습 KB (8 노트 + MOC)
+├── 30 AI Infrastructure/                    # 콘텐츠: 백엔드→AI인프라 학습 KB (8 노트 + MOC)
 │   ├── 00 로드맵.md · 01 LLM 서빙 · 02 K8s GPU · 03 MLOps · 99 리소스
 │   └── AI-Infra.md              # MOC 허브
-├── Infra/                       # 콘텐츠: 인프라 CS·리눅스·커널 학습 KB (10 노트 + MOC)
+├── 20 Architecture/                       # 콘텐츠: 인프라 CS·리눅스·커널 학습 KB (10 노트 + MOC)
 │   ├── 00 학습 로드맵 · 01 프로세스 · 02 메모리 · 03 파일시스템 · 04 네트워킹
 │   ├── 05 커널/syscall · 06 컨테이너 내부 · 07 커맨드 사전 · 08 트러블슈팅 · 99 리소스
 │   └── Infra.md                 # MOC 허브
@@ -76,7 +76,7 @@ obsidian_sync/
 
 ## 📡 claude-radar — 매일 Claude 생태계 레이더 (핵심 자동화)
 
-두 토픽을 매일 자동 수집한다 — **① Claude Code 활용**(GeekNews·GitHub·HN·Anthropic 공식·dev.to·npm)과 **② AI 인프라 학습**(vLLM·KServe·Karpenter releases + HN AI-infra 키워드). 수집물은 "우리 프레임워크에 더하면 좋을 것(skill/agent/...)"과 "KB에 박제할 지식"으로 추천되며, `AI-infra:` 태그 항목은 `AI-Infra/` KB로 라우팅된다.
+두 토픽을 매일 자동 수집한다 — **① Claude Code 활용**(GeekNews·GitHub·HN·Anthropic 공식·dev.to·npm)과 **② AI 인프라 학습**(vLLM·KServe·Karpenter releases + HN AI-infra 키워드). 수집물은 "우리 프레임워크에 더하면 좋을 것(skill/agent/...)"과 "KB에 박제할 지식"으로 추천되며, `AI-infra:` 태그 항목은 `30 AI Infrastructure/` KB로 라우팅된다.
 
 ### 동작 (2단계 — "동의 후 추가"를 구조로 보장)
 ```
@@ -89,7 +89,7 @@ obsidian_sync/
         → /claude-radar review → 항목 검토 → 동의한 것만 생성·박제
           · skill   → skill-creator
           · agent/command/rule → .claude/ 아래 파일 생성
-          · kb-ingest → /kb-ingest 로 KB 박제 (Claude/ 또는 AI-Infra/, 토픽에 따라)
+          · kb-ingest → /kb-ingest 로 KB 박제 (Claude/ 또는 30 AI Infrastructure/, 토픽에 따라)
 ```
 
 ### 안전 설계

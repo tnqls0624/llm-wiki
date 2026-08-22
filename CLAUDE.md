@@ -2,7 +2,7 @@
 
 Claude Code 지식 베이스 + 포터블 자동화 프레임워크를 담은 Obsidian vault.
 
-- **토픽 디렉토리** — 한국어 KB 콘텐츠. 각 `<Topic>/`는 노트 + `<Topic>/<Topic>.md` MOC 허브. 현재: `Claude/`(Claude Code 공식문서, 29) · `AI-Infra/`(8) · `Infra/`(10) · `Meta/`(vault 자기진단).
+- **토픽 디렉토리** — 한국어 KB 콘텐츠. 각 `<Topic>/`는 노트 + `<Topic>/<Topic>.md` MOC 허브. 현재: `80 Tooling/`(Claude Code 공식문서, 29) · `30 AI Infrastructure/`(8) · `20 Architecture/`(10) · `80 Tooling/`(vault 자기진단).
 - **`.claude/`** — 커맨드·에이전트·스킬·룰·훅·cron으로 이뤄진 프레임워크(메커니즘). 다른 vault로 복사 가능.
 
 전체 사용법은 [`README.md`](README.md), AI 운영 규칙 정본은 [`.claude/rules/vault-rules.md`](.claude/rules/vault-rules.md)와 [`.claude/rules/automation-safety-rules.md`](.claude/rules/automation-safety-rules.md)에 있다(둘 다 매 세션 자동 로드).
@@ -14,7 +14,7 @@ Claude Code 지식 베이스 + 포터블 자동화 프레임워크를 담은 Obs
 | 무엇을 바꿨나 | 함께 갱신할 파일 |
 |---|---|
 | 새/변경 command·agent·skill·rule·hook·script (`.claude/`) | ① `README.md` 인벤토리 표 ② `.claude/runtime/hot.md` Framework 줄 ③ **새 메커니즘이면** `.claude/tests/test_mechanisms.py`에 계약 테스트 추가 |
-| KB 노트 (`Claude/` 등 토픽 디렉토리) | `vault-rules.md`의 **Update duty (3 steps)**: `updated` bump → MOC 반영 → `hot.md` 한 줄 |
+| KB 노트 (`80 Tooling/` 등 토픽 디렉토리) | `vault-rules.md`의 **Update duty (3 steps)**: `updated` bump → MOC 반영 → `hot.md` 한 줄 |
 | **새 토픽 디렉토리 추가** (`<Topic>/`) | ① `<Topic>/<Topic>.md` MOC 생성(`type: moc`, `sources: []`) ② `README.md` 인벤토리 ③ `hot.md` Content 줄에 토픽+한 줄 설명 ④ `radar` 라우팅이 필요하면 `radar-collect.py` source-tag + `vault-rules.md` 라우팅 문장 ⑤ 인접 토픽으로의 cross-link 최소 1개(사일로 방지) |
 | frontmatter 스키마 (`type` 등 필드·enum) | `.claude/kb-required-fields.txt` + `.claude/kb-allowed-types.txt`(정본) → `vault-rules.md` Note format → `kb-lint.py`·`kb-lint-check.py` 검증 → `test_mechanisms.py` (모두 같은 변경 안에서) |
 | cron·자동화 스케줄/동작 | `README.md` + `hot.md` (안전 불변식은 `automation-safety-rules.md`) |

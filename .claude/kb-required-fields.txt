@@ -1,9 +1,19 @@
 # KB 노트 필수 frontmatter 필드 — 기계 점검의 정본(canonical).
 # kb-lint.py(전 vault)와 hooks/kb-lint-check.py(편집 직후 단일 파일)가 이 파일을 런타임에 읽는다.
-# 여기만 고치면 린터가 자동 반영(파일이 없으면 하드코딩 fallback [title, updated, sources, type] 사용).
+# 여기만 고치면 린터가 자동 반영.
+# 2026-08-22: 메타프롬프트 §12 전면 채택(사용자 결정) — 4필드 -> 11필드.
+#   sources -> source_urls 개명. type enum 교체는 kb-allowed-types.txt 참조.
+#   `moc` 값이 사라졌으므로 MOC 판정은 "파일명 == 부모 디렉터리명"으로 이전됐다
+#   (kb-lint.py lint_note / hooks/kb-lint-check.py 동일 기준).
 # 한 줄에 한 필드. '#' 주석·빈 줄 무시.
-# type 허용값(닫힌 enum)은 kb-allowed-types.txt가 정본 — 린터가 거기서 읽는다.
+id
 title
-updated
-sources
 type
+status
+created
+updated
+area
+tags
+source_urls
+notion_url
+confidentiality

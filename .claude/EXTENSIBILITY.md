@@ -17,7 +17,7 @@
 | tests | 1 | `.claude/tests/test_mechanisms.py` (러너: `bash .claude/tests/run-tests.sh`) |
 
 ## 공통 절차 — 무엇을 추가하든
-1. **파일 위치 컨벤션**: 메커니즘은 `.claude/` 아래, 종류별 디렉터리에 둔다(commands/agents/hooks/skills/tests). 지식은 절대 여기 두지 않는다 — 토픽 디렉터리(`Claude/` 등)로.
+1. **파일 위치 컨벤션**: 메커니즘은 `.claude/` 아래, 종류별 디렉터리에 둔다(commands/agents/hooks/skills/tests). 지식은 절대 여기 두지 않는다 — 토픽 디렉터리(`80 Tooling/` 등)로.
 2. **계약 테스트**: `.claude/tests/test_mechanisms.py`에 격리-vault 케이스를 함께 추가한다(계약 = 무엇을 보장하는가). 모든 훅·스크립트는 silent-fail(exit 0) 설계라 깨져도 세션이 조용히 진행 → 테스트가 없으면 회귀를 못 잡는다.
 3. **인벤토리·hot.md 갱신**: 위 인벤토리 표의 카운트/항목과 `.claude/runtime/hot.md`의 카운트 줄을 맞춘다(정본 두 곳, vault-rules의 navigation 줄도 카운트를 언급하면 함께).
 

@@ -5,7 +5,7 @@ description: 이 vault의 Claude/ KB는 Claude Code 공식 문서를 한국어�
 
 # KB Assistant — 의도 라우터
 
-이 vault의 콘텐츠는 `Claude/` 지식 베이스(KB) 하나다 — Claude Code 공식 문서(code.claude.com/docs)를 한국어로 종합한 26개 노트(`01 시작하기` ~ `26 변경 이력과 용어집`)와 중심 허브 MOC `Claude/Claude.md`. 사용자의 자연어 의도를 아래 작업으로 연결하라. 사용자가 슬래시 커맨드를 직접 칠 필요 없이, 의도만으로 올바른 경로를 택한다.
+이 vault의 콘텐츠는 `80 Tooling/` 지식 베이스(KB) 하나다 — Claude Code 공식 문서(code.claude.com/docs)를 한국어로 종합한 26개 노트(`01 시작하기` ~ `26 변경 이력과 용어집`)와 중심 허브 MOC `80 Tooling/80 Tooling.md`. 사용자의 자연어 의도를 아래 작업으로 연결하라. 사용자가 슬래시 커맨드를 직접 칠 필요 없이, 의도만으로 올바른 경로를 택한다.
 
 ## 의도 → 작업 매핑
 

@@ -50,7 +50,7 @@ NOISE = re.compile(
 # Anthropic release-notes overview.md 는 Claude Platform 전체를 다루므로 CC 관련 섹션만 추린다.
 CC_CHANGELOG_RE = re.compile(r"claude code|claude\.com/docs|subagent|slash|/plugin|hook|skill", re.I)
 
-# AI-Infra 학습 토픽 소스 (source에 'AI-infra:' prefix → 큐 분류가 AI-Infra/ KB로 라우팅).
+# AI-Infra 학습 토픽 소스 (source에 'AI-infra:' prefix → 큐 분류가 30 AI Infrastructure/ KB로 라우팅).
 AIINFRA_RELEASES = [
     ("vLLM", "https://github.com/vllm-project/vllm/releases.atom"),
     ("KServe", "https://github.com/kserve/kserve/releases.atom"),
