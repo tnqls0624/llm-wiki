@@ -1,258 +1,1023 @@
 {
-  "accessibility": "264f9685a3c6ead0b48241015b5a4103addf62413c07055a9dddeac9587720f2",
-  "admin-setup": "0d19cce1be27a74bcf6043f79012860098a45e0c75899b980a324d0d71c8d5ba",
-  "advisor": "ee6675cb291298c47d754058c66fd27416a295dbdf74bd6945d16efe001c44f3",
-  "agent-sdk/agent-loop": "6709f9077d36a01a828fa2095ea6f229f1c82095fc5c3f02ba3bebaa53563891",
-  "agent-sdk/claude-code-features": "3c0a065fd495722953cb64804f4fa444da1d8332ee782c94886e7fc3ebf8d499",
-  "agent-sdk/cost-tracking": "d3d6e3e907d9315cc21b96fab176341dcbe6d32978cd5c19860a1be048539e32",
-  "agent-sdk/custom-tools": "d4a931e10220963502f100c09d9a7cb6a7108a75aec3d443b41bb6cdbc593341",
-  "agent-sdk/examples": "82e9d6a127da350342d302286a7d63c8a8394fdf25c5f8624cced3cd72c5e705",
-  "agent-sdk/file-checkpointing": "a13c717ee34e1377ac64f5f2ae295b72d95e583a9a5d4e8992a37510e86bb245",
-  "agent-sdk/hooks": "5e9449c499940841c09b9d0fdd2cf41433ea1cbb13e6820aa3213a04155c29e8",
-  "agent-sdk/hosting": "1da2fe6aee376119c3175db525e9293919bd4f1a7d3ad40d2bc86b6162b0066e",
-  "agent-sdk/mcp": "b197bd01d02ce7801997bf2ba0d0b699a2cb77c17c18928aec0423afa38a6a25",
-  "agent-sdk/migration-guide": "3dd004c9084cd0dbc4abd8db3fa899a0538d319be848fd63db7ae960c3754795",
-  "agent-sdk/modifying-system-prompts": "d684f911bcd6fbdd32a28d26762a01e120421763811fef5cb0c587762afa157a",
-  "agent-sdk/observability": "4ca096e3bc18ac0d62f6470e0a0d2e6d1f4ea76eeb1164edb650c4265747bd78",
-  "agent-sdk/overview": "584a1641997bce448e6675b614c418d73b97087234419ab5227693b3dc89f9ff",
-  "agent-sdk/permissions": "aee5bbf5552f1d665efbad2ee59bd0cdcb7cee371930c61cab144d9ce6195ebf",
-  "agent-sdk/plugins": "c8b179ee93ae6f4ee0a7b01b688153988c893a1cbca544859adea71097d296c0",
-  "agent-sdk/python": "0051d214ba466235779824724e3820183e868e5a2f7f27b25918909d04597b15",
-  "agent-sdk/quickstart": "56fda91b98e018dec0e4a0ee128f8e9ea0f6201238e25dcaf9f622f15ae24969",
-  "agent-sdk/secure-deployment": "aa1300cfbe6574bb13e2dde964aea1320974013faabc6e92a43bfcfb01450722",
-  "agent-sdk/session-storage": "876ad14246e0642c6797d67635995a4dfbad0508d733d9d8373d8c98f6e54b7c",
-  "agent-sdk/sessions": "f0bc3b89f2dacc9c9d45bcd3d35333744eca350e0dd5e190b1eea4772cc3c088",
-  "agent-sdk/skills": "afd81fe8632f84dc6b594556d85640067c5d69562969c78724febe329eb6e785",
-  "agent-sdk/slash-commands": "afd81fe8632f84dc6b594556d85640067c5d69562969c78724febe329eb6e785",
-  "agent-sdk/streaming-output": "fff2a8384040829deade1431be8d2e9344e1836a0a81fbdeadb99acf72f6ef64",
-  "agent-sdk/streaming-vs-single-mode": "2069707484bdaf2f6b5cdf3d665fce355474b92481d903970b9e9d66a708fbff",
-  "agent-sdk/structured-outputs": "a3f916716cf737c89a04d13860922f86fde11310437fe87e8de1262334e6a08d",
-  "agent-sdk/subagents": "40f1fd38287bccc811ce075c6120e5a19753d3b183c75730b9f348a837edf121",
-  "agent-sdk/todo-tracking": "b49170b98c64a3859977c92f0209895c02b1a7846dc253e2e08e8cbc72c6cb38",
-  "agent-sdk/tool-search": "55abae7636fd8b012b5fc32c0f75526380e5ca15d1d4b30530edb23d43fd699f",
-  "agent-sdk/troubleshooting": "de9891c420cf5849740c9eac1dac8ca6d5ea5b09244ee721dcfb3e85528e8043",
-  "agent-sdk/typescript": "12dec7e6f142fe03776a530c6ec5ee651992eadf85cd9d6157a7107b78bce55d",
-  "agent-sdk/typescript-v2-preview": "d59d67e7bc6f7f27a75fbae3837acc1396216aad619d5bc8161185aed1121ba5",
-  "agent-sdk/user-input": "0b4415055db8b141b18f4cc04716d4402df5adfa9d260c1350dc9c12ebdac8c9",
-  "agent-teams": "eebb36e834d622dcc1ac314da10606423e4e9373154dc48071a283f28c763b55",
-  "agent-view": "f8474573ceb6f1a0b0a99e12bc548b24c18ee0fc556316a7c6bbeb468887a12b",
-  "agents": "2d470eb82b5bc217bbd423db193677c49690ad0b4c4f73a0a9e97530caef6ca0",
-  "amazon-bedrock": "15713a66dd7a74d9c4dcb7cded59ea3feda49a37f25106077fb5a248ee703de0",
-  "analytics": "6e1a46fbf128d24c0a252cd28d1c7377b3c050b24cc9827caf6e7e537e31fa97",
-  "artifacts": "a58656a5d4d6ab2df654272fa681b125e3454d17bcd7126a604806f83f44b5ac",
-  "authentication": "9bebf8122c2084254be0b88bbd0d19d13964f17f43685e5a006a7c67730de24f",
-  "auto-mode-config": "29db1d6e6b889353731b7c29cfe513fd821dbb089a86f33bb87e61f1c5722768",
-  "best-practices": "defa65b9be8f0c7ed96824822644bdb9334a6b6b71f13684ddd6f6995eccf56c",
-  "champion-kit": "5ca0f6d751352107724d381e6fbe3f2f15945a2e30367a747ebcdc7f359360ed",
-  "changelog": "0bdb149e3227781d07932af419825604ae8a7b29cf741d7d1d58cd95dc45308f",
-  "channels": "294a7e533dfaae5eb2b82f4e5db0faafb6c79e779129fa3315cdf647578a3ce9",
-  "channels-reference": "b3fd0b5f24287dd4e5d49f5acc0a224d9224aa20f6c97273505b9cf50e12b046",
-  "checkpointing": "52246fb2b8661534d935b5bf884de95bf93a11738d28e8bb56655a3f39136481",
-  "chrome": "28f6361b5fc60fcec993c891bfa8ac72d1171950417789e6e7469323bc2fc34f",
-  "claude-apps-gateway": "847a1de96e50280485aef7f075b1620958442d0e151c70c8e3e212c822d85012",
-  "claude-apps-gateway-config": "fc4f482ebb837b7a0df8ad41ccbdce6f5a52c8028a34c1f2b7d875fb8e2004e0",
-  "claude-apps-gateway-deploy": "63a948e0be67b493c65e165a8969f3b8044bba37ded16f07ff1ef0b9992b1161",
-  "claude-apps-gateway-on-aws": "039b3519cf692bdd7ac27a4d85d2e8c960fab31a84560570fb7152237236a60d",
-  "claude-apps-gateway-on-gcp": "caa7e445cfbc099cddef18f5b448cb245d93c04df03ff514772a395cc1b4ba19",
-  "claude-apps-gateway-spend-limits": "3a189ddd47d90f289a1847bc2ebacda1cd86b139d6e107b5ec29c4aa2e1cd913",
-  "claude-code-on-the-web": "485cf406c80a907f139b5009e55247422cfe13bce7f852acb83109f18e7d2121",
-  "claude-directory": "09b4038db64703d58fcac356f02acf4e1f20a7ebc5aeb4be696fb0f8f3005265",
-  "claude-platform-on-aws": "37615ca54cb479d1a5bd54053b836c0aeccb4b6b57ffcf9ab63c35c4afab7a4a",
-  "claude-security": "688671bb149bfc5b0892adbdf535c459ced5799f457a7b5abb1064b803b75b6d",
-  "claude-tag": "71a0a4e6c77545d48c76a50df303a62f20d933d79939fd42e4af178f3ff241fd",
-  "cli-reference": "e4a827f85dcbde8fc9395d87fad9ebe1815896972e82222753ec14655f610eda",
-  "cloud-environments": "302a54e1c1e896888e444b1d84ed412163195e033f5b983de1e86ff0fdb49c76",
-  "code-review": "50426c7b6ef8a73e4c42ae6cc2cecca772f58200a09052eb4c65e37dc23f3c97",
-  "commands": "f38a9122f66d535d31aae3014e985d7fd196ff0a22f183586a49c18c32ecae32",
-  "common-workflows": "b1af423b31aa38de0b6dfb817dff13042dd1d5ba99b0067f61279065de034995",
-  "communications-kit": "4212a532eb0352a2bff81f05cec42cab21f8e4350a9bf9ce0d6a798ddd34a50e",
-  "computer-use": "d90e96e21ce9d96ecb7981424801172db338d8f49cdc827c4de00a8409c9d2f1",
-  "context-window": "a0e41a7e1224983db24e752c6826726d5f0e74a889585b7619476b54dab27e4d",
-  "corporate-launcher": "d58f92c7ff70349955988cce837efc002e63ecf06c17ea6bf797dd6da66f0b15",
-  "costs": "8f7eb52a3047f0150155c5843731558ae10338c9119d25ff6b0d748457d3404c",
-  "cross-session-messaging": "d2bb37193ec2f7d35376cf2455077cd91c3f1c7b7625720d87e016f65331a493",
-  "data-usage": "25ed5e6074dbcae2e7dab15c6567f80cbbb146dd3bfda1ac169974c51cf9b62a",
-  "debug-your-config": "d26b8bf5e6d486b36a585df3e96ed02c648a38769d709fc158a0c4e2401f0e95",
-  "deep-links": "b2ae72421804bb771a722a88a711ea7fc742dd630cb85e67effa547f626b8299",
-  "desktop": "ba3655a7480f2778fa27fddc7418f31f5d39e1a4a5e17622ee3982998d49b46a",
-  "desktop-ios-simulator": "0d5c48a0ba3ad4772457abc46c471493da913f1bb6cba9b5dc3da08f596e3afc",
-  "desktop-linux": "3fb2b62a80c0c054626fccc30d840ba0ec476bde5d59c3704a757b4a8d02685d",
-  "desktop-quickstart": "4d7f8765d4533c66dd69f7c852d08dcbf668caa51f1fd5afe5d189244a901ded",
-  "desktop-scheduled-tasks": "a3818d29e5f008491e8b8db09cc127e1bd0bf987fb17ceab9582007597c571a4",
-  "desktop-wsl": "acbb2a4fa359dc84d507d8b7cea5b4153e194fe45b993d10837452b2fabe8ffc",
-  "devcontainer": "9a3dfa1544959a000e6a934263851a377fa98a53ab0295cb56f25bc3aa5069ca",
-  "discover-plugins": "71249e65b992cdf41b1c925fb85e6d54d01eab26fdaf0ac9e6d29a120415bf56",
-  "env-vars": "4336785b5990d8d050d1d0438f90050ad101f9ec87ff2bfbce6e4a1634174c35",
-  "errors": "eaf2bd94b86bbc978fa61f9829b4d9b773e1bd4975e436370ab1353c147d5e47",
-  "fast-mode": "54f0b65983afd4ce109f3110ff778779981485d15273f1ab697b83c052f16c5e",
-  "feature-availability": "9a4d9321e29c6112a08c86010fd3f83decde4c0b4c728e416ecbf823bf5cdbe0",
-  "features-overview": "ad88831830057e06f4c3ea5c39e47818abb0efc2df9469e34bee06caa472a62c",
-  "fullscreen": "c1b5a207f937ffb598c54c0c820ec50033b4e3bdbbed717dc2593f01db1d7668",
-  "gateways": "ed073a424c553aaa67ab8d4df24f47c92bcf73d3924e5b50264b2035028a249c",
-  "github-actions": "e9e7440214140f40aa6f7928260b00ae5b232e1f24dcc09ff449c299fbdb53cd",
-  "github-actions-cloud-providers": "7a7a329c318f99c2ba31868cd61df3f6430c614cf160711d6cead9d62b417c3b",
-  "github-enterprise-server": "b77fdc32ac232e070ddbd4361c7dd6d0385f77e18e7b1e6d87ca70b01f4daf49",
-  "gitlab-ci-cd": "4f3ed7996e52c5519f7d890d9c87cc8985932f01c23f7206e0ca2ab01a88da3e",
-  "glossary": "8fc70bde63878b28e2ec198e653b0a50c57dd637c8aed382c519d7eac9e9f315",
-  "goal": "e1b85023df2cc1e02c3d37b241b8c2618930421aa8e42278fd74ecff1b35ffd6",
-  "google-vertex-ai": "ff5ae43089c7261ebbf0487a17020a57d6374902002e64276f24b47c3c0f5d53",
-  "headless": "02f132525d009deae88590647bcac872eb2e5d6cca39c4ba3008a0f810db8314",
-  "hooks": "e4756ca746899ebd35c712f725d62734cdfa84d710a79e55139a24228df3e530",
-  "hooks-guide": "3ed85190e03cf9787fd5d1abacfd2f39119d67437e6929504672c050d8d89759",
-  "how-claude-code-works": "66530590fadf4b269ae9415c22399c651c8ebb6d2d9682d0f624fe27bd292241",
-  "https://agents.md/": "5deec35e268252641904fd7295f3a705b6e1c7fd0ce8185308e3854c607c8881",
-  "https://arxiv.org/abs/2309.06180": "de9353854db4e16af0c63f73502f7e463f03bdc4f3c98f3fcd377fe1c625ed08",
-  "https://aws.amazon.com/certification/certified-machine-learning-engineer-associate/": "4d4c46445fff94571d343c66aacbb01d1a7bd91e48361b2e0a3c47bf1e90b4c5",
-  "https://aws.amazon.com/ec2/spot/": "e1d672b328b15d47f26cecbada8a3562658a412719161896cae34cb19fe7d796",
-  "https://awslabs.github.io/ai-on-eks/": "b04ee120a82a2f67d359c43bf30dfcc0fb7be30316e1f0b7c11c7778643cbb60",
-  "https://claude.com/blog/ai-code-migration": "e41ccdbb00cb828bd00205573b4b7e473a171476b65c90cdbd8a73c2bac94c08",
-  "https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing/": "22966c1d633a6427bc64f9483cb31ac3518f90a260b4dfb74c269d7d0f753faf",
-  "https://docs.aws.amazon.com/eks/latest/best-practices/karpenter.html": "06e542fca0c8366b1a967fa3c2dd288e1109cff025fdae66c4327d4c7b452951",
-  "https://docs.docker.com/engine/storage/drivers/overlayfs-driver/": "7982d91c500f9de99815839f8dd9db46fc21468b785b25e21d2588fce12eb730",
-  "https://docs.flyte.org/": "d584116280f67e5114404db23a72807b60a0d922fa1db7d8142ecd20bb1f2abf",
-  "https://docs.kernel.org/admin-guide/cgroup-v2.html": "2d716cb798eacf8fbcf431b52697fbb8c5ed8ea9f58ac15b2b55351247c0bf34",
-  "https://docs.kernel.org/admin-guide/mm/index.html": "5b1e6833c0f3bb1a30493daa42f15eea10839170e4b064c43902b47094c667b4",
-  "https://docs.kernel.org/admin-guide/sysctl/index.html": "8059e85d87b2ebaf8b65ec8809e237920b5999d5afb4a5f073db3471aace4626",
-  "https://docs.kernel.org/block/index.html": "c41912049a55904cbfa8efa925c89d06bedc11662b11ef92e3a8d8a71a550179",
-  "https://docs.kernel.org/filesystems/vfs.html": "28a8dc1cf4d77f7c960ee18778fe90f42f8cba65bbe13bc90b0140f8c82881c8",
-  "https://docs.kernel.org/networking/index.html": "d5c36392f32c1b8edfbabfc1837cea64314b9141329ceff9038fa38f7125bf0f",
-  "https://docs.kernel.org/scheduler/index.html": "1fc72f9b668bbd61e83548bd55b1c696c93b99fbaf4e7b23f699bd6084e15c2e",
-  "https://docs.runpod.io/serverless/vllm/overview": "7374515b3187523c5b10d2f8b2c3eee75fe6f8024ed1e5e400c4a914f7f7ae3e",
-  "https://docs.sglang.ai/": "fec7318b30feaf6d6d6dace8b10dcf8a41df64ab1ce82a815352da033e835bee",
-  "https://docs.vllm.ai/en/stable/": "641c3f586ca0073f23448db97c13bab82c5a32a668a1cef4a0317156291df9dd",
-  "https://ebpf.io/what-is-ebpf/": "b6f344f75987fba516c5556aeafa173aaf9e397026eefe6295a933e9b7a63335",
-  "https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f": "b3b0b4e0e99517349685b9e0b0ae837cfb335864daced46154f8dc54af801668",
-  "https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md": "cef8cc9b0467db16926180eec1703b65a63229db718f739843724590ca3fc1fe",
-  "https://github.com/evidentlyai/evidently": "2fe8866b03147bfdf642341face2853cebb3f410bcc265a7467921d57406f151",
-  "https://github.com/iovisor/bcc": "17ca74b6e794e4a3183f73990f7e154b6c265e62c684ba6908fe2049b5b330d1",
-  "https://github.com/opencontainers/runtime-spec": "d8804c4aab3d384ad782a2ce60e9c3d2754b201321d2a8c9984d9b5c2c2911ca",
-  "https://jvns.ca/": "0db0219d4bea8874188bd4224e9ee9f6a6db76ffd76d820c9ab8f2424caee9ad",
-  "https://keda.sh/docs/": "4243600d55839406975c29e1b7475fab566f3c2fed7da609aa8ca94a965be68d",
-  "https://kserve.github.io/website/": "1abe0a8e6cd1d70e9b1a613469d16483a34096af255a86669b450f03b023203c",
-  "https://kserve.github.io/website/docs/model-serving/generative-inference/autoscaling": "639223a26de9a2fd97accfe9fd0dda0787264f35d01d66e1fd0c17d4ac6e28c8",
-  "https://kueue.sigs.k8s.io/": "3c4199d969d5fb042ad89b37aaef7497c49b0244fe71875b71970c8043e07508",
-  "https://llmstxt.org/": "947aa9f5225294ffbb49dd79070d58e6cca8b614c9a13033d76739978d6a2c56",
-  "https://lwn.net/": "f470289ab102f9bdcc62132e50d31e89e61baa174886da369f32d266c928f9b6",
-  "https://madewithml.com/": "6dad450cf87c0680af8ea52697859fc62375bd1099b838556b2369cfb6b47888",
-  "https://man7.org/linux/man-pages/": "da70760de42638088cfb7d9b7e9848ccfe537f8ee8587df62438d01605f1bd25",
-  "https://man7.org/linux/man-pages/man2/fork.2.html": "9f15948431b8f753d251a4679b40f01de81d9a8a42392404f7083b4d8a80f969",
-  "https://man7.org/linux/man-pages/man2/syscalls.2.html": "f449c7ca7303b3a5c2076f11298edbbe2ae25c921e92dfabef906e1376f5c915",
-  "https://man7.org/linux/man-pages/man5/proc.5.html": "15d0437cc122ea58d166cc707ef07538189f1ff105bef305ce52bd0d13967dc7",
-  "https://man7.org/linux/man-pages/man7/cgroups.7.html": "08a6ebd1b8aca10a88a3b0562779849cbfae3a2dcbd567c970344fd546dcf955",
-  "https://man7.org/linux/man-pages/man7/inode.7.html": "a3736a6f58f6a25ef2d4d31792c6d1c304e11a6b4e142c980291b047fdfdd453",
-  "https://man7.org/linux/man-pages/man7/namespaces.7.html": "7b8c94b7eeeb7a07dc063ecfb852959cbe32f01b7d4e33fe90eee9d4d4c1fdc0",
-  "https://man7.org/linux/man-pages/man7/signal.7.html": "5e9691eeefa7970853ad0a3de8ec90c85a9e086d35f1233c89eb305cccbe939e",
-  "https://man7.org/linux/man-pages/man7/tcp.7.html": "23b766ea96928f0e6da8d05a925a77ecbd3273a3e8c31f471198bb4eb9f57cd7",
-  "https://man7.org/linux/man-pages/man8/lvm.8.html": "3d66c021520623801750aa804b1adc4d42ead045bf147480b91cba0e6e7d4b7d",
-  "https://man7.org/linux/man-pages/man8/ss.8.html": "2ee9c8269755cc39908cff08ab3195dda21b3cd090fe570ee30167885ec213e7",
-  "https://man7.org/tlpi/": "9cc9315bb0e54af225c4aff24dc0d8d1e90a2538084ad8ecb65f64240f9d133b",
-  "https://mlflow.org/docs/latest/": "476c1504e5df3e27176093ddd2ddc3fe747aa8bf6af4a24e71eba606a02c064c",
-  "https://mlops.community/": "8724db4738b30a7bac8ddcfbf5876fdd323c090ba6b9bd74160809d65451998c",
-  "https://neo4j.com/blog/genai/what-is-graphrag/": "a42a6845eda0aaed652998631396ba98e6c5479196550ec56486cf6707ecf6a8",
-  "https://netflixtechblog.com/linux-performance-analysis-in-60-000-milliseconds-accc10403c55": "a392811d9026b81d1bd89ac0b351bc7b73a22e4836eba8a39e34a30c54b54fdd",
-  "https://opentelemetry.io/blog/2026/genai-observability/": "356630e0e9e5bc852380acbacddbd9b650c5c8fc5bb7e1a9b1363ad74348f0e1",
-  "https://pages.cs.wisc.edu/~remzi/OSTEP/": "120eb97411ed20f2c159062b175cf68886183b07d31dd161d365e7436cdb455c",
-  "https://tldr.sh/": "825b7b14cfc17c31b8667edb2d0bab792f5ce279174f20fbd741c53e2a405ce0",
-  "https://www.brendangregg.com/linuxperf.html": "076d7ccf32ee60221f0e4ad9f64110130893db1cea5efbbde5120c979db0212b",
-  "https://www.brendangregg.com/systems-performance-2nd-edition-book.html": "089b84f1d7e47fc0b33c7454ca1b15d27ade845a4566a59a98248a12df886c33",
-  "https://www.brendangregg.com/usemethod.html": "9a08f590bbbd2a071312486bbbafab2fb840adc26e935541b61fae18879d7707",
+  "accessibility": {
+    "full": "264f9685a3c6ead0b48241015b5a4103addf62413c07055a9dddeac9587720f2",
+    "skel": "7102406d0a1e9e72200e0550561348530b3502d64a44bedcb559cf719c4ff8ba"
+  },
+  "admin-setup": {
+    "full": "0d19cce1be27a74bcf6043f79012860098a45e0c75899b980a324d0d71c8d5ba",
+    "skel": "3a5a7892b072af5be7bb4f26b3f1b02af132ba61f7a4e7193cadc353de35412f"
+  },
+  "advisor": {
+    "full": "ee6675cb291298c47d754058c66fd27416a295dbdf74bd6945d16efe001c44f3",
+    "skel": "86ca5084cd62d46faeeba8ba2e792b73395ef5e5928000b7cc960d48b1b6be04"
+  },
+  "agent-sdk/agent-loop": {
+    "full": "6709f9077d36a01a828fa2095ea6f229f1c82095fc5c3f02ba3bebaa53563891",
+    "skel": "001e119359810e2ee950a437374e52ed42146359920854af0d7a85697d5c934a"
+  },
+  "agent-sdk/claude-code-features": {
+    "full": "3c0a065fd495722953cb64804f4fa444da1d8332ee782c94886e7fc3ebf8d499",
+    "skel": "ed93a97ca73bce405e8fda5db42ff3749a7fe431de5c7b5c79818658a71d216b"
+  },
+  "agent-sdk/cost-tracking": {
+    "full": "d3d6e3e907d9315cc21b96fab176341dcbe6d32978cd5c19860a1be048539e32",
+    "skel": "b07c4da35aa500cbdb1d183113e2c273a831d439da6033101697007a9102ddd3"
+  },
+  "agent-sdk/custom-tools": {
+    "full": "d4a931e10220963502f100c09d9a7cb6a7108a75aec3d443b41bb6cdbc593341",
+    "skel": "014c1b5ceae64060fd7d0f64159232789ae751a1aed0e2fdaddc3277ecf75143"
+  },
+  "agent-sdk/examples": {
+    "full": "82e9d6a127da350342d302286a7d63c8a8394fdf25c5f8624cced3cd72c5e705",
+    "skel": "d8fb05698480e8739f693083a8ed12b77e5b8547ce2950e14786704f6fd1b8a0"
+  },
+  "agent-sdk/file-checkpointing": {
+    "full": "a13c717ee34e1377ac64f5f2ae295b72d95e583a9a5d4e8992a37510e86bb245",
+    "skel": "0e3d0ba93a42a61ed15a9827ec8a73035cc25e702eea11313f67620fc0c024df"
+  },
+  "agent-sdk/hooks": {
+    "full": "5e9449c499940841c09b9d0fdd2cf41433ea1cbb13e6820aa3213a04155c29e8",
+    "skel": "583c96b31870aab0bc460c4dc57596141081cfd084be59451ca8bd1481769c57"
+  },
+  "agent-sdk/hosting": {
+    "full": "1da2fe6aee376119c3175db525e9293919bd4f1a7d3ad40d2bc86b6162b0066e",
+    "skel": "0e3c79d6cce2c7cedf5c80fa682afe3e0788b90bfcf1962175a7e12c0988b7e6"
+  },
+  "agent-sdk/mcp": {
+    "full": "b197bd01d02ce7801997bf2ba0d0b699a2cb77c17c18928aec0423afa38a6a25",
+    "skel": "4d0e728ce8d3f704e78348b7a34df3c4f394b8510c11bf87495c74b82c3de934"
+  },
+  "agent-sdk/migration-guide": {
+    "full": "3dd004c9084cd0dbc4abd8db3fa899a0538d319be848fd63db7ae960c3754795",
+    "skel": "b8bf0b888be9207a484a48e5e3e1adda98c0617d5f3bde46442ea35434099061"
+  },
+  "agent-sdk/modifying-system-prompts": {
+    "full": "d684f911bcd6fbdd32a28d26762a01e120421763811fef5cb0c587762afa157a",
+    "skel": "5ec2db41b171716cb6d5e815fbb5b81d54d9d28b138257eff847e183fac286de"
+  },
+  "agent-sdk/observability": {
+    "full": "4ca096e3bc18ac0d62f6470e0a0d2e6d1f4ea76eeb1164edb650c4265747bd78",
+    "skel": "c9b3cc9faf157cf478cae3e5a27536b3b63aa3d5a7fd78cb1c70e85c6cf8bb63"
+  },
+  "agent-sdk/overview": {
+    "full": "584a1641997bce448e6675b614c418d73b97087234419ab5227693b3dc89f9ff",
+    "skel": "f2773fb86e38534a74f209a19b8a5a1b9a0f8daa12fabf5fb074eeef5e79ba46"
+  },
+  "agent-sdk/permissions": {
+    "full": "aee5bbf5552f1d665efbad2ee59bd0cdcb7cee371930c61cab144d9ce6195ebf",
+    "skel": "fed5282cda851d37cac97fdf7f2284dc84de1fda5c9d0220901a37e902276ff2"
+  },
+  "agent-sdk/plugins": {
+    "full": "c8b179ee93ae6f4ee0a7b01b688153988c893a1cbca544859adea71097d296c0",
+    "skel": "b45ffd5b5db46da2a6183815615f4e92ac5bb0aee584506f7a51c2689e3c0395"
+  },
+  "agent-sdk/python": {
+    "full": "0051d214ba466235779824724e3820183e868e5a2f7f27b25918909d04597b15",
+    "skel": "22806d64b09c211e64f524182e9dde27f11915824769872d44c2c66747451097"
+  },
+  "agent-sdk/quickstart": {
+    "full": "56fda91b98e018dec0e4a0ee128f8e9ea0f6201238e25dcaf9f622f15ae24969",
+    "skel": "94776a910670944f3785ea04256efd6c6380a461aa08f56ea3e805c721e1f798"
+  },
+  "agent-sdk/secure-deployment": {
+    "full": "aa1300cfbe6574bb13e2dde964aea1320974013faabc6e92a43bfcfb01450722",
+    "skel": "c7876ec4e2dc9c1142a1109460eb7b7a39fac13189b4fbcd8125b04e01d1181d"
+  },
+  "agent-sdk/session-storage": {
+    "full": "876ad14246e0642c6797d67635995a4dfbad0508d733d9d8373d8c98f6e54b7c",
+    "skel": "1c4286c0053bab1315077fc324f040b30a6394729239b26dc3289aba54d0e533"
+  },
+  "agent-sdk/sessions": {
+    "full": "f0bc3b89f2dacc9c9d45bcd3d35333744eca350e0dd5e190b1eea4772cc3c088",
+    "skel": "09dea5961c0afdcb92b2b10418eaa02465a0b94acdaeda450695414419a4f4d1"
+  },
+  "agent-sdk/skills": {
+    "full": "afd81fe8632f84dc6b594556d85640067c5d69562969c78724febe329eb6e785",
+    "skel": "921c20e4507e36302eaf036c3f98bd1e29a92e205f32219cd7a7957ef9f29a27"
+  },
+  "agent-sdk/slash-commands": {
+    "full": "afd81fe8632f84dc6b594556d85640067c5d69562969c78724febe329eb6e785",
+    "skel": "921c20e4507e36302eaf036c3f98bd1e29a92e205f32219cd7a7957ef9f29a27"
+  },
+  "agent-sdk/streaming-output": {
+    "full": "fff2a8384040829deade1431be8d2e9344e1836a0a81fbdeadb99acf72f6ef64",
+    "skel": "b4e42b86d6ff4fda247c74df165ac6fadfacb464ef537f871848955dc92ea2a2"
+  },
+  "agent-sdk/streaming-vs-single-mode": {
+    "full": "2069707484bdaf2f6b5cdf3d665fce355474b92481d903970b9e9d66a708fbff",
+    "skel": "e0829a363f4c4dc228ef7ab9b292ef029b490eb47fc0552135b37e4cf1440320"
+  },
+  "agent-sdk/structured-outputs": {
+    "full": "a3f916716cf737c89a04d13860922f86fde11310437fe87e8de1262334e6a08d",
+    "skel": "c2a13d08529e9dae4ed54b2c317583ca986d772df6bdad4b9d899c97c35e30ed"
+  },
+  "agent-sdk/subagents": {
+    "full": "40f1fd38287bccc811ce075c6120e5a19753d3b183c75730b9f348a837edf121",
+    "skel": "4dcf540bb74fca0acbfdf13018b541b3ba7e9e5d9e298e056c58c4d84d074c36"
+  },
+  "agent-sdk/todo-tracking": {
+    "full": "b49170b98c64a3859977c92f0209895c02b1a7846dc253e2e08e8cbc72c6cb38",
+    "skel": "f8d4a808165b9c92eafacf681a22dde1a23bf55f341ebdbae46d61759ab16a1e"
+  },
+  "agent-sdk/tool-search": {
+    "full": "55abae7636fd8b012b5fc32c0f75526380e5ca15d1d4b30530edb23d43fd699f",
+    "skel": "0c7e551b3a072f1fc4be123dfeb005682505fa3611068e076e20ce14a50ea0a1"
+  },
+  "agent-sdk/troubleshooting": {
+    "full": "de9891c420cf5849740c9eac1dac8ca6d5ea5b09244ee721dcfb3e85528e8043",
+    "skel": "b588b4ffa030636fa48ef449887bee3b660b4ace6f8efcf1098e59709277a2e0"
+  },
+  "agent-sdk/typescript": {
+    "full": "12dec7e6f142fe03776a530c6ec5ee651992eadf85cd9d6157a7107b78bce55d",
+    "skel": "f0d9980066f1ef943e56894cbe39c0b72f521115cabd1e37bf751b31e3a8254b"
+  },
+  "agent-sdk/typescript-v2-preview": {
+    "full": "d59d67e7bc6f7f27a75fbae3837acc1396216aad619d5bc8161185aed1121ba5",
+    "skel": "aac7b7eaf64c4241d2b8cf9a47f5cb1b2c06d952e941811463133d5ae4a1af9e"
+  },
+  "agent-sdk/user-input": {
+    "full": "0b4415055db8b141b18f4cc04716d4402df5adfa9d260c1350dc9c12ebdac8c9",
+    "skel": "b1a1d1134f108acaa2b22de257c3ab7e93cb7cd1c985ababd2dbbc67bc82642e"
+  },
+  "agent-teams": {
+    "full": "eebb36e834d622dcc1ac314da10606423e4e9373154dc48071a283f28c763b55",
+    "skel": "2dc313816602cfee36baae9dc92e96e8316bda3aa5c612402cf3ff0350aca2b6"
+  },
+  "agent-view": {
+    "full": "f8474573ceb6f1a0b0a99e12bc548b24c18ee0fc556316a7c6bbeb468887a12b",
+    "skel": "0f56b02c22a644b617208ce36a2c601d372c131f13e63df88c59468e37b8cedf"
+  },
+  "agents": {
+    "full": "2d470eb82b5bc217bbd423db193677c49690ad0b4c4f73a0a9e97530caef6ca0",
+    "skel": "0d547439291c74c277f5178722f3561df01d7d2d6c2e8c8c71e7db37b6cbd9f2"
+  },
+  "amazon-bedrock": {
+    "full": "15713a66dd7a74d9c4dcb7cded59ea3feda49a37f25106077fb5a248ee703de0",
+    "skel": "ccb396e7d032863d1eda46ccc39a2a92cd4defcd5bacf30f9dfc175b884a9d5a"
+  },
+  "analytics": {
+    "full": "6e1a46fbf128d24c0a252cd28d1c7377b3c050b24cc9827caf6e7e537e31fa97",
+    "skel": "ee484ff12d4af2dad3d0c89956cff72daed1e59b616848ec0d03a7239b0193b5"
+  },
+  "artifacts": {
+    "full": "a58656a5d4d6ab2df654272fa681b125e3454d17bcd7126a604806f83f44b5ac",
+    "skel": "dea9b26519130c1b2d2a5c3af32552c52c2bf8feaf1048310fd983f18c465d8b"
+  },
+  "authentication": {
+    "full": "9bebf8122c2084254be0b88bbd0d19d13964f17f43685e5a006a7c67730de24f",
+    "skel": "221e9d137076889b269e3fa0d59dc47ec79a1dc15d53bf3dc0dfd1119b6707fc"
+  },
+  "auto-mode-config": {
+    "full": "29db1d6e6b889353731b7c29cfe513fd821dbb089a86f33bb87e61f1c5722768",
+    "skel": "95b0dd0fd030c3b49b7de25b82e30fbd69caf3fd13cf3ed9366fbaf3d6a49405"
+  },
+  "best-practices": {
+    "full": "defa65b9be8f0c7ed96824822644bdb9334a6b6b71f13684ddd6f6995eccf56c",
+    "skel": "abad49570e7b6536addfeb81ec50f6c28a583f72ce933900c1608dc080181d0e"
+  },
+  "champion-kit": {
+    "full": "5ca0f6d751352107724d381e6fbe3f2f15945a2e30367a747ebcdc7f359360ed",
+    "skel": "6e96699658aa23e591c8cb5309653d41770db645363292e60f29526dbd97dc6b"
+  },
+  "changelog": {
+    "full": "0bdb149e3227781d07932af419825604ae8a7b29cf741d7d1d58cd95dc45308f",
+    "skel": "917efe0e4b64375e0e01c21566843d36b69684c387cf939901743a235a77b5e1"
+  },
+  "channels": {
+    "full": "294a7e533dfaae5eb2b82f4e5db0faafb6c79e779129fa3315cdf647578a3ce9",
+    "skel": "e6026578c2ac0855cc8ba8a0f3076b6de30221948c65df50223b52e3ac9fbe97"
+  },
+  "channels-reference": {
+    "full": "b3fd0b5f24287dd4e5d49f5acc0a224d9224aa20f6c97273505b9cf50e12b046",
+    "skel": "4247b17debc226279160f9d4d5e8f335532899413c264002fbba77a810e41919"
+  },
+  "checkpointing": {
+    "full": "52246fb2b8661534d935b5bf884de95bf93a11738d28e8bb56655a3f39136481",
+    "skel": "4b88176e6f69b70054a58b2b8de50aaee05f2bc6d99d99507ceaa866fa7658a5"
+  },
+  "chrome": {
+    "full": "28f6361b5fc60fcec993c891bfa8ac72d1171950417789e6e7469323bc2fc34f",
+    "skel": "24508015e9f00c11cfa3c400dee6cf8d257d5fa64a87bb9012178a85f22d3e18"
+  },
+  "claude-apps-gateway": {
+    "full": "847a1de96e50280485aef7f075b1620958442d0e151c70c8e3e212c822d85012",
+    "skel": "d19fc44985a0f81178b28adc72737a3d9874a5b99cdbe294c48871d98e26322d"
+  },
+  "claude-apps-gateway-config": {
+    "full": "fc4f482ebb837b7a0df8ad41ccbdce6f5a52c8028a34c1f2b7d875fb8e2004e0",
+    "skel": "901095ad6a299e42770bf31b066049bb3d74d1978ccf6bc025ab47e46a770063"
+  },
+  "claude-apps-gateway-deploy": {
+    "full": "63a948e0be67b493c65e165a8969f3b8044bba37ded16f07ff1ef0b9992b1161",
+    "skel": "9e0c65abb1723f0941d6d7d682c16c6f07deaa891efed7e92986e2ea74b21941"
+  },
+  "claude-apps-gateway-on-aws": {
+    "full": "039b3519cf692bdd7ac27a4d85d2e8c960fab31a84560570fb7152237236a60d",
+    "skel": "ee61af59c5debe551ec0a93c54ac73943deb6cc2c99ae0de6f91d27484bb4981"
+  },
+  "claude-apps-gateway-on-gcp": {
+    "full": "caa7e445cfbc099cddef18f5b448cb245d93c04df03ff514772a395cc1b4ba19",
+    "skel": "43a971636925a3b624c7ebf6b672d6fb95e2ec5410e52f360bf251d910827069"
+  },
+  "claude-apps-gateway-spend-limits": {
+    "full": "3a189ddd47d90f289a1847bc2ebacda1cd86b139d6e107b5ec29c4aa2e1cd913",
+    "skel": "1fa5b63272d453f0e9410bd3a3acc1a61748d369ad08bb9356b496d9285ec090"
+  },
+  "claude-code-on-the-web": {
+    "full": "485cf406c80a907f139b5009e55247422cfe13bce7f852acb83109f18e7d2121",
+    "skel": "a185f133ee04df988ac06ed4846c2f366e435bcb5c5d28b5715973539c2cccd7"
+  },
+  "claude-directory": {
+    "full": "09b4038db64703d58fcac356f02acf4e1f20a7ebc5aeb4be696fb0f8f3005265",
+    "skel": "9b79c222f4874cab22b0898653bc96aa8c53f4432f5c32ebab6a0b2c6eeeede5"
+  },
+  "claude-platform-on-aws": {
+    "full": "37615ca54cb479d1a5bd54053b836c0aeccb4b6b57ffcf9ab63c35c4afab7a4a",
+    "skel": "a697ac709ab5dfe927b18d0de5892efb29b6a42dcfae91d34f4d87989dc729a2"
+  },
+  "claude-security": {
+    "full": "688671bb149bfc5b0892adbdf535c459ced5799f457a7b5abb1064b803b75b6d",
+    "skel": "a4c552bf5e8fcf14c7de602b342d91ef4e62a9407cd63e654cef32195d30a5ca"
+  },
+  "claude-tag": {
+    "full": "71a0a4e6c77545d48c76a50df303a62f20d933d79939fd42e4af178f3ff241fd",
+    "skel": "18711249f910b2328bc266e050c45973a63f6ae9662dacf5f019ea9785839a54"
+  },
+  "cli-reference": {
+    "full": "e4a827f85dcbde8fc9395d87fad9ebe1815896972e82222753ec14655f610eda",
+    "skel": "99fde51110b97c1feac4672e10e5c4345ea3135bcd7a371667a12dfb907f4251"
+  },
+  "cloud-environments": {
+    "full": "302a54e1c1e896888e444b1d84ed412163195e033f5b983de1e86ff0fdb49c76",
+    "skel": "25751fe37707fd1c4f8509ef41a781b035584389cae20d0dba07e20029024475"
+  },
+  "code-review": {
+    "full": "50426c7b6ef8a73e4c42ae6cc2cecca772f58200a09052eb4c65e37dc23f3c97",
+    "skel": "1d15aa8860fa099ea611b3850ee68226ded54ce5c4fea08a0ae71e3aa1049a41"
+  },
+  "commands": {
+    "full": "f38a9122f66d535d31aae3014e985d7fd196ff0a22f183586a49c18c32ecae32",
+    "skel": "353ca1abde1207316a2f5214799cfc15ecb86ad56a8f5ed15c57ecae4ee14849"
+  },
+  "common-workflows": {
+    "full": "b1af423b31aa38de0b6dfb817dff13042dd1d5ba99b0067f61279065de034995",
+    "skel": "af31c5b6bdefd365bdbf09911c92aee7e409481ba1c567ce6e098acb40c9d5a6"
+  },
+  "communications-kit": {
+    "full": "4212a532eb0352a2bff81f05cec42cab21f8e4350a9bf9ce0d6a798ddd34a50e",
+    "skel": "27e87963b48eefc89ce9ebc4f31c3dea82bfb42602a4a7e25ebcd4a21f1f809b"
+  },
+  "computer-use": {
+    "full": "d90e96e21ce9d96ecb7981424801172db338d8f49cdc827c4de00a8409c9d2f1",
+    "skel": "d1234076edc6965599bf29a2fda1909c9cfed127c524284dbee21bdaa85eb386"
+  },
+  "context-window": {
+    "full": "a0e41a7e1224983db24e752c6826726d5f0e74a889585b7619476b54dab27e4d",
+    "skel": "22165f9076543870e1d556f4783ea524cdea075a3e726380465eec6423cff491"
+  },
+  "corporate-launcher": {
+    "full": "d58f92c7ff70349955988cce837efc002e63ecf06c17ea6bf797dd6da66f0b15",
+    "skel": "ce5b79290b9d6228eee2661a072dace8cc27e545f14df631e39955cfc50c5d2d"
+  },
+  "costs": {
+    "full": "8f7eb52a3047f0150155c5843731558ae10338c9119d25ff6b0d748457d3404c",
+    "skel": "2387daa9da9cef892b0989fdde1e7ebc4f5c28ae1b9f6f00ad2f29a345b482c1"
+  },
+  "cross-session-messaging": {
+    "full": "d2bb37193ec2f7d35376cf2455077cd91c3f1c7b7625720d87e016f65331a493",
+    "skel": "e5404e82f673e52379ed8468b9ac19c34cb1cd589b7a8bf17e6abd00df736e86"
+  },
+  "data-usage": {
+    "full": "25ed5e6074dbcae2e7dab15c6567f80cbbb146dd3bfda1ac169974c51cf9b62a",
+    "skel": "5cb6dddda07ad39ba0822674a80a2a955823fe95689c28b827a9dc76c222f5d9"
+  },
+  "debug-your-config": {
+    "full": "d26b8bf5e6d486b36a585df3e96ed02c648a38769d709fc158a0c4e2401f0e95",
+    "skel": "2d9d4579458185a7d6a78cee5cefb44eedde8ac6df647f1dbb270f2dbfc55c09"
+  },
+  "deep-links": {
+    "full": "b2ae72421804bb771a722a88a711ea7fc742dd630cb85e67effa547f626b8299",
+    "skel": "3294edf3f29cac674857ab10d434fb08d24500aba231b3b7a4c12720ce03c34f"
+  },
+  "desktop": {
+    "full": "ba3655a7480f2778fa27fddc7418f31f5d39e1a4a5e17622ee3982998d49b46a",
+    "skel": "ecddebca3135d3233e5513bc962418cb80d396a2b645c241456f8345bb6b592b"
+  },
+  "desktop-ios-simulator": {
+    "full": "0d5c48a0ba3ad4772457abc46c471493da913f1bb6cba9b5dc3da08f596e3afc",
+    "skel": "0ef553f33dea4bfa2e779aae0c48a1fc18983f8176a4aaba8d8d45f9f3335aed"
+  },
+  "desktop-linux": {
+    "full": "3fb2b62a80c0c054626fccc30d840ba0ec476bde5d59c3704a757b4a8d02685d",
+    "skel": "a7a25d315fd49f5c9133b63d8463f4d187c11a2d371acde2bf09c77035e0a5c6"
+  },
+  "desktop-quickstart": {
+    "full": "4d7f8765d4533c66dd69f7c852d08dcbf668caa51f1fd5afe5d189244a901ded",
+    "skel": "744d5adc1eb3a85621e6c2e4c802302f1946121c0c02bf1617c37f33c609ec87"
+  },
+  "desktop-scheduled-tasks": {
+    "full": "a3818d29e5f008491e8b8db09cc127e1bd0bf987fb17ceab9582007597c571a4",
+    "skel": "b3a378f08ff65c46f3a1a68d5dc29940c67a738f76f400a5185cf39f80bac2fc"
+  },
+  "desktop-wsl": {
+    "full": "acbb2a4fa359dc84d507d8b7cea5b4153e194fe45b993d10837452b2fabe8ffc",
+    "skel": "d5e7439b16b44bc19342708550d52e402d83fb1b51d50d813bbd77cbb8a0ed86"
+  },
+  "devcontainer": {
+    "full": "9a3dfa1544959a000e6a934263851a377fa98a53ab0295cb56f25bc3aa5069ca",
+    "skel": "97b4ca461bed89836ea62cd2e58820d615dd709a817286431ef4600df2615004"
+  },
+  "discover-plugins": {
+    "full": "71249e65b992cdf41b1c925fb85e6d54d01eab26fdaf0ac9e6d29a120415bf56",
+    "skel": "6362b48301663f3fab67037c2d08b3dc953dc6c23356358596ba6b89bb0b910b"
+  },
+  "env-vars": {
+    "full": "4336785b5990d8d050d1d0438f90050ad101f9ec87ff2bfbce6e4a1634174c35",
+    "skel": "6ca5cffd7ba73fd34c94bef431adb57c09ec695ec14fab3139dafae8e907ef81"
+  },
+  "errors": {
+    "full": "eaf2bd94b86bbc978fa61f9829b4d9b773e1bd4975e436370ab1353c147d5e47",
+    "skel": "6e6176799db01a6c14ab576b5c15a1dfe9b20bf5fc14fcc312c7d3efbad23d45"
+  },
+  "fast-mode": {
+    "full": "54f0b65983afd4ce109f3110ff778779981485d15273f1ab697b83c052f16c5e",
+    "skel": "177f64894907dc7bbcf5b9dbbdf36b8e899119b57ac26bded12d8b35154dc1a2"
+  },
+  "feature-availability": {
+    "full": "9a4d9321e29c6112a08c86010fd3f83decde4c0b4c728e416ecbf823bf5cdbe0",
+    "skel": "54ec96f1f25e86414380f7126f2123a02221ccbe2ba5ddb556d22f79e62bc8d4"
+  },
+  "features-overview": {
+    "full": "ad88831830057e06f4c3ea5c39e47818abb0efc2df9469e34bee06caa472a62c",
+    "skel": "a374bb96e69d90abe7a5689a05c8d02abdc32467272f89f205616621b1b8ecf6"
+  },
+  "fullscreen": {
+    "full": "c1b5a207f937ffb598c54c0c820ec50033b4e3bdbbed717dc2593f01db1d7668",
+    "skel": "734f349077d49a8e054c6e0291b996ebd15b3cf1519360d46bf196dc7052df9e"
+  },
+  "gateways": {
+    "full": "ed073a424c553aaa67ab8d4df24f47c92bcf73d3924e5b50264b2035028a249c",
+    "skel": "b312d6a57e43b70ccc63105d4ca055ab55b32b5272e10d3147c180650b51af83"
+  },
+  "github-actions": {
+    "full": "e9e7440214140f40aa6f7928260b00ae5b232e1f24dcc09ff449c299fbdb53cd",
+    "skel": "1ec5aeff03e9718663493be792876207f324bc0d964c7e6615021e6a3c174d84"
+  },
+  "github-actions-cloud-providers": {
+    "full": "7a7a329c318f99c2ba31868cd61df3f6430c614cf160711d6cead9d62b417c3b",
+    "skel": "6294b69467c3c7f24a08d36f4380af6fcc03150d42171b1352cfe25334646f70"
+  },
+  "github-enterprise-server": {
+    "full": "b77fdc32ac232e070ddbd4361c7dd6d0385f77e18e7b1e6d87ca70b01f4daf49",
+    "skel": "dc2bee2220d6ada05746bf8212e1ae3263ea854f68362c83b91644556b10f83a"
+  },
+  "gitlab-ci-cd": {
+    "full": "4f3ed7996e52c5519f7d890d9c87cc8985932f01c23f7206e0ca2ab01a88da3e",
+    "skel": "32ae1066843fb4cc4f4baec4fe9c5e098e0935308138b86339a2885de3570ae7"
+  },
+  "glossary": {
+    "full": "8fc70bde63878b28e2ec198e653b0a50c57dd637c8aed382c519d7eac9e9f315",
+    "skel": "c4ebd5cf9cf784ebea332a09623f95e6ade61b83d30d96905015fd22134d9620"
+  },
+  "goal": {
+    "full": "e1b85023df2cc1e02c3d37b241b8c2618930421aa8e42278fd74ecff1b35ffd6",
+    "skel": "7e2d46813145be79ea662d16018183c3bd176205bc65ee6f80f5ef5ac7770547"
+  },
+  "google-vertex-ai": {
+    "full": "ff5ae43089c7261ebbf0487a17020a57d6374902002e64276f24b47c3c0f5d53",
+    "skel": "c7492a602977020c79a8a42b08dabdc03d52f87098c28d3b482a7a9acb7e718e"
+  },
+  "headless": {
+    "full": "02f132525d009deae88590647bcac872eb2e5d6cca39c4ba3008a0f810db8314",
+    "skel": "10122e04bf988b41629bc5970c0d275008de835d385f4e67a195422786a6affc"
+  },
+  "hooks": {
+    "full": "e4756ca746899ebd35c712f725d62734cdfa84d710a79e55139a24228df3e530",
+    "skel": "9c00eb9c6b5b8ef21d4f0616681860df3bc6a30e28b6a8d3ccef8b02faa92d69"
+  },
+  "hooks-guide": {
+    "full": "3ed85190e03cf9787fd5d1abacfd2f39119d67437e6929504672c050d8d89759",
+    "skel": "258e6c8a19328c79d0d5623c329fdd941100120e002a36454a98846c7f62a262"
+  },
+  "how-claude-code-works": {
+    "full": "66530590fadf4b269ae9415c22399c651c8ebb6d2d9682d0f624fe27bd292241",
+    "skel": "7dd52a5fa64016050469639e1ab6b322b9e9c53b8381fd7996364195a57133ae"
+  },
+  "https://agents.md/": {
+    "full": "5deec35e268252641904fd7295f3a705b6e1c7fd0ce8185308e3854c607c8881",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://arxiv.org/abs/2309.06180": {
+    "full": "de9353854db4e16af0c63f73502f7e463f03bdc4f3c98f3fcd377fe1c625ed08",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://aws.amazon.com/certification/certified-machine-learning-engineer-associate/": {
+    "full": "173f847c3905390a6df1c7bca08ebdd92f97b8d23a5c25d22a5bc3509b472847",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://aws.amazon.com/ec2/spot/": {
+    "full": "d8527318db6c1283a38dcb27165473f012c0d88359c337f7527a309384500f7e",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://awslabs.github.io/ai-on-eks/": {
+    "full": "b04ee120a82a2f67d359c43bf30dfcc0fb7be30316e1f0b7c11c7778643cbb60",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://claude.com/blog/ai-code-migration": {
+    "full": "e41ccdbb00cb828bd00205573b4b7e473a171476b65c90cdbd8a73c2bac94c08",
+    "skel": "98955d306a1ec7f40b0409eb5767fae7dd7eeca26cc235bed7fef58953890d96"
+  },
+  "https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing/": {
+    "full": "c48362e1cf053c0eed89b5f49afcd0169e886f88a7f71539fad62f90620ae124",
+    "skel": "226563ac8d09a4256134dabed439869f10877596ce5396cfcc47a630e0b3ae3f"
+  },
+  "https://docs.aws.amazon.com/eks/latest/best-practices/karpenter.html": {
+    "full": "06e542fca0c8366b1a967fa3c2dd288e1109cff025fdae66c4327d4c7b452951",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://docs.docker.com/engine/storage/drivers/overlayfs-driver/": {
+    "full": "7982d91c500f9de99815839f8dd9db46fc21468b785b25e21d2588fce12eb730",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://docs.flyte.org/": {
+    "full": "eb2c362a01e5f35116f2c4088e3da0e01bb3328dbfddcb1f6c5ec315c4622dc8",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://docs.kernel.org/admin-guide/cgroup-v2.html": {
+    "full": "2d716cb798eacf8fbcf431b52697fbb8c5ed8ea9f58ac15b2b55351247c0bf34",
+    "skel": "aedcf367eb04434710ed99606ab27bd9005eba346bb30bf8ab6d42ca46b91a28"
+  },
+  "https://docs.kernel.org/admin-guide/mm/index.html": {
+    "full": "5b1e6833c0f3bb1a30493daa42f15eea10839170e4b064c43902b47094c667b4",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://docs.kernel.org/admin-guide/sysctl/index.html": {
+    "full": "8059e85d87b2ebaf8b65ec8809e237920b5999d5afb4a5f073db3471aace4626",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://docs.kernel.org/block/index.html": {
+    "full": "c41912049a55904cbfa8efa925c89d06bedc11662b11ef92e3a8d8a71a550179",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://docs.kernel.org/filesystems/vfs.html": {
+    "full": "28a8dc1cf4d77f7c960ee18778fe90f42f8cba65bbe13bc90b0140f8c82881c8",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://docs.kernel.org/networking/index.html": {
+    "full": "d5c36392f32c1b8edfbabfc1837cea64314b9141329ceff9038fa38f7125bf0f",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://docs.kernel.org/scheduler/index.html": {
+    "full": "1fc72f9b668bbd61e83548bd55b1c696c93b99fbaf4e7b23f699bd6084e15c2e",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://docs.runpod.io/serverless/vllm/overview": {
+    "full": "7374515b3187523c5b10d2f8b2c3eee75fe6f8024ed1e5e400c4a914f7f7ae3e",
+    "skel": "691973e320fbf967e343596169f00b0f67ad2518c421f400bc33b70874a60dc3"
+  },
+  "https://docs.sglang.ai/": {
+    "full": "7c5cf8d17baf89d738345246fec63b8e3e8f62c51832b8f28e5926ca6a64646e",
+    "skel": "bd34f5b37c7c1735644b91223159895c892e83daf874c2b169d6aea143be7d39"
+  },
+  "https://docs.vllm.ai/en/stable/": {
+    "full": "641c3f586ca0073f23448db97c13bab82c5a32a668a1cef4a0317156291df9dd",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://ebpf.io/what-is-ebpf/": {
+    "full": "b6f344f75987fba516c5556aeafa173aaf9e397026eefe6295a933e9b7a63335",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f": {
+    "full": "dbcaeaae8e6f2df6ca5f2094e8cfd6f22ad3eeeb318915ff1341a984229b5ba3",
+    "skel": "776f1845b1d08b8c89e56993cf3a2fe17c3e322dcc22f9abc875643cc4c5252a"
+  },
+  "https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md": {
+    "full": "ff6954c259ba583ab63d2654a9f9b10f7ff252c74f8ffce27c2217be77f8badd",
+    "skel": "3f0df9b5b56ce8ab7a4b0430ffd8bdb96bf196189f2ee625984b61921cef4555"
+  },
+  "https://github.com/evidentlyai/evidently": {
+    "full": "e67327dc958bf5a52682f57c92da733d7d6a59d433b4bfec0354fa7b118c205b",
+    "skel": "015f2723cdd824f33b4cf64fb2696e3192913100cdfdb2463f1075e3b50c18d6"
+  },
+  "https://github.com/iovisor/bcc": {
+    "full": "5f9d4ca34968ca4c1b848678135d2fea7fe4c0e29144c30f1bfc952dcf5b5375",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://github.com/opencontainers/runtime-spec": {
+    "full": "792867650ab3702eee2e7829ff442997280593d3ecd143bf17b7a95f7901cccd",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://jvns.ca/": {
+    "full": "0db0219d4bea8874188bd4224e9ee9f6a6db76ffd76d820c9ab8f2424caee9ad",
+    "skel": "b6aafb65abc4b8522cc56686f5e94a79e938738e602773f47479935d8fded84d"
+  },
+  "https://keda.sh/docs/": {
+    "full": "4243600d55839406975c29e1b7475fab566f3c2fed7da609aa8ca94a965be68d",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://kserve.github.io/website/": {
+    "full": "1abe0a8e6cd1d70e9b1a613469d16483a34096af255a86669b450f03b023203c",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://kserve.github.io/website/docs/model-serving/generative-inference/autoscaling": {
+    "full": "639223a26de9a2fd97accfe9fd0dda0787264f35d01d66e1fd0c17d4ac6e28c8",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://kueue.sigs.k8s.io/": {
+    "full": "3c4199d969d5fb042ad89b37aaef7497c49b0244fe71875b71970c8043e07508",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://llmstxt.org/": {
+    "full": "947aa9f5225294ffbb49dd79070d58e6cca8b614c9a13033d76739978d6a2c56",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://lwn.net/": {
+    "full": "f470289ab102f9bdcc62132e50d31e89e61baa174886da369f32d266c928f9b6",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://madewithml.com/": {
+    "full": "5bf74ef96601f1c7c728ffd9bed1a32c4cc927a3248c1e93a2fd99883ae61570",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://man7.org/linux/man-pages/": {
+    "full": "da70760de42638088cfb7d9b7e9848ccfe537f8ee8587df62438d01605f1bd25",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://man7.org/linux/man-pages/man2/fork.2.html": {
+    "full": "9f15948431b8f753d251a4679b40f01de81d9a8a42392404f7083b4d8a80f969",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://man7.org/linux/man-pages/man2/syscalls.2.html": {
+    "full": "f449c7ca7303b3a5c2076f11298edbbe2ae25c921e92dfabef906e1376f5c915",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://man7.org/linux/man-pages/man5/proc.5.html": {
+    "full": "15d0437cc122ea58d166cc707ef07538189f1ff105bef305ce52bd0d13967dc7",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://man7.org/linux/man-pages/man7/cgroups.7.html": {
+    "full": "08a6ebd1b8aca10a88a3b0562779849cbfae3a2dcbd567c970344fd546dcf955",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://man7.org/linux/man-pages/man7/inode.7.html": {
+    "full": "a3736a6f58f6a25ef2d4d31792c6d1c304e11a6b4e142c980291b047fdfdd453",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://man7.org/linux/man-pages/man7/namespaces.7.html": {
+    "full": "7b8c94b7eeeb7a07dc063ecfb852959cbe32f01b7d4e33fe90eee9d4d4c1fdc0",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://man7.org/linux/man-pages/man7/signal.7.html": {
+    "full": "5e9691eeefa7970853ad0a3de8ec90c85a9e086d35f1233c89eb305cccbe939e",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://man7.org/linux/man-pages/man7/tcp.7.html": {
+    "full": "23b766ea96928f0e6da8d05a925a77ecbd3273a3e8c31f471198bb4eb9f57cd7",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://man7.org/linux/man-pages/man8/lvm.8.html": {
+    "full": "3d66c021520623801750aa804b1adc4d42ead045bf147480b91cba0e6e7d4b7d",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://man7.org/linux/man-pages/man8/ss.8.html": {
+    "full": "2ee9c8269755cc39908cff08ab3195dda21b3cd090fe570ee30167885ec213e7",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://man7.org/tlpi/": {
+    "full": "9cc9315bb0e54af225c4aff24dc0d8d1e90a2538084ad8ecb65f64240f9d133b",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://mlflow.org/docs/latest/": {
+    "full": "476c1504e5df3e27176093ddd2ddc3fe747aa8bf6af4a24e71eba606a02c064c",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://mlops.community/": {
+    "full": "8724db4738b30a7bac8ddcfbf5876fdd323c090ba6b9bd74160809d65451998c",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://neo4j.com/blog/genai/what-is-graphrag/": {
+    "full": "7bfb7ae819f58cc4bb1784681a6da43fc20d3ac69a248be00e31db3a1ae6b70a",
+    "skel": "85ae9b83d2d164cb2e9ff6e6c5ebac90cfadd92e7a0286a42f9be3fbe73a7f2a"
+  },
+  "https://netflixtechblog.com/linux-performance-analysis-in-60-000-milliseconds-accc10403c55": {
+    "full": "6d34c7e8652aa6a2f495baf7c21f6509eb79b3e59f532109a561f758449010ba",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://opentelemetry.io/blog/2026/genai-observability/": {
+    "full": "356630e0e9e5bc852380acbacddbd9b650c5c8fc5bb7e1a9b1363ad74348f0e1",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://pages.cs.wisc.edu/~remzi/OSTEP/": {
+    "full": "120eb97411ed20f2c159062b175cf68886183b07d31dd161d365e7436cdb455c",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://tldr.sh/": {
+    "full": "825b7b14cfc17c31b8667edb2d0bab792f5ce279174f20fbd741c53e2a405ce0",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://www.brendangregg.com/linuxperf.html": {
+    "full": "076d7ccf32ee60221f0e4ad9f64110130893db1cea5efbbde5120c979db0212b",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://www.brendangregg.com/systems-performance-2nd-edition-book.html": {
+    "full": "089b84f1d7e47fc0b33c7454ca1b15d27ade845a4566a59a98248a12df886c33",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://www.brendangregg.com/usemethod.html": {
+    "full": "9a08f590bbbd2a071312486bbbafab2fb840adc26e935541b61fae18879d7707",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
   "https://www.cerebras.ai/blog/how-we-built-our-knowledge-base": "",
-  "https://www.cncf.io/training/certification/cka/": "926f414f87a49e46e8b280ab409b117e1d0270839ee3776f33d14a2baa7e32b7",
-  "https://www.gnu.org/software/coreutils/manual/": "418d4f96bcd62482198d73434775f761c4c9e27e59963d385525dbb782eaddcf",
-  "https://www.kernel.org/doc/Documentation/sysctl/vm.txt": "25210a29c56ba25f0bd39fe89734aa68e6201e1a4ffa18766ced787aa30ac020",
-  "https://www.latent.space/": "4d04a3c161b1edc7dbd45ce6038cc74adeba933f189685ea3e2eb31c8bc69560",
-  "https://www.rfc-editor.org/rfc/rfc9293": "4648e7db165d801ecb1215456e9422d3798057526a9595ec2099a9ca06d11d2e",
-  "https://www.spheron.network/blog/vllm-vs-tensorrt-llm-vs-sglang-benchmarks/": "6136ad57a424cc1a042b3f697fada553d889d784840fe55a91b7607bf382fb2f",
-  "https://x.com/cerebras/status/2077822555159945507": "d73dc4f93a138f2ac28c3512d8b80db43a40de23e59bd12d1b9a37493f3d8059",
-  "https://zettelkasten.de/atomicity/guide/": "c0087482d2628ef5eeb32ea97e3210beedf909186aae140b9044a5f43b1d79bf",
-  "interactive-mode": "351b326be3bcbcaa91229cb6438cb847c8e2bac5e4d87282697f4957def5aa26",
-  "jetbrains": "432e64e2ab0f0d77d7600f0a137fd5cfdc774e6cecf5ccf1e10616e73ed49556",
-  "keybindings": "a28bbcdde51c14b2e6a8b0525251169c180917014debf3b7dfe11ce644d5ba3b",
-  "large-codebases": "71245b0af49d859a170920892012e5989fd1d38548c05e9fad588aeb5b5d56dd",
-  "legal-and-compliance": "4a4cc1762fb1d992a66347dcf94c60a27d328391d8074c13e8ae9d5c4182413b",
-  "llm-gateway": "0395008a43df2c18630fe504b2b6c51186b458f038d0fc40ca63ae5f8cc86292",
-  "llm-gateway-connect": "4f7c4eb00c711100bf3426230edd8ccc124978b2ec32d0f2e484ba6af3ac2d0c",
-  "llm-gateway-protocol": "cd636413e9aaa35671b7b563bc82e25c762500f524b7537c5f99d9833ea0f838",
-  "llm-gateway-rollout": "56ed27f0da735b347ac4ead8db31992321b0b74869634210c4e057ad26cd6589",
-  "managed-mcp": "d40699b94baafed3e5406cb812d852f1418ebb9ece1a7fe8bdf79d74f289c11a",
-  "managed-settings": "ac1a39f6b75dbcc381fe964d503a15cad0e4bbf50bbb55459626b26c657bee33",
-  "mcp": "9ea29d271dd355b4baf8d3ab06df92ddc7d05203de2d837716ac01044b3c4c34",
-  "mcp-quickstart": "d11aae0e0d5868076fd2c8af56f4a6ccae598b3c4c962c6d6718b6aa7f9f24a4",
-  "memory": "d05966dd9b4981a190df64ef46a617c8b19d4b7d10e84df88595d7edae47652c",
-  "microsoft-foundry": "29f3e08b5adc3143f136139dd3d3e6196feb79c9032994be6fce3490b14dc7aa",
-  "mobile": "d53b1faa01cdcfcf922170f5f056e78ed8cdfd599f9f88c5da9eca43942ebe88",
-  "model-config": "e7fee2994b3048d906b6429f98118d7c3e6d46f670e34acc42f7d752cb2eb621",
-  "monitoring-usage": "60a535943bc480869d4231360e4699729fda3185c261938f1e0703e6dfc36d06",
-  "network-config": "8a0b597819950c88cb673bd9a450f45b88d138100c37a927b20b125b59ae0a70",
-  "output-styles": "283cfd6d06680d859ea856ffc9498ccfaa9e8fd1e04f96d6adcee7d720eddee9",
-  "overview": "90cbed4c0ccdaefe35e85a86692343170a90a3def932ae3398970cc1dd2ef7b2",
-  "permission-modes": "934f1da099db38eea39fa1091523503af19e0ad829049683d529fbb67fc840c3",
-  "permissions": "851b92c394be10228ace118771f19e77342be34db3874c9826dae0c6c8bed021",
-  "platforms": "2d9e36e37fd82e2771084ac7c8d8189de6918a4149c683be62e2ba0d97db9a9c",
-  "plugin-dependencies": "b14be1930464992027b58ff897760ec49399123575de93b5a2294ea9e324323d",
-  "plugin-hints": "cba6d1e4cb50ace8a02ed15cddc3f37f8098eadc01cae61a0f732b526b5b1232",
-  "plugin-marketplaces": "b9eebf6c5ea2e2ae5b3f7e43827a050d03db0cef61fb81c3d935c0682e036c19",
-  "plugin-relevance": "e0ad4269e108a36538be65b279a2508d2452426e26c83b801844548d3836397f",
-  "plugins": "d353344e65fed118a88565ab463770a99d88ca073419b4d868ab4eb4dd54103a",
-  "plugins-reference": "f376d1d6fd2312c3e9c2d39deed0b2c970ce242cb22fd0d7240fb88eb1412a2f",
-  "prompt-caching": "dce7038229293bc966bd1e9bad3b58f0e508dbbbefab2fab4652a68e965e1872",
-  "prompt-library": "985ba3bd07863a741e2e5f137e14bc8fb173fa547242ad52de426929d3e9ecba",
-  "quickstart": "c756c002245832a63748ba6b894cb58f233e131c6b40202b7906fce722f01b4c",
-  "remote-control": "89e6027bcfc58ef0e75ea3354a1ec7920b403f5ae8e90736606ab3b10f8dbc21",
-  "routines": "8a382034efa38be9c3093b11d847d917a6b21e5014a9033ec096397f9ddcf6f8",
-  "sandbox-environments": "a863dc49f631afb71a1979e17d7ea8bfd8a67415242281d43384f3c8605562a7",
-  "sandboxing": "0a81c62d2c194b8b58c27b78b2b189bdaa13c3b40065599f4bcb3f6aa78d6917",
-  "scheduled-tasks": "6e804be52523ac46f8699add63edd352177cc2681d7ea914102fbf82d10dea1f",
-  "security": "dc778005a5b5d1cbf262df53e537b2b9ebafd112f8d2e8505343ee74b8676bab",
-  "security-guidance": "9f9a3f9899edbe67f5d53b95ada52aac8b4a719f9a5e47e1d123e3471777f6af",
-  "self-hosted-environments": "f1ce05ace88c4e7661467f31da246e902d7d129da817e2299ecb5675666b0119",
-  "self-hosted-environments-configuration": "2f30280da3f835154b7e0e2e97333da191e33d3ef0b9e803a0608b800bcf0162",
-  "self-hosted-environments-deploy": "d903ea25526095bad770a03aaba03ec45cab86e12f73e1af35e2d10450d5ebbe",
-  "self-hosted-environments-identity": "a695691cbc7b133666fb9cef34c969b58acd3f35976e2d8401e61f5abdd9955f",
-  "self-hosted-environments-quickstart": "4d2d8a4846a8e3283cb9f3f0f5d649df034e348eb83b668414035ce109da2fbc",
-  "self-hosted-environments-reference": "8138727ae74514f3b60666d55531836f2e31fa8ced0e2a875ec5a822ba1f3d81",
-  "self-hosted-environments-testing": "b40176e04ed3acc7ced43d9be579e37291f1a267d068dbc244a2b250cff3dcc9",
-  "server-managed-settings": "159c69cd0c831b4ed1e029865d6656abed2d352a0f2a6c465a17b03631bf930e",
-  "sessions": "9ee0c5b49671328551e0db3c9306d7ab030dc9bab308bc75f8e6113fbddfa3e6",
-  "settings": "755e9982ce8715b15485cdb413bdbb2ddb6233b57f5ad7ebebcfd7377c61b2ad",
-  "settings-example": "ffa1249c2fdab2f432dd80d4f996f22bc5337a496fc6227a342795693f9c640c",
-  "settings-reference": "b8838a8f9fbfb7ce503a6ff2b391328b12014ac04b635ef75a1155b30e5e14a7",
-  "setup": "519f37d769814f3bb872b982a7718d2d9fc47eea934be4aa8b384c31cfb38083",
-  "skills": "8635e0597dc1a135bbdadcf0389cc00d807376d8dd801a0220a4d42f39a3e57e",
-  "slack": "094f2c692cde099b17e6720c3fbf5d775a5630b8a0171cd63daa9dc017dc8d19",
-  "statusline": "b0811428721bd7c30df85fa7bb8f604c69bd4ee7c4b549a7c8ea88fbe1be9723",
-  "sub-agents": "03b4927c518db3632b9c0c0c6e2655c985ea0c1bb374af4563b24ceb225dbcc2",
-  "terminal-config": "b0de0429756ae86344b84fa8983cb4ec2a6fff9253baf27a50a53da915a47459",
-  "third-party-integrations": "b1a52b2f4b525d27ae2cb3aa083f47dd1f5a6432eef5551d74d7822a31de484f",
-  "tools-reference": "7c3d4fe1196a44485ffdc6322a58755d956e5372bd507b11582ed3b5105c0b87",
-  "troubleshoot-install": "00ee610707c923d4014190aa678b73475c3cd442322d39d39d36843bbc63a84e",
-  "troubleshooting": "f1426c4b36894db28ef285f7dc2c7654d7d33c1f89e77f93caeb5f13a41b681b",
-  "ultraplan": "331d77a6b615aeb7b31b37211ce9017b5ca4aa8b297996cf999493485511bc14",
-  "ultrareview": "dac0e94064bfd048327a7abd9b3c63ea7194629056924347ce01187ec0ef8dc0",
-  "voice-dictation": "35364a1aebd0263f97a623cf2415536681b50f30ae800e61565265b838ea6702",
-  "vs-code": "1d91905b5cd808672c62748b5475682ede72b299d4cf64a0090fd1ecbfc89517",
-  "web-quickstart": "501f7c7d800e9150167a17386e6cfcbd48e81fc8c700d9b5e6bda50614794035",
-  "whats-new/2026-w13": "1f6b33d30fc2ba37f181750f871a769ba973868bd4c3b649f7c0b41856a91bc5",
-  "whats-new/2026-w14": "d2ba66788eb385a4c3ad9f8b0ead51b24d9ec4d631dc4855c00f8a21b2d972fb",
-  "whats-new/2026-w15": "0b44122d315a9909407b83def62e4edc8247262565bb4d1c22add11e21283be9",
-  "whats-new/2026-w16": "cd6cc611efc53cf7319f2bab020f13d733affe6a6b7a5c270a2f218289fa64dc",
-  "whats-new/2026-w17": "f578e85cf3fa449fd7c61e930970cd8fd70af9c2204d319b0c1a30daf99611df",
-  "whats-new/2026-w18": "a567c98c444a4e80c35d2090bf2cf756b1ce097c75cb57364d8ab5ddf155051e",
-  "whats-new/2026-w19": "3d6247b5b48579fcd46e23c5286b90c390fd2e7c1f4b66aebb12578622a95e14",
-  "whats-new/2026-w20": "22e8189f0d539e07f0c6dbf0dac1de0145d64211cd0465acea97d0183e922525",
-  "whats-new/2026-w21": "e17d2c9c819da2cd57397894b79b7355f2b590be6b023c41f1fe322fa51b6d22",
-  "whats-new/2026-w22": "17ec54c9ef14d0426d4a4375efe470ba0ecc9aaefad5582d9efe317c3c220687",
-  "whats-new/2026-w23": "b018b3971c54c267f4b4623676eedb339e2728b9a4c413cd07a0428739110dc4",
-  "whats-new/2026-w24": "770e40ecefed1e8ebb77426c3b8a6fd59227e6d59bf5c30f679feb5dd962cedd",
-  "whats-new/2026-w25": "833f8d3b700c7618cce2202daf834614b956be2c30651edb8c102815e7dcbd08",
-  "whats-new/2026-w26": "3b2140a178f36250ee1a24643bdc12b83b4f1534e1a1f8a94d40556a4c7e0625",
-  "whats-new/2026-w27": "f6386207819b3af9e7bb379d3e5df84dabf7f87b90fe9a5fc58e91d5c2ed5fe2",
-  "whats-new/2026-w28": "d42c311bdf5932bcb49f8a765ada6d39073bfaa98d16fdf12807b7074463b83f",
-  "whats-new/2026-w29": "275e9c88fadfa5cc0cb39665a4a5d89234c970295e0f4d0bc583e15e2ff9bb29",
-  "whats-new/2026-w30": "df099e47a73428b58df52eea4515ce2cc5894b6090a769e0f172808906f33ba1",
-  "whats-new/2026-w32": "f7f1e5a97f228bf821404093e534ceaa95b1263fcb486cde6dc3eec851a93eaa",
-  "whats-new/index": "598220ee884ac6bd854b235f57e7b9bbd6bf0e41f478523d52d824306c7bb039",
-  "workflows": "75130efe0d2514784e027fae2f1bf98d33f16863ea6c670e01c231a677fbf0d8",
-  "worktrees": "9becc26c155c210155d1e1797991a93a536bc47ccfeaa6b20f51d6f68f8d3f26",
-  "zero-data-retention": "218ed0e3c97a0f8f6f17679d701f1d1e77d844b65ebd54aef0e1f7eb929aaf95"
+  "https://www.cncf.io/training/certification/cka/": {
+    "full": "b155f417120c0e8c60e43b7a3d154cba098b0a64697808e254100ce2088f0352",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://www.gnu.org/software/coreutils/manual/": {
+    "full": "418d4f96bcd62482198d73434775f761c4c9e27e59963d385525dbb782eaddcf",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://www.kernel.org/doc/Documentation/sysctl/vm.txt": {
+    "full": "25210a29c56ba25f0bd39fe89734aa68e6201e1a4ffa18766ced787aa30ac020",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://www.latent.space/": {
+    "full": "6966eae7c0f82dc9aec9b60f42bedeb04a10191e53596f11af658134fa918315",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://www.rfc-editor.org/rfc/rfc9293": {
+    "full": "4648e7db165d801ecb1215456e9422d3798057526a9595ec2099a9ca06d11d2e",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://www.spheron.network/blog/vllm-vs-tensorrt-llm-vs-sglang-benchmarks/": {
+    "full": "6136ad57a424cc1a042b3f697fada553d889d784840fe55a91b7607bf382fb2f",
+    "skel": "910eb55bf5bd7f09ce7d250b869300101bf15964c9289c7e6461ed4df7f91ada"
+  },
+  "https://x.com/cerebras/status/2077822555159945507": {
+    "full": "dd96592bb4ed0889b66732f6b36b98f51761c11b7490318a1b68d8483d1e56ba",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://zettelkasten.de/atomicity/guide/": {
+    "full": "c0087482d2628ef5eeb32ea97e3210beedf909186aae140b9044a5f43b1d79bf",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "interactive-mode": {
+    "full": "351b326be3bcbcaa91229cb6438cb847c8e2bac5e4d87282697f4957def5aa26",
+    "skel": "af17acb71922ccabe0f7f3ca5cb2aadc87655be1b4581e612e4464bba9455c88"
+  },
+  "jetbrains": {
+    "full": "432e64e2ab0f0d77d7600f0a137fd5cfdc774e6cecf5ccf1e10616e73ed49556",
+    "skel": "90b903845c0bc47445fe6ecfe98c8177597280af3edd446031e95583345f60a3"
+  },
+  "keybindings": {
+    "full": "a28bbcdde51c14b2e6a8b0525251169c180917014debf3b7dfe11ce644d5ba3b",
+    "skel": "355e0180919d633ff0bb5429b20f855991d4f4099cbab703c03d3ccec3ee2ed8"
+  },
+  "large-codebases": {
+    "full": "71245b0af49d859a170920892012e5989fd1d38548c05e9fad588aeb5b5d56dd",
+    "skel": "36663bffaf391d21be2dee17bfe111ae5ce3011315d4459358f23cf43046f3ed"
+  },
+  "legal-and-compliance": {
+    "full": "4a4cc1762fb1d992a66347dcf94c60a27d328391d8074c13e8ae9d5c4182413b",
+    "skel": "e7891c671e54c38db2baccbb8889038d0762063bdf187dac0706b3c41ecc3046"
+  },
+  "llm-gateway": {
+    "full": "0395008a43df2c18630fe504b2b6c51186b458f038d0fc40ca63ae5f8cc86292",
+    "skel": "163c7695b53b88fc9e10bc769dde6d106c5afa64a199d77a33a3d74c60d39520"
+  },
+  "llm-gateway-connect": {
+    "full": "4f7c4eb00c711100bf3426230edd8ccc124978b2ec32d0f2e484ba6af3ac2d0c",
+    "skel": "a75fd9f89f63de3fab4eff6738df216508e2b64810ece3e29c62a766c0f0b57f"
+  },
+  "llm-gateway-protocol": {
+    "full": "cd636413e9aaa35671b7b563bc82e25c762500f524b7537c5f99d9833ea0f838",
+    "skel": "31ae0cdc1e0828b139d316ddcb1828d03b38590da5e7d68a2fcb2be2cec19860"
+  },
+  "llm-gateway-rollout": {
+    "full": "56ed27f0da735b347ac4ead8db31992321b0b74869634210c4e057ad26cd6589",
+    "skel": "271eafcec725c4124136307c2b8347f3919300c0c1a3c3ed7901ccbe3ab3da13"
+  },
+  "managed-mcp": {
+    "full": "d40699b94baafed3e5406cb812d852f1418ebb9ece1a7fe8bdf79d74f289c11a",
+    "skel": "b186823acc25b88ca174c20e82cbdf3c7a3282f44701b1feab7566fc7b453a08"
+  },
+  "managed-settings": {
+    "full": "ac1a39f6b75dbcc381fe964d503a15cad0e4bbf50bbb55459626b26c657bee33",
+    "skel": "8dc746b5cc51f88d34dbec788a50ced3d0911ab21bdfcfe1bc98dd8990d41519"
+  },
+  "mcp": {
+    "full": "9ea29d271dd355b4baf8d3ab06df92ddc7d05203de2d837716ac01044b3c4c34",
+    "skel": "0a5309a1884d69870ff6b76a43b27aa87c8a3eaf783de3e2354b08045dbb35f8"
+  },
+  "mcp-quickstart": {
+    "full": "d11aae0e0d5868076fd2c8af56f4a6ccae598b3c4c962c6d6718b6aa7f9f24a4",
+    "skel": "925cfb3320519f3e35f358caa8b5b273df156a70c700a103df73da6e5b78662c"
+  },
+  "memory": {
+    "full": "d05966dd9b4981a190df64ef46a617c8b19d4b7d10e84df88595d7edae47652c",
+    "skel": "5641640c3686cb1d9a74401f51c83fbdbff50da0d7bef6b69711ab18ac7d5461"
+  },
+  "microsoft-foundry": {
+    "full": "29f3e08b5adc3143f136139dd3d3e6196feb79c9032994be6fce3490b14dc7aa",
+    "skel": "8d4f291a26ba70f2008e6604b0db93e31e55f000519a9c14c532045f79c2e1db"
+  },
+  "mobile": {
+    "full": "d53b1faa01cdcfcf922170f5f056e78ed8cdfd599f9f88c5da9eca43942ebe88",
+    "skel": "c2a8acab7d1391e14815758718fba0ebdee2ab00cadf48d3f381022ab0d49753"
+  },
+  "model-config": {
+    "full": "e7fee2994b3048d906b6429f98118d7c3e6d46f670e34acc42f7d752cb2eb621",
+    "skel": "852a5669e5e2ec0a7833688e6fa9cdb6b571fa9cba254fa3147bafbfcd706bff"
+  },
+  "monitoring-usage": {
+    "full": "60a535943bc480869d4231360e4699729fda3185c261938f1e0703e6dfc36d06",
+    "skel": "42147f0d0197f6820a2e4e40870fafd124ab461a3484219bbd5a7385d45d855c"
+  },
+  "network-config": {
+    "full": "8a0b597819950c88cb673bd9a450f45b88d138100c37a927b20b125b59ae0a70",
+    "skel": "7432dfaccfd4644e9e5804f66a37f999c3780cd3d9f73c4de834dd1b70685d21"
+  },
+  "output-styles": {
+    "full": "283cfd6d06680d859ea856ffc9498ccfaa9e8fd1e04f96d6adcee7d720eddee9",
+    "skel": "17fd6bf079e6914bcb8cffffa50f5eefa4f39d967d9e0286c6024cfb286b711d"
+  },
+  "overview": {
+    "full": "90cbed4c0ccdaefe35e85a86692343170a90a3def932ae3398970cc1dd2ef7b2",
+    "skel": "a70957962d7c6b904db34a61caab4f3ad6f26c2913be3370416d2d5280af339d"
+  },
+  "permission-modes": {
+    "full": "934f1da099db38eea39fa1091523503af19e0ad829049683d529fbb67fc840c3",
+    "skel": "bbccb7667b748a2ca55c7a2f3137c2e15ef27345cea96f7bf145244d2a5c33f9"
+  },
+  "permissions": {
+    "full": "851b92c394be10228ace118771f19e77342be34db3874c9826dae0c6c8bed021",
+    "skel": "82de31ecfc8f8e5e8e57e670c9c0d0a85b88fe560b728c2c7f47db31528b3691"
+  },
+  "platforms": {
+    "full": "2d9e36e37fd82e2771084ac7c8d8189de6918a4149c683be62e2ba0d97db9a9c",
+    "skel": "b2ae6dc6b167c066190b17f7405e6c70d4fb8bb06f965632b3609bf9a18a0620"
+  },
+  "plugin-dependencies": {
+    "full": "b14be1930464992027b58ff897760ec49399123575de93b5a2294ea9e324323d",
+    "skel": "15086e65c50044a6dc36e532a9f265761e0ad25d22fa4f7fc3a4bd39867b5859"
+  },
+  "plugin-hints": {
+    "full": "cba6d1e4cb50ace8a02ed15cddc3f37f8098eadc01cae61a0f732b526b5b1232",
+    "skel": "53149096edb1088c6c10f1b9d29a65e4597b56d0be1776627ec7b00a824545f8"
+  },
+  "plugin-marketplaces": {
+    "full": "b9eebf6c5ea2e2ae5b3f7e43827a050d03db0cef61fb81c3d935c0682e036c19",
+    "skel": "f94609e899606d3a394b46b2c58d39c0aaf53d8ce640d620672e73333d76bbb7"
+  },
+  "plugin-relevance": {
+    "full": "e0ad4269e108a36538be65b279a2508d2452426e26c83b801844548d3836397f",
+    "skel": "1a41a47acfd9ce07c341769bd30e5e217a91fd98fdf0c2177850b5e6e7f3a570"
+  },
+  "plugins": {
+    "full": "d353344e65fed118a88565ab463770a99d88ca073419b4d868ab4eb4dd54103a",
+    "skel": "eb90b97d8b7e865eee728751062dadef41c07ac91f3f3458a3f2e6a454fb3d1b"
+  },
+  "plugins-reference": {
+    "full": "f376d1d6fd2312c3e9c2d39deed0b2c970ce242cb22fd0d7240fb88eb1412a2f",
+    "skel": "f11d3a961498e78e021a779b653da260009bcd9e593188e06783e4c73d572d84"
+  },
+  "prompt-caching": {
+    "full": "dce7038229293bc966bd1e9bad3b58f0e508dbbbefab2fab4652a68e965e1872",
+    "skel": "528a2b4b4c3b32a08dd2ab162295378a8d1f88e23eb6e81bc3494030307b773f"
+  },
+  "prompt-library": {
+    "full": "985ba3bd07863a741e2e5f137e14bc8fb173fa547242ad52de426929d3e9ecba",
+    "skel": "22a9173af72648a9952993298d096bbb6b1bb5f45a57b1387648abc1a78b62cf"
+  },
+  "quickstart": {
+    "full": "c756c002245832a63748ba6b894cb58f233e131c6b40202b7906fce722f01b4c",
+    "skel": "8443ed8736c8f34b1899dff812a718c1a6c5a81c3caec82b3e89a9892492cba5"
+  },
+  "remote-control": {
+    "full": "89e6027bcfc58ef0e75ea3354a1ec7920b403f5ae8e90736606ab3b10f8dbc21",
+    "skel": "a7c8c9e11100f843c3787451d3f5f032da39a2e3ca8708fbd7ca13e323deda62"
+  },
+  "routines": {
+    "full": "8a382034efa38be9c3093b11d847d917a6b21e5014a9033ec096397f9ddcf6f8",
+    "skel": "9d5071e5b2aaef52da209d10869c109aab499b7184709d407cbc5feb70717f87"
+  },
+  "sandbox-environments": {
+    "full": "a863dc49f631afb71a1979e17d7ea8bfd8a67415242281d43384f3c8605562a7",
+    "skel": "e482a121bf1daf3051b30b6a813372d0a2bfd2d9031fb1c4cdad795515b2e780"
+  },
+  "sandboxing": {
+    "full": "0a81c62d2c194b8b58c27b78b2b189bdaa13c3b40065599f4bcb3f6aa78d6917",
+    "skel": "bc01145fb6599dae4a2a656e028d452738cc08ae892b5141acbb440a38d00e2c"
+  },
+  "scheduled-tasks": {
+    "full": "6e804be52523ac46f8699add63edd352177cc2681d7ea914102fbf82d10dea1f",
+    "skel": "7f8bb4ea5b47237d57c992c127f62046f619fe072a5694a9766550a82e8dcfc4"
+  },
+  "security": {
+    "full": "dc778005a5b5d1cbf262df53e537b2b9ebafd112f8d2e8505343ee74b8676bab",
+    "skel": "f2efdde6dff6ed24939cd672adf74fbf1a1c1dd4c5887d3d401b5e2af978b57a"
+  },
+  "security-guidance": {
+    "full": "9f9a3f9899edbe67f5d53b95ada52aac8b4a719f9a5e47e1d123e3471777f6af",
+    "skel": "dfb9c5fbcb3af3b99af2830a6168f32cabd86d21d4c06dfd715cb2785b70fd8d"
+  },
+  "self-hosted-environments": {
+    "full": "f1ce05ace88c4e7661467f31da246e902d7d129da817e2299ecb5675666b0119",
+    "skel": "11836a9b1ea5b7c7bbb08aebb0728e387a3791c1ceabc82b0836958e8374e6a0"
+  },
+  "self-hosted-environments-configuration": {
+    "full": "2f30280da3f835154b7e0e2e97333da191e33d3ef0b9e803a0608b800bcf0162",
+    "skel": "7a2ec3f367ed4c8fdb29ae4d7a9dfeb87f1ecd2ffa4132bb3b1ee71e9a10e7cf"
+  },
+  "self-hosted-environments-deploy": {
+    "full": "d903ea25526095bad770a03aaba03ec45cab86e12f73e1af35e2d10450d5ebbe",
+    "skel": "9f86321330f9869b9f70c5ecc513dc8dd16d1bd53bccbacbddb559d7f97194d1"
+  },
+  "self-hosted-environments-identity": {
+    "full": "a695691cbc7b133666fb9cef34c969b58acd3f35976e2d8401e61f5abdd9955f",
+    "skel": "a143c3c9470091faf779d84eff866a7f4f0f6bfa8d63fc9a985a45141dedaa8b"
+  },
+  "self-hosted-environments-quickstart": {
+    "full": "4d2d8a4846a8e3283cb9f3f0f5d649df034e348eb83b668414035ce109da2fbc",
+    "skel": "4c75b5ae78dffa7f7a7e1b97b14f854be446a459d2daf7f072af8f9d84cc3db7"
+  },
+  "self-hosted-environments-reference": {
+    "full": "8138727ae74514f3b60666d55531836f2e31fa8ced0e2a875ec5a822ba1f3d81",
+    "skel": "6697f63764883efc910e3b8a199b2266d42154ec2a64131f8182a2ff9fac893d"
+  },
+  "self-hosted-environments-testing": {
+    "full": "b40176e04ed3acc7ced43d9be579e37291f1a267d068dbc244a2b250cff3dcc9",
+    "skel": "7022758c49d1b3194bc219e22c4e57844c322bc1e6e898a5edc34ec880e508f7"
+  },
+  "server-managed-settings": {
+    "full": "159c69cd0c831b4ed1e029865d6656abed2d352a0f2a6c465a17b03631bf930e",
+    "skel": "7d0579e31c82a2a67e17e6364d037f61705692010d8dd16f2142d60cdc9922ca"
+  },
+  "sessions": {
+    "full": "9ee0c5b49671328551e0db3c9306d7ab030dc9bab308bc75f8e6113fbddfa3e6",
+    "skel": "0bcfe3d2f5efbf01416f183523633b92aade2b53f2c4d00e9476143a20bde2db"
+  },
+  "settings": {
+    "full": "755e9982ce8715b15485cdb413bdbb2ddb6233b57f5ad7ebebcfd7377c61b2ad",
+    "skel": "85265d7b340060c22e17a13452cefafdb65206e319f7a1c4ba165038bea21a81"
+  },
+  "settings-example": {
+    "full": "ffa1249c2fdab2f432dd80d4f996f22bc5337a496fc6227a342795693f9c640c",
+    "skel": "ae08cb42cc39ec1100a26d37aa38304bcf4861c262abc8a1780d4042735bbbe0"
+  },
+  "settings-reference": {
+    "full": "b8838a8f9fbfb7ce503a6ff2b391328b12014ac04b635ef75a1155b30e5e14a7",
+    "skel": "88befe49575c23f02ef37d05463607847b7a1da01471d5d4750a60ca3efd0df1"
+  },
+  "setup": {
+    "full": "519f37d769814f3bb872b982a7718d2d9fc47eea934be4aa8b384c31cfb38083",
+    "skel": "df9c3f7a5b126013eeb7d3e969b937f935eeac2eb3ad395b054dfbc44a71ab97"
+  },
+  "skills": {
+    "full": "8635e0597dc1a135bbdadcf0389cc00d807376d8dd801a0220a4d42f39a3e57e",
+    "skel": "8e1a7176273b7ce81625f7152f4e9d85afdeb60b3b9667bd84f7db74cacb1c9a"
+  },
+  "slack": {
+    "full": "094f2c692cde099b17e6720c3fbf5d775a5630b8a0171cd63daa9dc017dc8d19",
+    "skel": "59d04c95ea378ce367afb4822707e9d79c6f8f065e521c10e8ec4666542cc139"
+  },
+  "statusline": {
+    "full": "b0811428721bd7c30df85fa7bb8f604c69bd4ee7c4b549a7c8ea88fbe1be9723",
+    "skel": "4b8699a7cf67d366178c81054ccc2012a944f9997447a75d6b2ed624e0c70c86"
+  },
+  "sub-agents": {
+    "full": "03b4927c518db3632b9c0c0c6e2655c985ea0c1bb374af4563b24ceb225dbcc2",
+    "skel": "ae39d1c677754671fb32e4b4188e55f7339ac66e5bdce03fc32eda22018ee21e"
+  },
+  "terminal-config": {
+    "full": "b0de0429756ae86344b84fa8983cb4ec2a6fff9253baf27a50a53da915a47459",
+    "skel": "944febf98b929f36b3c214c04520aa24e606110e11dcdc6331646e8500748b9c"
+  },
+  "third-party-integrations": {
+    "full": "b1a52b2f4b525d27ae2cb3aa083f47dd1f5a6432eef5551d74d7822a31de484f",
+    "skel": "f3d6a44feaed5e79a7cde3ed350042fb2272f878b5ec9fe3b82d69d67a41d013"
+  },
+  "tools-reference": {
+    "full": "7c3d4fe1196a44485ffdc6322a58755d956e5372bd507b11582ed3b5105c0b87",
+    "skel": "bff6c0b9d045f58e9629caa558796f3139a51413774c8c022eeb0a0ee2d4724c"
+  },
+  "troubleshoot-install": {
+    "full": "00ee610707c923d4014190aa678b73475c3cd442322d39d39d36843bbc63a84e",
+    "skel": "7ffec3abb686803215fe200e9a5d11372dcf8dbe23ab7b01baae28723fc0faa0"
+  },
+  "troubleshooting": {
+    "full": "f1426c4b36894db28ef285f7dc2c7654d7d33c1f89e77f93caeb5f13a41b681b",
+    "skel": "eb36e0942c8a8770867da032bdcc6bfd532263653cf5254cd2f07052ae46371e"
+  },
+  "ultraplan": {
+    "full": "331d77a6b615aeb7b31b37211ce9017b5ca4aa8b297996cf999493485511bc14",
+    "skel": "a707340f65ddca92f1121aab1a07f18fd253be3d2561479a1680199114793fcb"
+  },
+  "ultrareview": {
+    "full": "dac0e94064bfd048327a7abd9b3c63ea7194629056924347ce01187ec0ef8dc0",
+    "skel": "2d12a8cedec024720d4e45c45208a70be317cf6266313fd56fc3fc1d4cd07899"
+  },
+  "voice-dictation": {
+    "full": "35364a1aebd0263f97a623cf2415536681b50f30ae800e61565265b838ea6702",
+    "skel": "0695ddc49a33779cd7e6a78aa9fb2ed9b23d2a1df361dd18a67f42ddc50721b7"
+  },
+  "vs-code": {
+    "full": "1d91905b5cd808672c62748b5475682ede72b299d4cf64a0090fd1ecbfc89517",
+    "skel": "b4a7243f9252120665c62e927549b3e5b21fdca00a19080418898a301d9f1048"
+  },
+  "web-quickstart": {
+    "full": "501f7c7d800e9150167a17386e6cfcbd48e81fc8c700d9b5e6bda50614794035",
+    "skel": "1e0ff23e64e9f1de57ab2f6bdeefa2b8bcfc6b4443f84693bdb5813bb2b69ba9"
+  },
+  "whats-new/2026-w13": {
+    "full": "1f6b33d30fc2ba37f181750f871a769ba973868bd4c3b649f7c0b41856a91bc5",
+    "skel": "d39a8de6163002cf094435999d5cf01416c612e2135b137283981fac32ef99b3"
+  },
+  "whats-new/2026-w14": {
+    "full": "d2ba66788eb385a4c3ad9f8b0ead51b24d9ec4d631dc4855c00f8a21b2d972fb",
+    "skel": "c71f786008b4bdc7f20c63a6ee9fee89df992d71b253941bab569e94a08ec57e"
+  },
+  "whats-new/2026-w15": {
+    "full": "0b44122d315a9909407b83def62e4edc8247262565bb4d1c22add11e21283be9",
+    "skel": "0a7f2ff5e98046e889c844d590744aa6704b03776d5485c1c6341a9b94ba902b"
+  },
+  "whats-new/2026-w16": {
+    "full": "cd6cc611efc53cf7319f2bab020f13d733affe6a6b7a5c270a2f218289fa64dc",
+    "skel": "67e4972ea08bd52831214dfed070bb2bef1ebad1a0361fa26eb74491edf63206"
+  },
+  "whats-new/2026-w17": {
+    "full": "f578e85cf3fa449fd7c61e930970cd8fd70af9c2204d319b0c1a30daf99611df",
+    "skel": "89302f1ab32ac4f54357453557d56c2508a759eab7d55e4417511c0dfb461594"
+  },
+  "whats-new/2026-w18": {
+    "full": "a567c98c444a4e80c35d2090bf2cf756b1ce097c75cb57364d8ab5ddf155051e",
+    "skel": "3db09408ca8977d77a0bc20064b12f1b6582337bb5845d7853f6485de991ab13"
+  },
+  "whats-new/2026-w19": {
+    "full": "3d6247b5b48579fcd46e23c5286b90c390fd2e7c1f4b66aebb12578622a95e14",
+    "skel": "fa200e3a07848647d31aa58817b8872d2ba04ebcabc8bd532a4bfc7c8da26913"
+  },
+  "whats-new/2026-w20": {
+    "full": "22e8189f0d539e07f0c6dbf0dac1de0145d64211cd0465acea97d0183e922525",
+    "skel": "fe109429778b0d0807eb75b512b42d0e4f7bc8524b64ad806dcb426929668ba8"
+  },
+  "whats-new/2026-w21": {
+    "full": "e17d2c9c819da2cd57397894b79b7355f2b590be6b023c41f1fe322fa51b6d22",
+    "skel": "7568d2c21034b41e209fc87a3d27e7f2436daac2f4381f747a181aacbe15b22f"
+  },
+  "whats-new/2026-w22": {
+    "full": "17ec54c9ef14d0426d4a4375efe470ba0ecc9aaefad5582d9efe317c3c220687",
+    "skel": "dde5212701106db2144c6335e5878685d4f44d62ab8cc7ac41cd01e180dc96a0"
+  },
+  "whats-new/2026-w23": {
+    "full": "b018b3971c54c267f4b4623676eedb339e2728b9a4c413cd07a0428739110dc4",
+    "skel": "78864bde80e26dd7efd7d458186b8ef8bb0fd5f17cac864d4674cf8df8daf5c3"
+  },
+  "whats-new/2026-w24": {
+    "full": "770e40ecefed1e8ebb77426c3b8a6fd59227e6d59bf5c30f679feb5dd962cedd",
+    "skel": "c61246df5e83d11df9340f8946892d728630df6129ea1e91a2adcdac0cd472a8"
+  },
+  "whats-new/2026-w25": {
+    "full": "833f8d3b700c7618cce2202daf834614b956be2c30651edb8c102815e7dcbd08",
+    "skel": "cf16ea19556cd20e35f8584ca62ba2745fa46b0311742f0d37217e62cfa87b21"
+  },
+  "whats-new/2026-w26": {
+    "full": "3b2140a178f36250ee1a24643bdc12b83b4f1534e1a1f8a94d40556a4c7e0625",
+    "skel": "a4593a8e83b8dcbd6909ce0ac114006aaf36db427538bebae9b276de04bd8a58"
+  },
+  "whats-new/2026-w27": {
+    "full": "f6386207819b3af9e7bb379d3e5df84dabf7f87b90fe9a5fc58e91d5c2ed5fe2",
+    "skel": "d7a7c63abf7f778377630cdfe88324a2d138597622207f0cfc223b433c243d35"
+  },
+  "whats-new/2026-w28": {
+    "full": "d42c311bdf5932bcb49f8a765ada6d39073bfaa98d16fdf12807b7074463b83f",
+    "skel": "e63387e63b9ceadab88d8f42b0165ddcb07433a1299fce10dd9061950401573a"
+  },
+  "whats-new/2026-w29": {
+    "full": "275e9c88fadfa5cc0cb39665a4a5d89234c970295e0f4d0bc583e15e2ff9bb29",
+    "skel": "3dcd5c18ae8d07df7751f5996972624024a57e92e61934da522aefc6d85a0c2e"
+  },
+  "whats-new/2026-w30": {
+    "full": "df099e47a73428b58df52eea4515ce2cc5894b6090a769e0f172808906f33ba1",
+    "skel": "cfc22e9dd64027205c9f489e6ef10ce3efe485be01c537eaeed0a5c7479a1689"
+  },
+  "whats-new/2026-w32": {
+    "full": "f7f1e5a97f228bf821404093e534ceaa95b1263fcb486cde6dc3eec851a93eaa",
+    "skel": "8479968ab384fa31c57e1a25b244622240408a6864163304bd062f99ef2e4c77"
+  },
+  "whats-new/index": {
+    "full": "598220ee884ac6bd854b235f57e7b9bbd6bf0e41f478523d52d824306c7bb039",
+    "skel": "dae976081c32ae23421ccadfb235a7cabefe7ff90634c092e3ed44dc7a03bbe2"
+  },
+  "workflows": {
+    "full": "75130efe0d2514784e027fae2f1bf98d33f16863ea6c670e01c231a677fbf0d8",
+    "skel": "6e5fcea984260228bcd40c788159f17be30fc88d157831dccb9da7ecf4572300"
+  },
+  "worktrees": {
+    "full": "9becc26c155c210155d1e1797991a93a536bc47ccfeaa6b20f51d6f68f8d3f26",
+    "skel": "e8186c995f6f128730ceaeeb13d01903853fbaa27b8f1ee11c6efe960b915083"
+  },
+  "zero-data-retention": {
+    "full": "218ed0e3c97a0f8f6f17679d701f1d1e77d844b65ebd54aef0e1f7eb929aaf95",
+    "skel": "ec7a0abe2daeb6a6eb931fa45371794f803d8c9d2b9e26f9fe1495373e22b2bd"
+  }
 }

@@ -157,7 +157,7 @@ obsidian_sync/
 | 파일 | 용도 |
 |---|---|
 | `kb-lint.py` | 전 vault 기계 린트(frontmatter·날짜·위키링크·`type` enum·MOC 백링크). `--online`은 공식 llms.txt와 슬러그 비교, `--links`는 외부 URL 생존 점검(정보성), 거버넌스 메트릭(type 커버리지·모순·신선도) 집계 |
-| `kb-source-hashes.py` | 출처 원문 sha256을 추적해 **같은 슬러그 내 본문 변경**(슬러그 diff가 못 잡는) 감지. 변경 의심분을 review 큐에 적재만(노트 자동수정 X). kb-sync 흐름에서 호출 |
+| `kb-source-hashes.py` | 출처 원문을 추적해 **같은 슬러그 내 본문 변경**(슬러그 diff가 못 잡는) 감지. 해시 2층(`full`=원문 전체 / `skel`=헤딩+식별자 구조 지문)으로 **구조 변경과 프로즈 변경을 분리** — 큐에는 구조 변경만 적재(노트 자동수정 X). kb-sync 흐름에서 호출 |
 | `scrub-secrets.py` | 크리덴셜 탐지·마스킹 코어(GitHub PAT·AWS·OpenAI·Anthropic 등). ingest 시 1차 방어 |
 | `radar-collect.py` | claude-radar 수집 엔진(0-LLM, 결정론적). 10개 채널 → dedup → JSON |
 | `study-brief.py` | study-coach 아침 브리핑 엔진(0-LLM, 결정론적). `study-state.md` 읽어 요일별 다음 미완료 항목 **+ 항목 하위 학습 가이드(개념·자료·완료기준·막히면)** → `study-today.md`. 날짜 멱등(`--check`/`--dry-run`/`--force`/`--brief-only`). `--brief-only`는 브리핑만 쓰고 `last_brief_date`는 안 건드림 — cron의 LLM 리뷰 실패 시 fallback |

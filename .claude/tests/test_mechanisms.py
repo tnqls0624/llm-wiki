@@ -823,6 +823,46 @@ class TestSourceHashes(unittest.TestCase):
         ch, ad, rm = self.m.diff_hashes({"a": "1", "b": "2"}, {"a": "1", "b": "9", "c": "3"})
         self.assertEqual((ch, ad, rm), (["b"], ["c"], []), "변경(b)·신규(c)·사라짐(없음) 분류")
 
+    def test_skeleton_ignores_prose_and_link_rewrites(self):
+        # 계층화의 근거 계약: 프로즈 수정·링크 타깃 재작성은 구조 지문을 바꾸지 않아야 한다.
+        # 2026-08-22 측정 근거 — 이 문서 사이트는 매 실행 출처의 60~80%가 full 변경으로 잡혀
+        # 단일 층 검출기가 정보를 담지 못했다. skel 이 프로즈에 반응하면 계층화가 무의미해진다.
+        base = "# T\n\nprose about `settingsKey`.\n\n## A\n\nsee [s](/en/settings#foo).\n"
+        prose = "# T\n\ntotally reworded prose about `settingsKey`!\n\n## A\n\nsee [s](/en/settings-reference#foo).\n"
+        self.assertEqual(self.m.skeleton(base), self.m.skeleton(prose),
+                         "프로즈·링크 재작성에 skel 이 반응하면 계층화가 무의미해진다")
+
+    def test_skeleton_reacts_to_structure(self):
+        # positive control: 섹션 추가와 식별자 추가는 반드시 잡아야 한다(둘 다 놓치면 검출기가 죽는다).
+        base = "# T\n\nprose about `settingsKey`.\n\n## A\n"
+        self.assertNotEqual(self.m.skeleton(base), self.m.skeleton(base + "\n## B\n"),
+                            "섹션 추가는 구조 변경으로 잡혀야")
+        self.assertNotEqual(self.m.skeleton(base),
+                            self.m.skeleton(base.replace("`settingsKey`", "`settingsKey` and `newKey`")),
+                            "식별자 추가는 구조 변경으로 잡혀야")
+
+    def test_classify_changes_tiers(self):
+        S = lambda f, k: {"full": f, "skel": k}
+        st, pr, un = self.m.classify_changes(
+            {"a": S("1", "s"), "b": S("1", "s"), "c": "legacy-string"},
+            {"a": S("2", "t"), "b": S("2", "s"), "c": S("2", "u")},
+            ["a", "b", "c"])
+        self.assertEqual(st, ["a"], "skel 이 다르면 structural")
+        self.assertEqual(pr, ["b"], "full 만 다르면 prose")
+        self.assertEqual(un, ["c"], "구 포맷(문자열)은 unknown — structural 이라 단정하지 않는다")
+
+    def test_fetch_failure_is_not_reported_as_removed(self):
+        # 2026-08-22 버그: fetch 실패 항목이 diff 입력에서 빠져 매 실행 'removed'로 보고됐다
+        # (외부 블로그 URL 2건). 주석은 보존을 선언했지만 merged(쓰기 경로)에만 반영돼 있었다.
+        # removed 는 "어떤 노트도 더 이상 참조하지 않음"만 의미해야 한다.
+        old = {"blocked": {"full": "1", "skel": "s"}, "dropped": {"full": "9", "skel": "z"}}
+        fetched = {"ok": {"full": "2", "skel": "t"}}          # blocked=실패, dropped=노트에서 삭제
+        current = dict(fetched); current["blocked"] = old["blocked"]   # main() 의 보존 로직
+        ch, ad, rm = self.m.diff_hashes(old, current)
+        self.assertNotIn("blocked", rm, "fetch 실패는 removed 가 아니다")
+        self.assertNotIn("blocked", ch, "fetch 실패는 changed 도 아니다(이전 값 보존)")
+        self.assertEqual(rm, ["dropped"], "removed 는 실제로 참조가 끊긴 것만")
+
     def test_diff_hashes_removed(self):
         ch, ad, rm = self.m.diff_hashes({"x": "1"}, {})
         self.assertEqual((ch, ad, rm), ([], [], ["x"]))
