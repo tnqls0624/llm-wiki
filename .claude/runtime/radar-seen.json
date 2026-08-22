@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-08-21T09:17:28",
+ "updated": "2026-08-22T09:17:24",
  "seen": {
   "gh:Hao0321/ai-media-generator": "2026-06-08",
   "gh:wsbs20/claude-code-aso-skill": "2026-06-08",
@@ -1428,6 +1428,27 @@
   "gn:https://news.hada.io/topic?id=32684": "2026-08-21",
   "devto:4444575": "2026-08-21",
   "airel:vLLM:v0.28.0rc1": "2026-08-21",
-  "npm:@purposeinplay/payload-mcp": "2026-08-21"
+  "npm:@purposeinplay/payload-mcp": "2026-08-21",
+  "gh:crisandrews/claude-whatsapp": "2026-08-22",
+  "gh:jeonghwanko/mimi-seed-sdk": "2026-08-22",
+  "gh:Phoenixrr2113/codebase-graph": "2026-08-22",
+  "gn:https://news.hada.io/topic?id=32746": "2026-08-22",
+  "gn:https://news.hada.io/topic?id=32741": "2026-08-22",
+  "gn:https://news.hada.io/topic?id=32738": "2026-08-22",
+  "hn:49394794": "2026-08-22",
+  "hn:49393346": "2026-08-22",
+  "hn:49391464": "2026-08-22",
+  "hn:49386922": "2026-08-22",
+  "hn:49384106": "2026-08-22",
+  "hn:49383648": "2026-08-22",
+  "ghrel:v2.1.239": "2026-08-22",
+  "gn:https://news.hada.io/topic?id=32737": "2026-08-22",
+  "gn:https://news.hada.io/topic?id=32726": "2026-08-22",
+  "gn:https://news.hada.io/topic?id=32716": "2026-08-22",
+  "airel:vLLM:v0.28.0rc2": "2026-08-22",
+  "airel:Karpenter:v1.14.1": "2026-08-22",
+  "acl:August 20, 2026": "2026-08-22",
+  "devto:4447505": "2026-08-22",
+  "devto:4445853": "2026-08-22"
  }
 }
