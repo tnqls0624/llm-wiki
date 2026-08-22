@@ -15,8 +15,8 @@ Claude Code 지식 베이스 + 포터블 자동화 프레임워크를 담은 Obs
 |---|---|
 | 새/변경 command·agent·skill·rule·hook·script (`.claude/`) | ① `README.md` 인벤토리 표 ② `.claude/runtime/hot.md` Framework 줄 ③ **새 메커니즘이면** `.claude/tests/test_mechanisms.py`에 계약 테스트 추가 |
 | KB 노트 (`80 Tooling/` 등 토픽 디렉토리) | `vault-rules.md`의 **Update duty (3 steps)**: `updated` bump → MOC 반영 → `hot.md` 한 줄 |
-| **새 토픽 디렉토리 추가** (`<Topic>/`) | ① `<Topic>/<Topic>.md` MOC 생성(`type: moc`, `sources: []`) ② `README.md` 인벤토리 ③ `hot.md` Content 줄에 토픽+한 줄 설명 ④ `radar` 라우팅이 필요하면 `radar-collect.py` source-tag + `vault-rules.md` 라우팅 문장 ⑤ 인접 토픽으로의 cross-link 최소 1개(사일로 방지) |
-| frontmatter 스키마 (`type` 등 필드·enum) | `.claude/kb-required-fields.txt` + `.claude/kb-allowed-types.txt`(정본) → `vault-rules.md` Note format → `kb-lint.py`·`kb-lint-check.py` 검증 → `test_mechanisms.py` (모두 같은 변경 안에서) |
+| **새 토픽 디렉토리 추가** (`<Topic>/`) | ① `<Topic>/<Topic>.md` MOC 생성(파일명이 디렉토리명과 같아야 MOC로 인식된다 — `type: evergreen`, `source_urls: []`) ② `README.md` 인벤토리 ③ `hot.md` Content 줄에 토픽+한 줄 설명 ④ `radar` 라우팅이 필요하면 `radar-collect.py` source-tag + `vault-rules.md` 라우팅 문장 ⑤ 인접 토픽으로의 cross-link 최소 1개(사일로 방지) |
+| frontmatter 스키마 (`type` 등 필드·enum) | `.claude/kb-required-fields.txt` + `.claude/kb-allowed-types.txt`(정본) → `vault-rules.md` Note format → `kb-lint.py`·`kb-lint-check.py` 검증 → `kb-source-hashes.py`(출처 필드명) → `test_mechanisms.py` (모두 같은 변경 안에서). **현재 스키마는 메타프롬프트 §12 11필드**(2026-08-22 채택) — 서술을 여기에 복제하지 말고 정본 파일과 `vault-rules.md`를 가리킨다. |
 | cron·자동화 스케줄/동작 | `README.md` + `hot.md` (안전 불변식은 `automation-safety-rules.md`) |
 | `settings.json` (훅·권한 등록) | `hot.md` Framework 줄의 hooks·이벤트 수 |
 

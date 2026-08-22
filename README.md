@@ -2,7 +2,7 @@
 
 Obsidian vault 하나에 **두 가지**가 들어 있다:
 
-1. **토픽 디렉토리 — 지식 베이스(콘텐츠)**: 각 `<Topic>/`는 한국어 노트 + `<Topic>/<Topic>.md` MOC 허브. `80 Tooling/`(Claude Code 공식문서 29) · `30 AI Infrastructure/`(8) · `20 Architecture/`(10) · `80 Tooling/`(vault 자기진단). 노트 frontmatter는 4필드 `title`/`updated`/`sources`/`type`(닫힌 enum).
+1. **토픽 디렉토리 — 지식 베이스(콘텐츠)**: §11 번호 폴더 체계(2026-08-22 채택). 각 폴더는 한국어 노트 + `<폴더>/<폴더>.md` MOC 허브(파일명이 디렉토리명과 같아야 MOC로 인식). `80 Tooling/`(Claude Code 공식문서 29 + vault 자기진단 1) · `30 AI Infrastructure/`(8) · `20 Architecture/`(10). 나머지 §11 슬롯은 아직 비어 있다. 노트 frontmatter는 §12 11필드 — 정본은 `.claude/kb-required-fields.txt`, `type` 허용값은 `.claude/kb-allowed-types.txt`.
 2. **`.claude/` — 포터블 프레임워크 패키지(메커니즘)**: KB를 묻고·갱신·점검·박제하고, Claude 생태계를 매일 자동 수집하는 커스텀 커맨드·에이전트·스킬·룰·훅·cron. 다른 vault로 그대로 복사 가능.
 
 > 이 README는 **Claude Code 기본 기능이 아닌, 이 프로젝트가 추가한 것**의 사용법만 정리한다. 기본 CLI 사용법은 `80 Tooling/` KB를 참고한다.
@@ -15,19 +15,21 @@ Obsidian vault 하나에 **두 가지**가 들어 있다:
 
 ```
 obsidian_sync/
-├── Claude/                      # 콘텐츠: Claude Code 공식문서 KB (29 노트 + MOC)
-│   ├── 01 시작하기.md … 29 자체 호스팅 환경.md
-│   └── Claude.md                # MOC 허브 (학습 경로 + 전체 지도)
-├── 30 AI Infrastructure/                    # 콘텐츠: 백엔드→AI인프라 학습 KB (8 노트 + MOC)
-│   ├── 00 로드맵.md · 01 LLM 서빙 · 02 K8s GPU · 03 MLOps · 99 리소스
-│   └── AI-Infra.md              # MOC 허브
-├── 20 Architecture/                       # 콘텐츠: 인프라 CS·리눅스·커널 학습 KB (10 노트 + MOC)
-│   ├── 00 학습 로드맵 · 01 프로세스 · 02 메모리 · 03 파일시스템 · 04 네트워킹
+├── 20 Architecture/             # 콘텐츠: 인프라 CS·리눅스·커널 학습 KB (10 노트 + MOC)
+│   ├── 00 인프라 학습 로드맵 · 01 프로세스 · 02 메모리 · 03 파일시스템 · 04 네트워킹
 │   ├── 05 커널/syscall · 06 컨테이너 내부 · 07 커맨드 사전 · 08 트러블슈팅 · 99 리소스
-│   └── Infra.md                 # MOC 허브
-├── Meta/                        # 콘텐츠: vault 자기진단 (아키텍처·OKF 대비 + MOC)
-│   ├── 00 LLM Wiki 아키텍처와 OKF 자기진단.md
-│   └── Meta.md                  # MOC 허브
+│   └── 20 Architecture.md       # MOC 허브
+├── 30 AI Infrastructure/        # 콘텐츠: 백엔드→AI인프라 학습 KB (8 노트 + MOC)
+│   ├── 00 로드맵.md · 01 LLM 서빙 · 02 K8s GPU · 03 MLOps · 04 RAG · 10 핸즈온 · 11 캡스톤 · 99 리소스
+│   └── 30 AI Infrastructure.md  # MOC 허브
+├── 80 Tooling/                  # 콘텐츠: Claude Code 공식문서 KB 29 + vault 자기진단 1 (+ MOC)
+│   ├── 00 LLM Wiki 아키텍처와 OKF 자기진단.md   # 구 Meta/ 에서 흡수 (2026-08-22)
+│   ├── 01 시작하기.md … 29 자체 호스팅 환경.md
+│   └── 80 Tooling.md            # MOC 허브 (학습 경로 + 전체 지도 + vault 자기성찰)
+├── 00 Inbox/ · 10 Evergreen/ · 40 Backend/ · 50 Cloud and Kubernetes/
+├── 60 Security/ · 70 Career/ · 90 Archive/     # §11 빈 슬롯 (.gitkeep 만)
+├── Templates/                   # §13 영구 노트 템플릿 (kb-lint 제외)
+├── Attachments/                 # §11 첨부 슬롯 (blog 이미지는 blog/<slug>/ co-location 유지)
 ├── blog/                        # 블로그 초안 + 수집 이미지 (blog-collect.py, git 추적, kb-lint 제외)
 │   └── <slug>/                  # `N. 이름.png` + `<slug>.md` + SOURCES.md
 ├── .claude/                     # 메커니즘: 포터블 프레임워크
@@ -36,7 +38,7 @@ obsidian_sync/
 │   ├── skills/                  # 스킬 (kb-assistant · soobeen-check · blog-publish)
 │   ├── rules/                   # 자동 로드 룰 3개
 │   ├── hooks/                   # 이벤트 훅 4개
-│   ├── tests/                   # 계약 테스트 (177 케이스)
+│   ├── tests/                   # 계약 테스트 (183 케이스)
 │   ├── runtime/                 # 휘발성 상태 (hot.md, 큐, ledger, 로그)
 │   ├── kb-required-fields.txt · kb-allowed-types.txt   # frontmatter 스키마 정본
 │   ├── *.py / *.sh              # 스크립트 + cron 래퍼/설치기 + stray-guard.sh
@@ -89,7 +91,7 @@ obsidian_sync/
         → /claude-radar review → 항목 검토 → 동의한 것만 생성·박제
           · skill   → skill-creator
           · agent/command/rule → .claude/ 아래 파일 생성
-          · kb-ingest → /kb-ingest 로 KB 박제 (Claude/ 또는 30 AI Infrastructure/, 토픽에 따라)
+          · kb-ingest → /kb-ingest 로 KB 박제 (80 Tooling/ 또는 30 AI Infrastructure/, 토픽에 따라)
 ```
 
 ### 안전 설계

@@ -447,7 +447,7 @@ def main():
         if online_info.get("network_error"):
             lines.append("  네트워크/파싱 실패(무시): %s" % online_info["network_error"])
         else:
-            lines.append("  인덱스 슬러그 %d개 ↔ KB sources %d개"
+            lines.append("  인덱스 슬러그 %d개 ↔ KB source_urls %d개"
                          % (online_info.get("index_count", 0), online_info.get("kb_count", 0)))
             new = online_info["new_in_docs"]
             missing = online_info["missing_from_index"]
@@ -462,7 +462,7 @@ def main():
                 for s in missing:
                     lines.append("    - %s" % s)
             else:
-                lines.append("  KB sources 중 인덱스에서 사라진 슬러그 없음.")
+                lines.append("  KB source_urls 중 인덱스에서 사라진 슬러그 없음.")
 
     print("\n".join(lines))
     sys.exit(1 if has_problems else 0)

@@ -7,19 +7,19 @@ argument-hint: [--deep <노트번호>]
 
 인자: `$ARGUMENTS`
 
-KB(`80 Tooling/` 26개 노트 + `80 Tooling/80 Tooling.md` MOC)를 공식 문서 최신 상태와 맞춘다. 기준은 각 노트 frontmatter의 `sources` 슬러그 배열이다.
+KB(`80 Tooling/` 공식문서 노트 29개 + `80 Tooling/80 Tooling.md` MOC)를 공식 문서 최신 상태와 맞춘다. 기준은 각 노트 frontmatter의 `source_urls` 슬러그 배열이다.
 
 ## 1. 공식 문서 슬러그 수집
 - `curl -s https://code.claude.com/docs/llms.txt`로 인덱스를 가져온다. 거기서 문서 슬러그를 **전수 추출**한다(각 페이지 raw는 `https://code.claude.com/docs/en/<slug>.md`).
 
 ## 2. KB와 diff (슬러그 레벨)
-- `Claude/*.md` 모든 노트의 frontmatter `sources`를 읽어 **합집합**을 만든다(MOC는 빈 배열이므로 제외).
+- `80 Tooling/*.md` 모든 노트의 frontmatter `source_urls`를 읽어 **합집합**을 만든다(MOC는 빈 배열이므로 제외).
 - 공식 슬러그 집합과 비교한다:
-  - **신규 슬러그** = 공식에 있으나 KB `sources` 합집합에 없음.
-  - **사라진 슬러그** = KB `sources`에 있으나 공식 인덱스에 없음.
+  - **신규 슬러그** = 공식에 있으나 KB `source_urls` 합집합에 없음.
+  - **사라진 슬러그** = KB `source_urls`에 있으나 공식 인덱스에 없음.
 
 ## 3. 반영
-- **신규 슬러그**: `curl`로 raw markdown을 fetch → 주제를 판별 → 주제가 맞는 기존 노트에 새 섹션으로 추가하고 그 노트 `sources`에 슬러그를 더한다. 어느 기존 노트에도 맞지 않으면 **새 노트**를 만든다(파일명은 기존 번호를 이어서 `80 Tooling/NN 제목.md`, frontmatter 4필드 `title`/`updated`/`sources`/`type`(보통 `reference` — 허용값은 `.claude/kb-allowed-types.txt`), 본문 말미에 `## 원본 문서` URL 목록, 허브 링크 `허브: [[Claude]]`).
+- **신규 슬러그**: `curl`로 raw markdown을 fetch → 주제를 판별 → 주제가 맞는 기존 노트에 새 섹션으로 추가하고 그 노트 `source_urls`에 슬러그를 더한다. 어느 기존 노트에도 맞지 않으면 **새 노트**를 만든다(파일명은 기존 번호를 이어서 `80 Tooling/NN 제목.md`, frontmatter §12 11필드 — 정본 `.claude/kb-required-fields.txt`, `type`은 보통 `playbook`(허용값 `.claude/kb-allowed-types.txt`), 본문 말미에 `## 원본 문서` URL 목록, 허브 링크 `허브: [[80 Tooling]]`).
 - **사라진 슬러그**: 해당 슬러그를 다루던 노트 섹션에 `> [!warning] deprecated` 콜아웃으로 표시한다(내용은 삭제하지 말고 폐기 사실만 명시).
 - **whats-new 주간 페이지**(예: `whats-new-wNN`): 별도 노트를 만들지 말고 **`26 변경 이력과 용어집`에 누적**한다(주간 What's New 섹션에 이어 붙임).
 
@@ -39,7 +39,7 @@ KB(`80 Tooling/` 26개 노트 + `80 Tooling/80 Tooling.md` MOC)를 공식 문서
 
 ## 한계 (명시)
 - §1~3의 흐름은 **슬러그 레벨 diff만** 한다 — 기존 페이지의 *내용* 변경은 §6b의 해시 감지가 보완한다(노트 자동 수정은 안 하고 review 큐에만 적재).
-- `--deep <노트번호>` 인자를 받으면: 해당 노트의 `sources` 슬러그들을 모두 재fetch해 노트 본문과 대조하고, 달라진 부분을 갱신한다(내용 레벨 동기화). §6b가 큐에 올린 노트가 주 대상.
+- `--deep <노트번호>` 인자를 받으면: 해당 노트의 `source_urls` 슬러그들을 모두 재fetch해 노트 본문과 대조하고, 달라진 부분을 갱신한다(내용 레벨 동기화). §6b가 큐에 올린 노트가 주 대상.
 
 ## 7. 보고
 신규/사라진 슬러그 개수, 어떤 노트를 만들고 고쳤는지, (위임했다면) kb-updater 결과, lint 결과를 요약해 보고하라.

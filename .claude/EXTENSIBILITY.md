@@ -49,7 +49,7 @@
 3. 인벤토리 표의 scripts 항목과 `hot.md`를 갱신한다.
 
 ## path-scoped 규칙 추가 (특정 경로 편집 시에만 로드)
-- `.claude/rules/<name>.md` frontmatter에 `paths: ["<glob>"]`를 둔다. Claude Code 공식 기능. `paths`가 없으면 매 세션 무조건 로드, 있으면 매칭 파일 작업 시에만 로드된다. 예: KB 노트 전용 규칙이면 `paths: ["Claude/**/*.md"]`.
+- `.claude/rules/<name>.md` frontmatter에 `paths: ["<glob>"]`를 둔다. Claude Code 공식 기능. `paths`가 없으면 매 세션 무조건 로드, 있으면 매칭 파일 작업 시에만 로드된다. 예: KB 노트 전용 규칙이면 `paths: ["80 Tooling/**/*.md"]`.
 
 ## 다른 vault/기기로 이식
 1. `.claude/`를 통째로 복사한다(데이터인 토픽 디렉터리는 새 vault 것을 사용).

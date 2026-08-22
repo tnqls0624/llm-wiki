@@ -20,7 +20,7 @@ KB는 `80 Tooling/` = Claude Code 공식 문서를 종합한 한국어 노트 26
 
 ## 3. KB에 답이 없을 때 (공식 문서 fallback)
 - 어느 노트에도 답이 없으면 그 사실을 밝히고, **공식 문서를 직접 fetch**한다. 관련 슬러그를 추정해 `curl -s https://code.claude.com/docs/en/<slug>.md`로 raw markdown을 가져온다(슬러그 인덱스가 필요하면 `https://code.claude.com/docs/llms.txt`).
-- 가져온 내용으로 답하고, **그 내용을 주제가 맞는 기존 노트에 보강**한다(없으면 새 노트는 만들지 말고 `/kb-ingest`를 권한다 — 이 커맨드는 조회가 본분). 노트를 보강했으면 frontmatter `sources` 배열에 그 슬러그를 추가한다.
+- 가져온 내용으로 답하고, **그 내용을 주제가 맞는 기존 노트에 보강**한다(없으면 새 노트는 만들지 말고 `/kb-ingest`를 권한다 — 이 커맨드는 조회가 본분). 노트를 보강했으면 frontmatter `source_urls` 배열에 그 슬러그를 추가하고 `updated`를 오늘로 bump한다.
 - 노트를 실제로 바꿨다면 → **갱신 의무 3단계** (`.claude/rules/vault-rules.md`가 정본): `updated` bump · MOC 반영 · `hot.md` 영어 한 줄.
 
 ## 4. 저장 판단 (새 통찰일 때만)

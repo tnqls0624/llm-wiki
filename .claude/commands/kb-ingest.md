@@ -7,7 +7,7 @@ argument-hint: <URL 또는 파일 경로 또는 붙여넣은 텍스트>
 
 대상: `$ARGUMENTS`
 
-외부 자료를 KB에 통합한다. Claude Code 관련이면 `80 Tooling/`에, 다른 주제면 새 주제 디렉토리에 노트를 만든다. KB 노트 형식은 frontmatter 3필드(`title`/`updated`/`sources`) + 한국어 본문 + `[[위키링크]]` 교차참조 + 말미 `## 원본 문서` URL 목록을 따른다.
+외부 자료를 KB에 통합한다. Claude Code 관련이면 `80 Tooling/`에, 다른 주제면 새 주제 디렉토리에 노트를 만든다. KB 노트 형식은 frontmatter §12 11필드(정본 `.claude/kb-required-fields.txt`) + 한국어 본문 + `[[위키링크]]` 교차참조 + 말미 `## 원본 문서` URL 목록을 따른다.
 
 ## 1. 자료 수집
 - 대상이 URL이면 본문을 가져온다(`curl -s <url>` 우선, 막히면 WebFetch/WebSearch). 파일 경로면 Read. 붙여넣은 텍스트면 그대로 사용한다.
@@ -19,11 +19,11 @@ argument-hint: <URL 또는 파일 경로 또는 붙여넣은 텍스트>
 - 마스킹된 항목이 있으면 보고에 명시하고, 실 토큰이면 사용자에게 제공자(GitHub 등) 폐기·교체를 권한다. (`secret-scan` PostToolUse 훅이 2차 안전망)
 
 ## 3. 주제 판별 → 노트 위치 결정
-- **Claude Code 관련**(CLI·설정·훅·MCP·스킬·SDK 등): `80 Tooling/`의 주제가 맞는 기존 노트에 새 섹션으로 통합한다. 그 노트 frontmatter `sources`에 출처를 추가한다(공식 슬러그가 아니면 URL/식별자를 적는다). 적합한 노트가 없고 분량이 충분하면 번호를 이어서 새 `80 Tooling/NN 제목.md`를 만든다.
-- **다른 주제**: 새 주제 디렉토리를 만든다 — `<주제>/`(예: `Rust/`)에 노트 `<주제>/NN 제목.md`를 두고, `80 Tooling/` 패턴과 동일하게 **`<주제>/<주제>.md` MOC 허브**를 함께 만든다(MOC frontmatter `sources`는 빈 배열, 본문은 그 디렉토리 노트들의 카탈로그). 노트 본문은 `허브: [[<주제>]]`로 그 MOC를 가리킨다.
+- **Claude Code 관련**(CLI·설정·훅·MCP·스킬·SDK 등): `80 Tooling/`의 주제가 맞는 기존 노트에 새 섹션으로 통합한다. 그 노트 frontmatter `source_urls`에 출처를 추가한다(공식 슬러그가 아니면 URL/식별자를 적는다). 적합한 노트가 없고 분량이 충분하면 번호를 이어서 새 `80 Tooling/NN 제목.md`를 만든다.
+- **다른 주제**: 새 주제 디렉토리를 만든다 — `<주제>/`(예: `Rust/`)에 노트 `<주제>/NN 제목.md`를 두고, `80 Tooling/` 패턴과 동일하게 **`<주제>/<주제>.md` MOC 허브**를 함께 만든다(MOC는 **파일명이 디렉토리명과 같아야** 인식된다. frontmatter `source_urls`는 빈 배열, `type: evergreen`, 본문은 그 디렉토리 노트들의 카탈로그). 노트 본문은 `허브: [[<주제>]]`로 그 MOC를 가리킨다.
 
 ## 4. 노트 작성
-- frontmatter 3필드 채우기: `title`, `updated`(오늘), `sources`(출처 슬러그/URL 배열).
+- frontmatter 11필드 채우기: 정본은 `.claude/kb-required-fields.txt`, `type` 허용값은 `.claude/kb-allowed-types.txt`. `source_urls`=출처 슬러그/URL 배열, `created`=`updated`=오늘, `confidentiality`=회사 정보 없으면 `public`, `notion_url`=대응 페이지 없으면 `""`.
 - 본문은 한국어 사용법/요약 레퍼런스. 관련 KB 노트로 `[[위키링크]]` 교차참조를 건다(파일명만). 기존 내용과 모순되면 삭제하지 말고 `> [!warning] 모순` 콜아웃으로 표시.
 - 말미에 `## 원본 문서` 섹션으로 출처 URL을 적는다.
 

@@ -9,18 +9,27 @@ Auto-loaded every session. Compact, imperative rule set for the AI hot path. The
 - Keep the split when adding files: mechanism → `.claude/`; knowledge → a topic dir; blog output → `blog/`. Adding a new topic → follow the checklist in root `CLAUDE.md`'s change-sync table.
 
 ## Note format
-Frontmatter, four fields (canonical list in `.claude/kb-required-fields.txt`):
-- `title` — note title.
-- `updated` — `YYYY-MM-DD`. The note's last **content** revision (a pure schema migration like adding `type` does not bump it — freshness signal stays meaningful).
-- `sources` — array of official-doc slugs/URLs the note synthesizes (MOC hubs use `[]`). Block-style YAML lists (`sources:` then `  - …`) and inline (`[a, b]`) both parse — kb-lint reads both.
-- `type` — closed enum, canonical values in `.claude/kb-allowed-types.txt`: `reference` (look-up facts/API/options) · `explanation` (concept/why) · `how-to` (goal-oriented procedure) · `tutorial` (learning path/roadmap) · `moc` (Map of Content hub; exempt from `sources`). This is OKF v0.1's one required field + Diátaxis's axis; kb-lint blocks any value outside the enum. Don't split a note just to fit one type — heading hierarchy carries atomic sub-concepts (a deliberately-synthesized reference note may span many doc pages by design).
+Frontmatter, **11 fields** — the metaprompt's §12 schema, adopted whole by user decision 2026-08-22 (canonical list in `.claude/kb-required-fields.txt`; do not re-spec it here or in commands):
+- `id` — stable identifier, `<folder-prefix>-<nn>` (e.g. `tooling-07`, `arch-00`, `aiinfra-04`, `meta-00`). Survives file moves; nothing resolves links by it (wikilinks resolve by basename), so treat it as a label, not a key.
+- `title` — note title. Not required to match the filename; MOC hubs keep their descriptive title (e.g. `80 Tooling/80 Tooling.md` is titled "Claude Code 사용법").
+- `type` — closed enum, canonical values in `.claude/kb-allowed-types.txt`: `evergreen` · `concept` · `architecture` · `comparison` · `playbook` · `career`. kb-lint blocks any value outside it. Migration mapping from the retired enum: reference/how-to→`playbook`, explanation→`concept`, tutorial→`career`, moc→`evergreen`. `architecture`/`comparison` are unused slots for new notes.
+- `status` — `seed` | `growing` | `evergreen` | `deprecated`. Maturity. Currently `evergreen` for the finished official-docs KB, `growing` for the two learning KBs.
+- `created` — `YYYY-MM-DD`, first commit date. Set from git history at migration time, not invented.
+- `updated` — `YYYY-MM-DD`. The note's last **content** revision (a pure schema migration does not bump it — freshness signal stays meaningful).
+- `area` — the owning Area (`개발자 학습` · `AI 인프라 역량` · …). Mirrors the Notion Area vocabulary.
+- `tags` — inline list, max 5. Currently one machine-derived topic tag per note; human curation is still outstanding.
+- `source_urls` — array of official-doc slugs/URLs the note synthesizes (MOC hubs use `[]`). **Renamed from `sources`** in the §12 adoption. Block-style YAML lists (`source_urls:` then `  - …`) and inline (`[a, b]`) both parse. Caveat inherited from the rename: for `80 Tooling/` notes the values are official-doc **slugs**, not URLs, because `--online` slug-diff and `kb-source-hashes.py` compare them against `llms.txt`.
+- `notion_url` — the counterpart Notion page. Currently `""` on every note: no per-note mapping exists.
+- `confidentiality` — `personal` | `public` | `company-sensitive`. **Label only — there is no mechanical gate**, and this vault auto-pushes to a public remote, so the label must not be treated as protection (see automation-safety: a prompt-level instruction is not enforcement).
+
+**MOC detection is path-based**, not type-based: a note is a MOC iff its filename equals its parent directory name. The §12 enum has no `moc` value, so the basis moved to the path — the same basis the MOC-backlink check already used, which collapses two rules into one.
 
 Body is Korean prose. Commands, flags, config keys, env vars, and code stay **English** (verbatim from the docs). Use `[[wikilinks]]` **only to notes that already exist**. End each note with a `## 원본 문서` section listing the source URLs.
 
 ## Update duty (CANONICAL — 3 steps)
 Single source of truth for the update obligation. Commands and agents **reference this; they don't re-spec it.** Any action that creates or changes a note must do all three, in order:
 1. Bump `updated` in the note's frontmatter.
-2. Reflect the change in that directory's MOC (`80 Tooling/80 Tooling.md` for the KB) — a new note gets a link + one-line summary.
+2. Reflect the change in that directory's MOC (`<dir>/<dir>.md` — e.g. `80 Tooling/80 Tooling.md`) — a new note gets a link + one-line summary.
 3. Add one **English** line to `.claude/runtime/hot.md`; keep it rolling at ~500 words.
 
 (The old four-step duty that touched `index.md` / `log.md` is retired — do not reference it.)
@@ -28,11 +37,11 @@ Single source of truth for the update obligation. Commands and agents **referenc
 ## Navigation order (context layering, multi-topic)
 L1 `.claude/runtime/hot.md` (auto-injected by `session-context`) → **L1.5 topic router** (hot.md's `Content` line already lists every topic + one-line description — use it to pick which topic the query falls under) → L2 that topic's `<Topic>/<Topic>.md` MOC → L3 individual notes. Read the cheapest layer that answers the question first. (Do not hardcode `80 Tooling/80 Tooling.md` — there are multiple topics; route via L1.5.)
 
-## macOS caveat — keep the MOC lean
-On case-insensitive APFS, `80 Tooling/80 Tooling.md` collides with the `CLAUDE.md` memory filename, so it is **auto-injected as context** whenever you work under `80 Tooling/`. Keep the MOC hub lean — it is paid for on every such session.
+## macOS caveat — resolved 2026-08-22 (keep the MOC lean anyway)
+The old `Claude/Claude.md` collided with the `CLAUDE.md` memory filename on case-insensitive APFS, so it was auto-injected as context on every session touching that directory. The §11 rename to `80 Tooling/80 Tooling.md` **removed that collision** as a side effect — no topic MOC shares a name with `CLAUDE.md` now. Keep MOC hubs lean regardless: they are the L2 layer every navigation pays for.
 
 ## Maintenance (lint)
-- Machine lint: `python3 .claude/kb-lint.py` — checks frontmatter fields, date format, and `[[wikilink]]` targets across the vault. Add `--online` to diff the `sources` slugs against the official `llms.txt` index.
+- Machine lint: `python3 .claude/kb-lint.py` — checks frontmatter fields, date format, and `[[wikilink]]` targets across the vault. Add `--online` to diff the `source_urls` slugs against the official `llms.txt` index.
 - The `kb-lint-check` PostToolUse hook gives the same checks per-edit, on a single file, as you save it.
 
 ## claude-radar (daily ecosystem radar)
@@ -52,5 +61,7 @@ Never delete conflicting claims — mark them:
 The vault's strength is partly in what it deliberately does **not** build. At ~45 notes with a hand-curated MOC + wikilink graph (already a GraphRAG community-summary equivalent), the cold-start cost of these exceeds their value. Recording the decision here stops it being re-litigated every `/claude-radar review`.
 - **Embeddings / vector search / RAG index** — MOC + `[[wikilink]]` navigation covers global/relational queries at zero token cost. Reconsider only if "find a concept by meaning when its name is unknown" queries become frequent AND the vault grows past ~100 notes; then add a local opt-in `SQLite FTS5 (BM25) + multilingual ONNX embedding + RRF` as an **L2.5 fallback** (MOC-first stays primary), read-only, never per-query.
 - **RDF / JSON-LD / OWL ontology** — the semantic-web lesson is that the operational cost (hand annotation, ontology consensus) sinks it. Markdown + frontmatter + wikilink is the right altitude.
-- **Typed relation frontmatter** (`related` / `up` / `part-of`) — body `[[wikilink]]` already carries relations (Claude/ averages ~37/note); a relation field would be double-entry that kb-lint must then dangling-check too. `type` is the only frontmatter axis we add.
+- **Typed relation frontmatter** (`related` / `up` / `part-of`) — still a non-goal. Body `[[wikilink]]` already carries relations (`80 Tooling/` averages ~44/note); a relation field would be double-entry that kb-lint must then dangling-check too.
+  > [!warning] 결정 변경 (2026-08-22)
+  > "`type` is the only frontmatter axis we add" no longer holds. The user adopted the metaprompt's §12 schema whole, which added `id`/`status`/`created`/`area`/`tags`/`notion_url`/`confidentiality`. The concerns recorded before that decision — `area`/`tags` duplicate the directory axis, `notion_url` is the typed-relation pattern pointing outward, `confidentiality` is a label with no mechanical gate — were reported and the decision was reaffirmed. They are open debts, not settled design. Typed *internal* relation fields remain rejected.
 - **OKF export script / AGENTS.md** — deferred until external publishing or other-agent (Cursor/Codex) interop is a real need. See `.claude/EXTENSIBILITY.md`. The vault stays source-of-truth; wikilink→standard-md-link is an export-boundary concern, not an internal conversion.
