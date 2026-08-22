@@ -2,7 +2,7 @@
 
 Obsidian vault 하나에 **두 가지**가 들어 있다:
 
-1. **토픽 디렉토리 — 지식 베이스(콘텐츠)**: 각 `<Topic>/`는 한국어 노트 + `<Topic>/<Topic>.md` MOC 허브. `Claude/`(Claude Code 공식문서 29) · `AI-Infra/`(6) · `Infra/`(10) · `Meta/`(vault 자기진단). 노트 frontmatter는 4필드 `title`/`updated`/`sources`/`type`(닫힌 enum).
+1. **토픽 디렉토리 — 지식 베이스(콘텐츠)**: 각 `<Topic>/`는 한국어 노트 + `<Topic>/<Topic>.md` MOC 허브. `Claude/`(Claude Code 공식문서 29) · `AI-Infra/`(8) · `Infra/`(10) · `Meta/`(vault 자기진단). 노트 frontmatter는 4필드 `title`/`updated`/`sources`/`type`(닫힌 enum).
 2. **`.claude/` — 포터블 프레임워크 패키지(메커니즘)**: KB를 묻고·갱신·점검·박제하고, Claude 생태계를 매일 자동 수집하는 커스텀 커맨드·에이전트·스킬·룰·훅·cron. 다른 vault로 그대로 복사 가능.
 
 > 이 README는 **Claude Code 기본 기능이 아닌, 이 프로젝트가 추가한 것**의 사용법만 정리한다. 기본 CLI 사용법은 `Claude/` KB를 참고한다.
@@ -18,7 +18,7 @@ obsidian_sync/
 ├── Claude/                      # 콘텐츠: Claude Code 공식문서 KB (29 노트 + MOC)
 │   ├── 01 시작하기.md … 29 자체 호스팅 환경.md
 │   └── Claude.md                # MOC 허브 (학습 경로 + 전체 지도)
-├── AI-Infra/                    # 콘텐츠: 백엔드→AI인프라 학습 KB (6 노트 + MOC)
+├── AI-Infra/                    # 콘텐츠: 백엔드→AI인프라 학습 KB (8 노트 + MOC)
 │   ├── 00 로드맵.md · 01 LLM 서빙 · 02 K8s GPU · 03 MLOps · 99 리소스
 │   └── AI-Infra.md              # MOC 허브
 ├── Infra/                       # 콘텐츠: 인프라 CS·리눅스·커널 학습 KB (10 노트 + MOC)

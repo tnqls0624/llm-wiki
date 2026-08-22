@@ -3,7 +3,7 @@
 Auto-loaded every session. Compact, imperative rule set for the AI hot path. The root `CLAUDE.md` (human-owned narrative rationale, Korean) holds the top-level **change-sync duty** (what-changed → what-docs-to-update) and **wins on conflict** — flag the mismatch instead of silently diverging.
 
 ## Structure (mechanism vs content)
-- Content lives in **topic directories**, each `<Topic>/` holding notes + a `<Topic>/<Topic>.md` MOC hub. Current topics: `Claude/` (Claude Code official-docs KB, 26 notes) · `AI-Infra/` (backend→AI-infra learning, 6 notes) · `Infra/` (CS/Linux/kernel fundamentals, 10 notes) · `Meta/` (vault's own architecture self-diagnosis). This is **content (data)**.
+- Content lives in **topic directories**, each `<Topic>/` holding notes + a `<Topic>/<Topic>.md` MOC hub. Current topics: `Claude/` (Claude Code official-docs KB, 29 notes) · `AI-Infra/` (backend→AI-infra learning, 8 notes) · `Infra/` (CS/Linux/kernel fundamentals, 10 notes) · `Meta/` (vault's own architecture self-diagnosis). This is **content (data)**.
 - `.claude/` — the **portable framework package** (rules, runtime, hooks, scripts, tests, commands, agents, skills). Copyable to another vault as-is.
 - `blog/` — blog drafts + their collected images (`blog/<slug>/` = `<slug>.md` draft + `N. name.png` numbered images + `SOURCES.md` provenance, produced by soobeen-voice + `blog-collect.py`). Git-tracked but **neither KB content nor mechanism** — a publishing workspace, so kb-lint excludes it (like `Projects/`).
 - Keep the split when adding files: mechanism → `.claude/`; knowledge → a topic dir; blog output → `blog/`. Adding a new topic → follow the checklist in root `CLAUDE.md`'s change-sync table.

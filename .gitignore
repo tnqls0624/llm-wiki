@@ -55,3 +55,9 @@ inbox/_capture-candidates.md
 
 # Smart Composer vector DB cache (generated, machine-local)
 .smtcmp_vector_db*
+
+# 플러그인 산출물 — 공개 원격 자동 push 대상에서 제외 (2026-08-22)
+# Smart Composer 채팅 DB — LLM 대화 원문. 공개 원격 자동 게시 차단
+.smtcmp_json_db/
+# make-md 플러그인 잔재(빈 디렉토리). 추적/ignore 양쪽에 없어 git add -A 유출 경로였음
+Tags/

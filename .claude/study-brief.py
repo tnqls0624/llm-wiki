@@ -56,7 +56,9 @@ def resolve_repo_path(meta):
                     path = line.split("=", 1)[1].strip()
     except FileNotFoundError:
         pass
-    return os.path.expanduser(path)
+    # 표시 전용이므로 expanduser 하지 않는다 — study-today.md는 git 추적되어
+    # 공개 원격으로 push되므로 절대경로가 머신 사용자명을 노출한다.
+    return path
 
 
 def next_item(text, want_tag):

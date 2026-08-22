@@ -948,6 +948,16 @@ class TestStudyBrief(unittest.TestCase):
         self.assertTrue("첫 평일 항목" in body or "첫 주말 항목" in body,
                         "미완료 항목이 브리핑에 나와야")
 
+    def test_today_keeps_home_relative_repo_path(self):
+        # 계약: study-today.md는 git 추적 + 공개 원격 push 대상이므로 절대 홈 경로를
+        # 굽지 않는다(머신 사용자명 노출). 2026-08-22에 /Users/<회사Mac> 노출로 회귀했던 지점.
+        d = self._vault(self.STATE_FIXTURE)
+        self._run(d, "--force")
+        body = _read(self._today(d))
+        self.assertIn("~/ai-infra-lab", body, "positive control: repo_path가 ~ 형태로 나와야")
+        self.assertNotIn("/Users/", body, "절대 홈 경로가 브리핑에 새면 안 됨")
+        self.assertNotIn(os.path.expanduser("~"), body, "$HOME 확장 경로가 새면 안 됨")
+
     def test_learning_guide_included(self):
         # 항목 바로 아래 들여쓴 가이드 불릿(개념·완료·막히면)이 그날 브리핑에 함께 출력돼야.
         d = self._vault(self.STATE_FIXTURE)
