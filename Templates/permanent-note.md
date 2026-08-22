@@ -8,7 +8,7 @@ type: evergreen | concept | architecture | comparison | playbook | career
 status: seed | growing | evergreen | deprecated
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
-area: 개발자 학습 | AI 인프라 역량 | 커리어 전환 | ATON 업무
+area: 개발자 학습 | AI 인프라 역량 | 커리어 전환 | <회사> 업무   # 회사명 리터럴은 쓰지 않는다(공개 원격)
 tags: [<최대 5개>]
 source_urls: []
 notion_url: ""
