@@ -27,7 +27,6 @@ obsidian_sync/
 │   ├── 01 시작하기.md … 29 자체 호스팅 환경.md
 │   └── 80 Tooling.md            # MOC 허브 (학습 경로 + 전체 지도 + vault 자기성찰)
 ├── Templates/                   # §13 영구 노트 템플릿 (kb-lint 제외)
-├── Attachments/                 # §11 첨부 슬롯 (blog 이미지는 blog/<slug>/ co-location 유지)
 ├── blog/                        # 블로그 초안 + 수집 이미지 (blog-collect.py, git 추적, kb-lint 제외)
 │   └── <slug>/                  # `N. 이름.png` + `<slug>.md` + SOURCES.md
 ├── .claude/                     # 메커니즘: 포터블 프레임워크

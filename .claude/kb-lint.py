@@ -33,10 +33,11 @@ LLMS_TXT_URL = "https://code.claude.com/docs/llms.txt"
 FALLBACK_REQUIRED = ["id", "title", "type", "status", "created", "updated",
                      "area", "tags", "source_urls", "notion_url", "confidentiality"]
 FALLBACK_TYPES = ["evergreen", "concept", "architecture", "comparison", "playbook", "career"]
-# Templates/·Attachments/ 는 §11 폴더지만 KB 노트가 아니다(템플릿·첨부).
-# `00 Inbox`는 2026-08-23에 폴더 자체를 삭제했으므로 제외 항목도 함께 제거했다(죽은 설정 금지).
+# Templates/ 는 KB 노트가 아니라 노트 생성용 템플릿이라 제외한다.
+# `00 Inbox`·`Attachments`는 2026-08-23에 폴더 자체를 삭제했으므로 제외 항목도 함께 제거했다
+# (죽은 설정 금지). 첨부는 `blog/<slug>/` co-location이 실제 관례이고 blog/ 는 따로 제외된다.
 EXCLUDE_DIR_NAMES = {".claude", ".codex", ".obsidian", ".git", ".agents", ".trash",
-                     "Templates", "Attachments",
+                     "Templates",
                      "Projects", "blog"}  # Projects/=사업 워크스페이스, blog/=블로그 초안+수집 이미지(SOURCES.md 등) — 둘 다 KB 콘텐츠 아님(hot.md 계약)
 MIN_BODY_CHARS = 50
 AGE_WARN_DAYS = 90  # updated가 이보다 오래되면 stale 후보(정보성 — exit code 미반영)
@@ -402,6 +403,7 @@ def main():
                 "conflicts": gov["conflicts"],
                 "stale": [{"note": r, "age_days": a} for r, a in gov["stale"]],
                 "age_threshold_days": gov["age_threshold_days"],
+                "age_threshold_days_growing": gov["age_threshold_days_growing"],
             },
         }
         if online_info is not None:
@@ -430,9 +432,10 @@ def main():
     # 거버넌스 메트릭(정보성, exit code 미반영) — hot.md 한 줄 보고용 한 줄 요약 포함.
     lines.append("")
     lines.append("── 거버넌스 (정보성) ──")
-    lines.append("  type 보유 %d/%d · 모순 콜아웃 %d개 · 신선도(growing>%dd·기타>90d) %d개"
+    lines.append("  type 보유 %d/%d · 모순 콜아웃 %d개 · 신선도(growing>%dd·그외>%dd) %d개"
                  % (gov["with_type"], gov["total"], len(gov["conflicts"]),
-                    gov["age_threshold_days"], len(gov["stale"])))
+                    gov["age_threshold_days_growing"], gov["age_threshold_days"],
+                    len(gov["stale"])))
     if gov["stale"]:
         lines.append("  stale 후보(updated 오래된 순):")
         for rel, age in gov["stale"][:10]:

@@ -1482,6 +1482,20 @@ class TestUnattendedOutputGuards(unittest.TestCase):
                          f"코어 부재 시 조용히 exit 0이면 스캐너가 내려간 걸 알 수 없다: rc={pr.returncode}")
         self.assertIn("secret-scan", pr.stderr, f"무력화 사실이 stderr로 표면화돼야: {pr.stderr!r}")
 
+    def test_kb_lint_json_exposes_both_thresholds(self):
+        # JSON 조립부가 키를 명시 열거하므로, 임계값을 추가해도 여기 빠지면 --json 소비자는
+        # 낡은 값만 본다(2026-08-23에 실제로 그렇게 빠졌다). 텍스트/JSON 두 경로를 함께 고정.
+        txt = _read(os.path.join(CLAUDE, "kb-lint.py"))
+        self.assertIn('"age_threshold_days_growing": gov["age_threshold_days_growing"]', txt,
+                      "--json governance 에 growing 임계값이 실려야 한다")
+        # 실동작: 두 키가 서로 다른 값으로 나와야(같으면 status 분기가 죽은 것)
+        pr = subprocess.run(["python3", os.path.join(CLAUDE, "kb-lint.py"), "--json"],
+                            cwd=REPO, capture_output=True, text=True)
+        g = json.loads(pr.stdout)["governance"]
+        self.assertIn("age_threshold_days_growing", g)
+        self.assertLess(g["age_threshold_days_growing"], g["age_threshold_days"],
+                        "growing 임계값이 기본보다 짧지 않으면 조기 표면화가 무의미하다")
+
     def test_kb_lint_surfaces_growing_notes_sooner(self):
         # 학습 중 노트가 90일 임계값에 안 걸려 방치되던 문제 → status별 임계값.
         txt = _read(os.path.join(CLAUDE, "kb-lint.py"))
