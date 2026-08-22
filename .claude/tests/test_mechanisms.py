@@ -1436,5 +1436,59 @@ class TestSoobeenPersona(unittest.TestCase):
 
 
 
+# ── 무인 런 침묵 실패 가드 (2026-08-23) ────────────────────────────────
+class TestUnattendedOutputGuards(unittest.TestCase):
+    """근거: claude-radar collect가 26일간 exit=0으로 성공 보고하면서 유일한 산출물
+    (radar-queue.md)을 한 번도 쓰지 못했다 — harness가 그 경로를 'sensitive file'로
+    분류해 무인 런의 Edit/Write를 거부했고, seen 원장만 계속 자랐다. 그때까지 이 층
+    (cron 래퍼·settings.json)에 대한 테스트 참조가 0건이라 아무도 못 잡았다."""
+
+    def test_radar_wrapper_detects_missing_queue_write(self):
+        txt = _read(os.path.join(CLAUDE, "claude-radar-cron.sh"))
+        self.assertIn("radar-queue.md", txt, "래퍼가 산출물 경로를 알아야 가드가 성립")
+        self.assertIn("radar-seen.json", txt, "실패 서명은 'seen은 늘고 큐는 그대로'이므로 원장도 봐야 한다")
+        self.assertRegex(txt, r'SEEN_AFTER"?\s*-gt\s*"?\$SEEN_BEFORE',
+                         "seen 증가 비교가 없으면 신규 0건과 적재 실패를 구분할 수 없다")
+        self.assertRegex(txt, r"\brc=1\b", "산출물 미생성 시 rc를 실패로 바꿔야 한다")
+        # positive control: 스탬프 갱신이 rc에 걸려 있어야 rc=1이 재시도를 유발한다
+        self.assertRegex(txt, r'\[\s*"\$rc"\s*-eq\s*0\s*\].*STAMP',
+                         "스탬프 갱신이 rc 조건부가 아니면 실패해도 다음 슬롯에서 재시도되지 않는다")
+
+    def test_settings_registers_every_hook_script(self):
+        # 훅 스크립트가 늘었는데 settings.json 등록을 빼먹으면 그 훅은 조용히 죽는다.
+        import json as _json
+        cfg = _json.loads(_read(os.path.join(CLAUDE, "settings.json")))
+        registered = _json.dumps(cfg.get("hooks", {}))
+        scripts = [f for f in os.listdir(HOOKS) if f.endswith(".py")]
+        self.assertTrue(scripts, "훅 스크립트가 0개면 이 가드가 죽은 것(positive control)")
+        for sc in scripts:
+            self.assertIn(sc, registered, f"{sc}: hooks/에 있으나 settings.json 미등록 → 실행되지 않는다")
+
+    def test_secret_scan_is_loud_when_core_missing(self):
+        # 코어가 없으면 '깨끗한 스캔'과 '내려간 스캐너'가 구분돼야 한다(automation-safety V축).
+        d = tempfile.mkdtemp(prefix="scanfail_")
+        self.addCleanup(shutil.rmtree, d, ignore_errors=True)
+        os.makedirs(os.path.join(d, ".claude", "hooks"), exist_ok=True)
+        shutil.copy(os.path.join(HOOKS, "secret-scan.py"),
+                    os.path.join(d, ".claude", "hooks", "secret-scan.py"))
+        # scrub-secrets.py 는 일부러 복사하지 않는다 → 코어 로드 실패 경로
+        fp = os.path.join(d, "note.md")
+        _write(fp, "본문 내용")
+        env = dict(os.environ); env["CLAUDE_PROJECT_DIR"] = d
+        pr = subprocess.run(["python3", os.path.join(d, ".claude", "hooks", "secret-scan.py")],
+                            input=json.dumps({"tool_input": {"file_path": fp}}),
+                            text=True, capture_output=True, env=env, cwd=d)
+        self.assertEqual(pr.returncode, 2,
+                         f"코어 부재 시 조용히 exit 0이면 스캐너가 내려간 걸 알 수 없다: rc={pr.returncode}")
+        self.assertIn("secret-scan", pr.stderr, f"무력화 사실이 stderr로 표면화돼야: {pr.stderr!r}")
+
+    def test_kb_lint_surfaces_growing_notes_sooner(self):
+        # 학습 중 노트가 90일 임계값에 안 걸려 방치되던 문제 → status별 임계값.
+        txt = _read(os.path.join(CLAUDE, "kb-lint.py"))
+        self.assertIn("AGE_WARN_DAYS_GROWING", txt, "status별 신선도 임계값 상수 필요")
+        self.assertRegex(txt, r'AGE_WARN_DAYS_GROWING\s*if\s*m\.get\("status"\)\s*==\s*"growing"',
+                         "growing 노트에 더 짧은 임계값이 실제로 적용돼야")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

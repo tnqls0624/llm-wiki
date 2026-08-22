@@ -39,6 +39,10 @@ EXCLUDE_DIR_NAMES = {".claude", ".codex", ".obsidian", ".git", ".agents", ".tras
                      "Projects", "blog"}  # Projects/=사업 워크스페이스, blog/=블로그 초안+수집 이미지(SOURCES.md 등) — 둘 다 KB 콘텐츠 아님(hot.md 계약)
 MIN_BODY_CHARS = 50
 AGE_WARN_DAYS = 90  # updated가 이보다 오래되면 stale 후보(정보성 — exit code 미반영)
+# 학습 중 노트는 더 빨리 표면화한다(2026-08-23). 실측 근거: 49노트 중 32개가 생성 후
+# 한 번도 수정되지 않았고, 수정된 20개는 전부 `80 Tooling/`(= kb-sync cron이 미는 곳)이다.
+# 즉 사람이 다시 여는 노트가 학습 폴더엔 없다. 90일 임계값은 최고(最古)가 77일이라 아무도 안 걸렸다.
+AGE_WARN_DAYS_GROWING = 45
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
@@ -182,7 +186,7 @@ def lint_note(path, root, required, page_names, allowed_types):
     """단일 노트 검사 → (issues, meta).
     issues = 치명적 문제(exit code 반영). meta = 정보성 집계용 dict(updated/is_moc/has_conflict 등)."""
     issues = []
-    meta = {"updated": None, "is_moc": False, "has_conflict": False, "has_type": False}
+    meta = {"updated": None, "is_moc": False, "has_conflict": False, "has_type": False, "status": None}
     try:
         raw = open(path, encoding="utf-8").read()
     except Exception as e:
@@ -204,6 +208,7 @@ def lint_note(path, root, required, page_names, allowed_types):
     meta["is_moc"] = is_moc
     meta["has_type"] = "type" in fm
     meta["updated"] = fm.get("updated")
+    meta["status"] = fm.get("status")
     if block is None:
         issues.append("프론트매터(---) 블록 없음")
     else:
@@ -338,7 +343,8 @@ def compute_governance(metas, today):
             age = (today - datetime.date.fromisoformat(str(u))).days
         except ValueError:
             continue
-        if age > AGE_WARN_DAYS:
+        limit = AGE_WARN_DAYS_GROWING if m.get("status") == "growing" else AGE_WARN_DAYS
+        if age > limit:
             stale.append((rel, age))
     stale.sort(key=lambda x: -x[1])
     return {
@@ -347,6 +353,7 @@ def compute_governance(metas, today):
         "conflicts": sorted(rel for rel, m in metas.items() if m.get("has_conflict")),
         "stale": stale,
         "age_threshold_days": AGE_WARN_DAYS,
+        "age_threshold_days_growing": AGE_WARN_DAYS_GROWING,
     }
 
 
@@ -422,7 +429,7 @@ def main():
     # 거버넌스 메트릭(정보성, exit code 미반영) — hot.md 한 줄 보고용 한 줄 요약 포함.
     lines.append("")
     lines.append("── 거버넌스 (정보성) ──")
-    lines.append("  type 보유 %d/%d · 모순 콜아웃 %d개 · 신선도(>%dd) %d개"
+    lines.append("  type 보유 %d/%d · 모순 콜아웃 %d개 · 신선도(growing>%dd·기타>90d) %d개"
                  % (gov["with_type"], gov["total"], len(gov["conflicts"]),
                     gov["age_threshold_days"], len(gov["stale"])))
     if gov["stale"]:

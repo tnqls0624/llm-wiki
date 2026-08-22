@@ -69,6 +69,16 @@ trap 'rm -f "$LOCK"' EXIT
 
 cd "$VAULT" || exit 0
 
+# 실패 서명 측정용 기준선(2026-08-23 추가). collect의 유일한 산출물은 radar-queue.md 인데,
+# harness가 이 경로를 'sensitive file'로 분류해 무인 런의 Edit/Write를 거부하면서도
+# seen 원장(allowlist된 radar-collect.py가 직접 씀)은 계속 자라 26일간 exit=0으로 침묵했다.
+# "큐 무변경" 자체는 정상일 수 있다(신규 0건) — 실패는 "seen은 늘었는데 큐는 그대로"다.
+QUEUE="$VAULT/.claude/runtime/radar-queue.md"
+SEEN="$VAULT/.claude/runtime/radar-seen.json"
+_seen_count() { python3 -c "import json,sys;print(len(json.load(open(sys.argv[1])).get('seen',{})))" "$1" 2>/dev/null || echo -1; }
+SEEN_BEFORE="$(_seen_count "$SEEN")"
+QUEUE_BEFORE="$(stat -f%m "$QUEUE" 2>/dev/null || echo 0)"
+
 {
   echo "=== [$(date '+%F %T')] claude-radar collect start ==="
   # sonnet: 수집·분류·추천은 중간 티어로 충분(비용 레버). collect 모드는 큐+seen만 변경.
@@ -86,6 +96,17 @@ cd "$VAULT" || exit 0
   # 동의 없는 생성물이 조용히 커밋·push되지 않게. (1차 방어선은 command §A + allowlist)
   # 가드 로직은 stray-guard.sh로 추출(kb-sync와 공유 + 계약 테스트 대상). runtime 모드 = .claude/runtime/만 허용.
   bash "$VAULT/.claude/stray-guard.sh" runtime
+
+  # 산출물 가드(2026-08-23): seen 원장이 자랐는데 큐가 그대로면 적재 실패다.
+  # exit=0 만 보면 26일간 못 잡았던 침묵이 여기서 시끄러워진다.
+  SEEN_AFTER="$(_seen_count "$SEEN")"
+  QUEUE_AFTER="$(stat -f%m "$QUEUE" 2>/dev/null || echo 0)"
+  if [ "$SEEN_BEFORE" -ge 0 ] && [ "$SEEN_AFTER" -gt "$SEEN_BEFORE" ] && [ "$QUEUE_AFTER" = "$QUEUE_BEFORE" ]; then
+    echo "⚠ 큐 적재 실패: seen $SEEN_BEFORE -> $SEEN_AFTER (신규 $((SEEN_AFTER - SEEN_BEFORE))건)인데 radar-queue.md 무변경."
+    echo "  원인 후보: harness가 runtime/ 경로를 sensitive로 분류해 무인 런의 Edit/Write를 거부. 로그에서 'sensitive file' 검색."
+    echo "  seen 은 이미 갱신됐으므로 그 신규 항목은 재추천되지 않는다(PRUNE_DAYS 경과 전까지). 수동 확인 필요."
+    rc=1
+  fi
 
   # 성공 시에만 스탬프 갱신 — 실패하면 다음 로그인/슬롯에서 재시도됨
   [ "$rc" -eq 0 ] && date +%s > "$STAMP"

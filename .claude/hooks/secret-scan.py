@@ -40,8 +40,15 @@ try:
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     hits = mod.find_secrets(text)
-except Exception:
-    sys.exit(0)  # 코어 부재/오류 시 조용히 통과(세션 비차단)
+except Exception as e:
+    # 2026-08-23: 여기서 조용히 통과하면 "깨진 스캐너"와 "깨끗한 스캔"이 구분되지 않는다
+    # (automation-safety V축: silent-fail 금지). 스캐너가 내려간 사실 자체를 알려야 한다.
+    sys.stderr.write(
+        f"⚠ secret-scan 무력화 — scrub-secrets 코어 로드 실패: {type(e).__name__}\n"
+        f"  경로: {core}\n"
+        f"  이 편집은 크리덴셜 검사를 받지 못했다. 코어를 복구할 때까지 스캐너는 내려간 상태다.\n"
+    )
+    sys.exit(2)  # PostToolUse: 비차단 경고로 표면화
 
 if hits:
     names = ", ".join(sorted({n for n, _, _, _ in hits}))
