@@ -4,7 +4,7 @@ title: Claude Code 사용법
 type: evergreen
 status: evergreen
 created: 2026-06-07
-updated: 2026-08-10
+updated: 2026-08-22
 area: 개발자 학습
 tags: [claude-code]
 source_urls: []
@@ -14,7 +14,7 @@ confidentiality: public
 
 # Claude Code 사용법
 
-이 노트는 Claude Code 공식 문서(code.claude.com/docs)와 Anthropic 블로그를 29개 노트로 종합한 지식 베이스의 중심 허브(MOC)다. 설치부터 CLI·설정·권한·확장(스킬·훅·MCP·플러그인·서브에이전트)·자동화·팀 통합·운영(보안·비용)·Agent SDK·레퍼런스·실전 마이그레이션 가이드까지 Claude Code의 모든 사용법을 다룬다. 명령어·플래그·설정 키·환경변수는 원문 영어 그대로, 맥락·트레이드오프·주의사항은 한국어로 정리했으며, 각 노트는 본문에서 `허브: [[80 Tooling]]`로 이곳을 가리킨다. 아래 **용도별 학습 경로**로 목적에 맞는 노트를 순서대로 따라가거나, **전체 지도**에서 주제군별로 원하는 노트를 바로 찾아갈 수 있다.
+이 노트는 Claude Code 공식 문서(code.claude.com/docs)와 Anthropic 블로그를 30개 노트로 종합한 지식 베이스의 중심 허브(MOC)다. 설치부터 CLI·설정·권한·확장(스킬·훅·MCP·플러그인·서브에이전트)·자동화·팀 통합·운영(보안·비용)·Agent SDK·레퍼런스·실전 마이그레이션 가이드까지 Claude Code의 모든 사용법을 다룬다. 명령어·플래그·설정 키·환경변수는 원문 영어 그대로, 맥락·트레이드오프·주의사항은 한국어로 정리했으며, 각 노트는 본문에서 `허브: [[80 Tooling]]`로 이곳을 가리킨다. 아래 **용도별 학습 경로**로 목적에 맞는 노트를 순서대로 따라가거나, **전체 지도**에서 주제군별로 원하는 노트를 바로 찾아갈 수 있다.
 
 ## 용도별 학습 경로
 
@@ -42,7 +42,7 @@ confidentiality: public
 5. [[19 비용과 성능]] — 토큰·비용 통제와 모니터링
 
 ### 팀·엔터프라이즈 도입 (조직 차원에서 굴리는 경우)
-1. [[04 설정]] — 설정 스코프·우선순위·조직 배포
+1. [[04 설정]] — 설정 스코프·우선순위·조직 배포 (강제할 개별 키를 찾을 땐 [[30 설정 레퍼런스]])
 2. [[05 권한]] — managed settings와 권한 거버넌스
 3. [[17 클라우드 프로바이더]] — Bedrock/Vertex AI/Foundry 배포
 4. [[27 게이트웨이]] — Claude apps gateway 자체 호스팅 또는 서드파티 LLM 게이트웨이로 인증·비용·감사를 중앙화
@@ -60,7 +60,7 @@ confidentiality: public
 
 ## 전체 지도
 
-29개 노트를 주제군으로 묶어 각 노트당 한 줄 요약과 함께 나열한다.
+30개 노트를 주제군으로 묶어 각 노트당 한 줄 요약과 함께 나열한다.
 
 ### 시작·CLI
 - [[01 시작하기]] — 설치·업데이트·제거(바이너리 서명 검증), 로그인·인증, 에이전틱 루프·세션·컨텍스트·권한 모드, Quickstart 8단계, 확장 기능 선택 기준까지의 입문 종합 노트.
@@ -68,8 +68,9 @@ confidentiality: public
 
 ### 설정·권한
 - [[03 메모리와 컨텍스트]] — CLAUDE.md 계층·auto memory, 컨텍스트 윈도우 동작·/compact 생존표, 세션 재개·체크포인팅(/rewind), 모노레포 스코핑, .claude 디렉터리 레퍼런스.
-- [[04 설정]] — settings.json 키·스코프 우선순위·sandbox, 환경변수 전체, 모델 구성(별칭·effort·1M 컨텍스트), auto mode 분류기, 설정 디버깅과 조직 배포.
+- [[04 설정]] — settings.json 키·스코프 우선순위(교차소스 키·임베딩 호스트 parent settings·보안 예외 포함)·sandbox, 환경변수 전체, 모델 구성(별칭·effort·1M 컨텍스트), auto mode 분류기, 설정 디버깅과 조직 배포.
 - [[05 권한]] — allow/ask/deny 규칙 문법과 deny-first 평가, 도구별 규칙, 여섯 권한 모드(default/acceptEdits/plan/auto/dontAsk/bypassPermissions), 보호 경로·managed settings.
+- [[30 설정 레퍼런스]] — settings-reference 색인 전체(17개 주제군, 210개 키)를 스코프·managed-only 여부와 함께 찾아보기용으로 정리; managed 값이 조용히 무시되는 함정·`fallbackModel` 배열 병합 예외 등 실전 주의사항.
 
 ### 확장 (스킬·훅·MCP·플러그인·서브에이전트)
 - [[06 내장 도구 레퍼런스]] — 내장 도구 42종과 슬래시 커맨드 전체, 도구 권한 규칙 포맷(ToolName(specifier)), 도구별 동작·제약, 워크플로우 단계별 커맨드 활용.
