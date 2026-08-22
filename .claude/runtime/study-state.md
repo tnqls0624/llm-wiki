@@ -1,4 +1,4 @@
-<!-- study-state v1 | block=0 | last_brief_date=2026-07-27 | repo_path=~/Desktop/Project/ai-infra-lab -->
+<!-- study-state v1 | block=0 | last_brief_date=2026-08-05 | repo_path=~/Desktop/Project/ai-infra-lab -->
 <!--
   AI Infra 학습 진도 정본. git 추적됨 → 두 Mac(회사/집)이 push/pull로 공유.
   study-brief.py(무인 cron)가 이 파일을 읽어 요일별 다음 미완료 항목 + 그 아래 들여쓴 학습 가이드를
@@ -13,7 +13,7 @@
 # AI Infra 학습 진도 — 인프라 빌더 트랙 (Block 0~6)
 
 **정본 커리큘럼**: `ai-infra-lab/ROADMAP.md` (2026-07-02 v3 확정 — 학습 우선, 블랙웰 특화는 부록 A/B).
-**현재**: 🎉 Block 0 완료(2026-07-05). **[Block 1 진행]** — 🎉 W2 전체 완료(2026-07-12, 멀티스테이지 `docker build`/`run` 완주 + 크기·CoW 실측). 다음: **W3 상세화 필요** — `/study-coach plan`으로 일별 항목을 채워야 브리핑이 나온다.
+**현재**: 🎉 Block 0 완료(2026-07-05). **[Block 1 진행]** — W2 전체 완료(2026-07-12) · W3 D1~D2 완료(2026-08-05, `--gpus all` 실행 체인 확정). W3~W4는 상세화 완료(2026-07-12). 다음: **W3 D3(CPU Mac 실측 — Docker 데몬 켜야 함)**, 그리고 W4 게이트 문서(`gpu-access-decision.md`)는 2026-08-05에 대부분 채워졌으나 **스팟 회수 대응 + 후보 비교표 미기재로 체크 보류**.
 **주차↔블록**: W1~2=Block 0 · W3~4=Block 1(컨테이너) · W5~7=Block 2(GPU/CUDA) · W8~10=Block 3(서버·네트워크) · W11~12=Block 4(K8s) · W13~16=Block 5(서빙&학습) · W17~19=Block 6(관측성) + 버퍼 3주.
 
 ## W1 — 환경 + repo 척추 + 로드맵 확정 [Block 0]
@@ -64,7 +64,7 @@
   - 🎯 개념: 호스트 커널 드라이버 / CUDA 런타임·툴킷 / 컨테이너의 경계. W2에서 목격한 "NVIDIA Driver was not detected" 경고가 정확히 어느 층의 부재인가
   - 📖 자료: **먼저 무자료로** log.md에 스택 그림+설명 → 그다음 NVIDIA Container Toolkit 공식 아키텍처 문서와 대조
   - ✅ 완료: log.md에 자기 말 스택 지도 + 대조에서 틀렸던 부분 수정 기록
-- [ ] [평일] D2: NVIDIA Container Toolkit 동작 원리 — `--gpus all`이 하는 일
+- [x] [평일] D2: NVIDIA Container Toolkit 동작 원리 — `--gpus all`이 하는 일
   - 🎯 개념: nvidia-container-runtime이 컨테이너 시작 시점에 드라이버 라이브러리·`/dev/nvidia*`를 주입하는 구조(runc hook). "이미지에 드라이버를 안 굽는" 이유가 여기서 완성됨
   - ✅ 완료: log.md에 주입 흐름 요약 + Block 2 D1에서 실측할 체크리스트 3개
 - [ ] [평일] D3: CPU Mac에서 가능한 실측 — 컨테이너 안 드라이버 부재 확인
@@ -225,3 +225,16 @@
 - 검토: 마지막 커밋(7-16 `261b3d4`, W3 D1) 이후 새 커밋 없음 → 진도 W3 D1 유지, 억지 체크 안 함. 미커밋 `docs/log.md` 수정 1건은 W3 D2 학습이 아니라 에디터발 포매팅 변경(이어지는 불릿 de-indent + 표 재정렬)이라 채점 대상 아님.
 - 짚을 점(주의): 그 미커밋 diff에 손상 1건 — `apt update && apt install`이 `&amp;&amp;`로 HTML escape됨(Obsidian 등 렌더 과정 혼입 추정). 커밋하면 로그에 `&amp;`가 박제되니 커밋 전 `git checkout docs/log.md`로 되돌리거나 정정할 것. 포매팅 변경은 학습 커밋과 섞지 말 것.
 - 다음에 주의할 것: W3 D2는 무자료 산출물(log.md에 `--gpus all` 주입 흐름 요약 + Block 2 D1 실측 체크리스트 3개)이라 5분 산출물. D1에서 §3-2(userspace driver lib은 Toolkit이 컨테이너에 제공)까지 이해했으니, D2는 그 "제공"이 runc prestart hook으로 언제/어떻게 일어나는지만 자기 말로 붙이면 완료. 8일 공백 재개는 D1 §5 진단표 1분 훑고 시작하면 매끄럽다.
+
+### 2026-08-05 — W3 D2 ✅ (`0ed7bc9`, `7a1b941`) · 20일 공백의 근본 원인을 스스로 진단
+- 채점: **W3 D2 체크** — 완료 기준 2개 전부 충족. ① 주입 흐름 요약: `docker run --gpus all` → Docker가 Device Request 생성 → nvidia-container-runtime → OCI hook → nvidia-container-cli/libnvidia-container → **runc가 exec하기 직전** 주입 완료. 7/16에 빠져 있던 "언제"(runc 위치)를 정확히 메꿨다. ② Block 2 실측 체크리스트: `docker/verify-gpu-container.sh`(100줄) + 스크립트 말미 SUMMARY 4항목으로 요구(3개) 초과.
+- 잘한 점: ① **근본 원인 자가 진단이 오늘의 최고 산출물** — "`gpu-access-decision.md`가 파일만 커밋돼 있고 전부 공란이어서, ROADMAP이 막으려 한 '이론만 읽는 블록'이 3주간 실제로 발생했다". 20일 공백을 게으름이 아니라 **막힌 게이트**로 규정하고 그 게이트를 같은 세션에서 해소 — 감시 ⑤(계획 위임)의 반대 극. 다음에 할 것 3개를 "병목 해소 순서"로 정렬한 것도 본인 판단. ② **정직한 라벨링 2종** — 7/16 TIL과 겹치는 내용을 "**재확인**"으로 표시("중복을 신규로 적으면 진도 착시가 생긴다")하고, "**실측 0건 — 개념 정리만**"을 명시. 자기 채점을 부풀리지 않는 이 습관이 이 시스템의 신뢰 기반이다(감시 ③ 교정 3세션 연속 유지). ③ **`set -e`를 안 쓴 이유를 주석으로** — "실패하는 명령의 에러 메시지 자체가 학습 자료이기 때문". 도구를 목적에 맞게 거부한 판단. ④ 스크립트 구조가 층별(호스트→Toolkit→요청→주입→라이브러리→프레임워크)로 W3 D1 §6 3층 구분표의 확장이고, Step 4는 **같은 이미지 / 런타임만 다름**의 통제변수 실험 — batch 비교·CoW 실측의 실험 설계 강점 그대로. ⑤ TIL 분리 커밋(`0ed7bc9`)으로 log.md 443줄 축소 + h1 남용 교정 — "log.md=날짜 짧은 로그 / til=주제 심화" 역할 분리 회복.
+- 부족하거나 고칠 점(구체):
+  1) **`verify-gpu-container.sh` Step 3 파싱 버그 — 성공을 실패로 오판한다.** `CID="$(docker create … 2>&1)"`로 stderr를 합쳤는데, 이미지가 로컬에 없으면(GPU VM 첫 실행이면 **반드시** 없다) `docker create`가 pull 진행 상황을 stderr에 뿌려 `$CID`가 멀티라인이 된다 → `[[ "$CID" =~ ^[0-9a-f]{12,}$ ]]` 실패 → "docker create 실패"로 기록되고, **실제로 생성된 컨테이너는 `docker rm`을 못 타서 남는다**. 수정: 앞에 `docker pull "$CUDA_IMAGE"`를 두고 `CID="$(docker create --gpus all "$CUDA_IMAGE" nvidia-smi)"`로 stderr를 분리(또는 `tail -1`).
+  2) **fail-silent 재발(감시 ⑦).** Step 5의 `find / -name "libcuda.so*" 2>/dev/null || echo "(없음)"` — `find`는 **매치 0건에도 exit 0**이라 `||` 분기가 절대 안 탄다. libcuda가 없어도 빈 출력만 나오고 "(없음)"은 안 찍힘 → "출력이 비었다"와 "명령이 안 돌았다"를 구분 못 한다. 수정: `find … | grep . || echo "(없음)"`. 7-05 `except OSError`→bare return, `--device` silent fallback과 **같은 축**이다.
+  3) **유료 VM에서 처음 돌릴 스크립트를 셀프 실행 없이 완성 선언.** 위 두 버그는 로컬에서 Step 3·4(a)만 돌려도 잡힌다(GPU 없어도 `docker create --gpus all`은 실행됨). "Docker 데몬 미실행"은 사실이지만 데몬을 켜는 게 D3 항목 자체다 — 7-12 "빌드 통과 ≠ 동작", pick_device 오타 사건과 같은 패턴. 시간당 과금 환경에서 첫 실행이 파싱 오류로 낭비되면 비용이 실제로 든다.
+  4) **W4 D4(Block 1 게이트) 체크 보류 — 하나 빠졌다.** 완료 기준 6개 중 5개 충족(프로바이더 AWS EC2 · g4dn.xlarge · T4 Turing sm_75 · $0.63/h · 예산 상한 $15~25)이나 **스팟 회수 대응이 없다** — 문서가 온디맨드 단가만 다루고 스팟을 언급조차 안 함. W4 D1의 "RunPod/Vast 컨테이너 대여 불가 이유"와 D2·D3의 "후보 3곳 이상 비교표"도 미기재(AWS 내부 g4dn/g5/g6·p3 배제 비교만 있음). 커밋 메시지의 "게이트 해소"는 아직 반쪽이다.
+- 다음에 주의할 것:
+  1. **W4 D1~D4 묶어 마감(15분)** — `gpu-access-decision.md`에 ① 스팟 대응 2줄("온디맨드 선택, 이유: 회수되면 드라이버 설치 실습 중단 / 스팟 쓸 경우 대응은 X") ② RunPod/Vast 배제 이유 1줄(root·커널모듈 접근 불가 → 드라이버 설치 실습 불가) ③ 후보 3곳 비교표(AWS/Lambda/GCP 등 시급·GPU·리전) 추가 후 커밋하면 **다음 검토에서 W4 D1~D4를 한 번에 체크**한다.
+  2. **W3 D3(오늘 브리핑 항목)** — Docker 데몬 켜고 `docker run --rm mnist-train:multistage sh -c "ls /dev | grep -i nvidia; ldconfig -p | grep -i cuda"` → `--gpus all` 시도 시 에러 관찰. **에러가 나는 게 정상인 실험.** 같은 세션에서 위 버그 1)·2)를 고쳐 Step 3·4(a)를 로컬 실행하면 D3 산출물과 스크립트 검증이 동시에 끝난다.
+  3. 쿼터 확인(G/VT vCPU)은 승인 지연이 있으니 D3보다 먼저 신청 걸어둬도 된다 — 문서에 본인이 "가장 먼저"라고 적었다.
