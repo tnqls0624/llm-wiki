@@ -33,9 +33,10 @@ LLMS_TXT_URL = "https://code.claude.com/docs/llms.txt"
 FALLBACK_REQUIRED = ["id", "title", "type", "status", "created", "updated",
                      "area", "tags", "source_urls", "notion_url", "confidentiality"]
 FALLBACK_TYPES = ["evergreen", "concept", "architecture", "comparison", "playbook", "career"]
-# Templates/·Attachments/·00 Inbox/ 는 §11 폴더지만 KB 노트가 아니다(템플릿·첨부·미처리 수집).
+# Templates/·Attachments/ 는 §11 폴더지만 KB 노트가 아니다(템플릿·첨부).
+# `00 Inbox`는 2026-08-23에 폴더 자체를 삭제했으므로 제외 항목도 함께 제거했다(죽은 설정 금지).
 EXCLUDE_DIR_NAMES = {".claude", ".codex", ".obsidian", ".git", ".agents", ".trash",
-                     "Templates", "Attachments", "00 Inbox",
+                     "Templates", "Attachments",
                      "Projects", "blog"}  # Projects/=사업 워크스페이스, blog/=블로그 초안+수집 이미지(SOURCES.md 등) — 둘 다 KB 콘텐츠 아님(hot.md 계약)
 MIN_BODY_CHARS = 50
 AGE_WARN_DAYS = 90  # updated가 이보다 오래되면 stale 후보(정보성 — exit code 미반영)

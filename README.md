@@ -26,8 +26,6 @@ obsidian_sync/
 │   ├── 00 LLM Wiki 아키텍처와 OKF 자기진단.md   # 구 Meta/ 에서 흡수 (2026-08-22)
 │   ├── 01 시작하기.md … 29 자체 호스팅 환경.md
 │   └── 80 Tooling.md            # MOC 허브 (학습 경로 + 전체 지도 + vault 자기성찰)
-├── 00 Inbox/ · 10 Evergreen/ · 40 Backend/ · 50 Cloud and Kubernetes/
-├── 60 Security/ · 70 Career/ · 90 Archive/     # §11 빈 슬롯 (.gitkeep 만)
 ├── Templates/                   # §13 영구 노트 템플릿 (kb-lint 제외)
 ├── Attachments/                 # §11 첨부 슬롯 (blog 이미지는 blog/<slug>/ co-location 유지)
 ├── blog/                        # 블로그 초안 + 수집 이미지 (blog-collect.py, git 추적, kb-lint 제외)
