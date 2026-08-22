@@ -1294,6 +1294,23 @@ class TestBlogPublishSkill(unittest.TestCase):
         # automation-safety: 대화형 전용 — cron 연결 금지
         self.assertIn("cron", self._skill(), "cron 미연결(대화형 전용) 경계 명시 필요")
 
+    def test_browser_layer_is_aside_not_chrome(self):
+        # 2026-08-22: 브라우저 자동화를 aside-browser로 통일. claude-in-chrome은 비활성화됐고
+        # 되살리지 않는다 — 절차가 죽은 도구를 다시 참조하면 스킬이 조용히 고장난다.
+        txt = self._skill()
+        fm = re.match(r"^---\n(.*?)\n---", txt, re.S).group(1)
+        self.assertRegex(txt, r"aside[- ]?(browser|repl)", "Aside 브라우저 계층 참조 필요")
+        self.assertNotIn("claude-in-chrome", fm,
+                         "description이 죽은 도구를 트리거로 광고하면 안 된다")
+        # claude-in-chrome 언급 자체는 허용한다 — "되살리지 말 것" 경고는 유용하다.
+        # 금지하는 것은 *절차적 사용*이므로, 언급된 줄마다 부정 표현이 함께 있어야 한다.
+        for ln in txt.splitlines():
+            if "claude-in-chrome" in ln:
+                self.assertRegex(ln, r"비활성화|되살리|말 것|않는다|금지",
+                                 f"claude-in-chrome이 절차로 쓰이고 있다: {ln[:80]}")
+        # 확인창 자동 승인 금지 불변식이 Aside 표현으로도 고정돼야 한다
+        self.assertRegex(txt, r"dialog|확인창|대화상자", "확인 대화상자 자동승인 금지 경계 명시 필요")
+
 
 # ── 수빈 페르소나 3종 (agent/skill/rule)의 정적 계약 ───────────────────
 class TestSoobeenPersona(unittest.TestCase):

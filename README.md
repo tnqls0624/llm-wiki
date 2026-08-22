@@ -119,7 +119,7 @@ obsidian_sync/
 |---|---|
 | `kb-assistant` | 사용자의 KB 관련 의도("훅 어떻게 설정해", "문서 최신화", "이 글 정리해줘")를 감지해 올바른 kb-* 커맨드로 **라우팅** |
 | `soobeen-check` | 개인화 **세션 마감 체크**("마감 체크", "오늘 끝") — 감시 목록 ①~⑦(`soobeen-profile` 룰)을 git status·diff·log.md와 대조해 통과/미달 표 반환. ai-infra-lab 읽기 전용, 대화형 전용 |
-| `blog-publish` | `blog/<slug>/` 발행 본문을 Tistory 에디터에 **반자동 게시**("블로그 올려줘") — claude-in-chrome으로 마크다운 모드 제목·본문 입력 + `[사진 N]` 위치 마커 + **임시저장까지만**. 이미지 첨부·최종 발행은 사용자 직접(automation-safety: 발행은 승인 후). 대화형 전용 |
+| `blog-publish` | `blog/<slug>/` 발행 본문을 Tistory 에디터에 **반자동 게시**("블로그 올려줘") — `aside repl`(aside-browser)로 마크다운 모드 제목·본문 입력 + `[사진 N]` 위치 마커 + **임시저장까지만**. 이미지 첨부·최종 발행은 사용자 직접(automation-safety: 발행은 승인 후). 대화형 전용 |
 
 > 플러그인 marketplace로 설치된 다른 스킬(`data:*`, `figma:*`, `claude-mem:*` 등)은 이 프로젝트가 만든 것이 아니다. `/skill-audit --plugins`로 상시 비용을 점검할 수 있다.
 

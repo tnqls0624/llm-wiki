@@ -11,6 +11,7 @@ argument-hint: <URL 또는 파일 경로 또는 붙여넣은 텍스트>
 
 ## 1. 자료 수집
 - 대상이 URL이면 본문을 가져온다(`curl -s <url>` 우선, 막히면 WebFetch/WebSearch). 파일 경로면 Read. 붙여넣은 텍스트면 그대로 사용한다.
+- **로그인·페이월로 막힌 URL(402/403, X·유료 매체 등)은 `aside-browser` 스킬로 가져온다** — `aside repl`의 `openTab()` + `snapshot(page)`가 사용자 로그인 세션을 그대로 쓴다. 2026-07-27에 이 경로가 없어 수집이 한 번 실패했다(curl/WebFetch 402). 브라우저 자동화는 Aside로 통일하며, claude-in-chrome은 되살리지 않는다.
 - 노이즈(광고·네비게이션)는 버리고 핵심(개념·주장·절차·예시)만 남긴다.
 
 ## 2. 크리덴셜 스크럽 (필수)

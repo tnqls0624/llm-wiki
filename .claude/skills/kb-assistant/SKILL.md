@@ -1,6 +1,6 @@
 ---
 name: kb-assistant
-description: 이 vault의 Claude/ KB는 Claude Code 공식 문서를 한국어로 종합한 지식 베이스다. 사용자가 Claude Code 사용법을 묻거나("훅 어떻게 설정해", "서브에이전트 기능 있어?", "전에 정리한 거 뭐였지"), KB를 갱신·점검하려 하거나("문서 최신화해줘", "공식 문서 바뀐 거 반영", "KB 상태 점검"), 외부 자료나 방금 한 대화를 KB에 정리해 넣으려 할 때("이 글 정리해줘", "노트로 남겨줘", "방금 알아낸 거 박제") 이 스킬로 올바른 작업에 라우팅한다.
+description: 이 vault의 `80 Tooling/` KB는 Claude Code 공식 문서를 한국어로 종합한 지식 베이스다. 사용자가 Claude Code 사용법을 묻거나("훅 어떻게 설정해", "서브에이전트 기능 있어?", "전에 정리한 거 뭐였지"), KB를 갱신·점검하려 하거나("문서 최신화해줘", "공식 문서 바뀐 거 반영", "KB 상태 점검"), 외부 자료나 방금 한 대화를 KB에 정리해 넣으려 할 때("이 글 정리해줘", "노트로 남겨줘", "방금 알아낸 거 박제") 이 스킬로 올바른 작업에 라우팅한다.
 ---
 
 # KB Assistant — 의도 라우터
@@ -18,7 +18,7 @@ description: 이 vault의 Claude/ KB는 Claude Code 공식 문서를 한국어�
 | 방금 한 **대화·탐색을 박제** ("노트로 남겨줘", "방금 알아낸 거 정리") | `/kb-save` 절차 — 이번 세션의 통찰을 노트로 남긴다. | 새 외부 자료가 아니라 지금 세션에서 나온 결과를 고정할 때. |
 
 ## 원칙
-- KB는 사실 레퍼런스다. 명령어·플래그·설정 키·환경변수는 원문 영어 그대로, 맥락·설명은 한국어. 노트 frontmatter는 4필드(`title`/`updated`/`sources`/`type` — 정본 `.claude/kb-required-fields.txt`).
+- KB는 사실 레퍼런스다. 명령어·플래그·설정 키·환경변수는 원문 영어 그대로, 맥락·설명은 한국어. 노트 frontmatter는 §12 11필드(정본 `.claude/kb-required-fields.txt`, `type` 허용값은 `.claude/kb-allowed-types.txt`). 출처 필드는 `source_urls`.
 - **갱신 의무**: KB 노트를 만들거나 바꾸면 `.claude/rules/vault-rules.md`의 "Update duty (CANONICAL — 3 steps)"를 수행한다(정본은 vault-rules.md — 여기서 단계를 재명세하지 않는다).
 - **서브에이전트 위임 시 hot.md 단계는 메인 세션 몫**: `kb-guide`·`kb-updater`는 격리 컨텍스트에서 노트 측 단계(`updated`·MOC)까지만(읽기 전용 에이전트는 그것도 없음) 하고, hot.md는 에이전트가 반환한 요약을 받아 메인이 갱신한다.
 - 무거운 작업(여러 노트 동시 읽기/쓰기, 대량 fetch)은 서브에이전트로 격리해 메인 컨텍스트를 보호한다 — 이것이 비용·정확도 레버다.
