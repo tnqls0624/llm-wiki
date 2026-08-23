@@ -73,7 +73,7 @@ obsidian_sync/
 
 ---
 
-## 📡 claude-radar — 매일 Claude 생태계 레이더 (핵심 자동화)
+## 📡 claude-radar — 주 1회 Claude 생태계 레이더 (2026-08-23 일1회→주1회 — 병목은 처리)
 
 두 토픽을 매일 자동 수집한다 — **① Claude Code 활용**(GeekNews·GitHub·HN·Anthropic 공식·dev.to·npm)과 **② AI 인프라 학습**(vLLM·KServe·Karpenter releases + HN AI-infra 키워드). 수집물은 "우리 프레임워크에 더하면 좋을 것(skill/agent/...)"과 "KB에 박제할 지식"으로 추천되며, `AI-infra:` 태그 항목은 `30 AI Infrastructure/` KB로 라우팅된다.
 
