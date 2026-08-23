@@ -17,7 +17,7 @@ rc 검증 + positive control(살아있음 증명)을 둔다.
 실행: bash .claude/tests/run-tests.sh  또는  python3 .claude/tests/test_mechanisms.py
 의존성: 표준 라이브러리만(unittest/subprocess/tempfile). git 필요(auto-commit 테스트).
 """
-import base64, json, os, re, shutil, subprocess, tempfile, threading, unittest
+import base64, datetime, glob, json, os, re, shutil, subprocess, tempfile, threading, unittest
 import importlib.util as _ilu
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
@@ -1502,6 +1502,167 @@ class TestUnattendedOutputGuards(unittest.TestCase):
         self.assertIn("AGE_WARN_DAYS_GROWING", txt, "status별 신선도 임계값 상수 필요")
         self.assertRegex(txt, r'AGE_WARN_DAYS_GROWING\s*if\s*m\.get\("status"\)\s*==\s*"growing"',
                          "growing 노트에 더 짧은 임계값이 실제로 적용돼야")
+
+
+# ── 아키텍처 P0 계약 (2026-08-23: 커밋 게이트 세컨드 브레인) ──────────────
+class TestDeadmanBanner(TestSessionContext):
+    """P0-1: 이벤트 트리거 시스템의 데드맨 스위치 — "이벤트 없음"과 "루프 사망" 구분.
+    radar 26일 침묵 실패(exit 0 유지)가 존재 근거. 임계 초과만 표면화, 평시 무소음."""
+
+    def test_stale_review_surfaces(self):
+        _write(os.path.join(self.d, ".claude", "runtime", "study-state.md"),
+               "<!-- study-state v1 | last_brief_date= | repo_path=~/x -->\n### 2026-01-01 — 옛날 검토\n")
+        self.assertIn("데드맨", self.ctx(), "검토 로그 10일 초과는 배너에 나타나야")
+
+    def test_fresh_review_silent(self):
+        # positive control의 짝: 신선하면 무소음이어야 데드맨이 죄책감 장치가 아니다.
+        today = datetime.date.today().isoformat()
+        _write(os.path.join(self.d, ".claude", "runtime", "study-state.md"),
+               f"<!-- study-state v1 -->\n### {today} — 오늘 검토\n")
+        c = self.ctx()
+        self.assertNotIn("학습 검토 로그", c, "신선한 검토는 무소음")
+
+    def test_stale_radar_ledger_surfaces(self):
+        _write(os.path.join(self.d, ".claude", "runtime", "radar-seen.json"),
+               json.dumps({"_comment": "t", "updated": "2026-01-01T09:00:00", "seen": {}}))
+        self.assertIn("radar", self.ctx().lower(), "ledger 9일 초과 정지는 배너에 나타나야")
+
+    def test_hook_never_crashes_on_garbage(self):
+        # 데드맨 추가가 부팅을 깨면 안 된다 — 손상 입력에도 exit 0 (기존 계약 유지).
+        _write(os.path.join(self.d, ".claude", "runtime", "radar-seen.json"), "{broken json")
+        _write(os.path.join(self.d, ".claude", "runtime", "study-state.md"), "")
+        rc, out, _ = run_py("session-context.py", {}, self.d)
+        self.assertEqual(rc, 0)
+
+
+class TestRadarQueuePipe(unittest.TestCase):
+    """P0-2/P0-5: 무인 LLM의 큐 쓰기는 allowlist된 스크립트 경유(--append-queue)만.
+    harness가 runtime/ 큐 경로의 Edit를 거부해 26일 침묵 실패했던 파이프의 수리.
+    + pending 30일 TTL → [expired] (삭제 아님 — 이력 보존 계약 유지)."""
+
+    def _iso(self):
+        d = tempfile.mkdtemp(prefix="radarq_")
+        self.addCleanup(shutil.rmtree, d, ignore_errors=True)
+        os.makedirs(os.path.join(d, "runtime"))
+        shutil.copy(os.path.join(CLAUDE, "radar-collect.py"), os.path.join(d, "rc.py"))
+        return d
+
+    def _run(self, d, *args):
+        return subprocess.run(["python3", os.path.join(d, "rc.py"), *args],
+                              capture_output=True, text=True)
+
+    def test_append_valid_fragment(self):
+        d = self._iso()
+        qp = os.path.join(d, "runtime", "radar-queue.md")
+        _write(qp, "# 큐\n\n## 2026-07-01\n\n### [done] skill · 과거\n")
+        fp = os.path.join(d, "frag.md")
+        _write(fp, "### [pending] kb-ingest · 새 항목\n- **url**: https://x\n")
+        r = self._run(d, "--append-queue", fp)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertEqual(json.loads(r.stdout)["appended"], 1)
+        q = _read(qp)
+        self.assertIn("### [pending] kb-ingest · 새 항목", q)
+        self.assertIn("### [done] skill · 과거", q, "append 전용 — 기존 항목 보존")
+        self.assertLess(q.index(datetime.date.today().isoformat()), q.index("2026-07-01"),
+                        "새 날짜 섹션은 최신이 위")
+
+    def test_append_rejects_bad_type_and_header(self):
+        d = self._iso()
+        _write(os.path.join(d, "runtime", "radar-queue.md"), "# 큐\n")
+        fp = os.path.join(d, "frag.md")
+        for bad in ("### [pending] virus · 나쁜 타입\n",
+                    "### [done] skill · pending 아님\n",
+                    "그냥 텍스트 — 헤더 없음\n"):
+            _write(fp, bad)
+            r = self._run(d, "--append-queue", fp)
+            self.assertEqual(r.returncode, 1, f"거부돼야: {bad!r}")
+        self.assertNotIn("virus", _read(os.path.join(d, "runtime", "radar-queue.md")),
+                         "전체 거부 — 부분 적재로 형식 오염 금지")
+
+    def test_append_enforces_cap(self):
+        d = self._iso()
+        _write(os.path.join(d, "runtime", "radar-queue.md"), "# 큐\n")
+        fp = os.path.join(d, "frag.md")
+        _write(fp, "\n".join(f"### [pending] skill · 항목{i}" for i in range(9)) + "\n")
+        r = self._run(d, "--append-queue", fp)
+        self.assertEqual(r.returncode, 1, "상한 8 초과는 전체 거부")
+
+    def test_ttl_expires_only_old_pending(self):
+        d = self._iso()
+        qp = os.path.join(d, "runtime", "radar-queue.md")
+        recent = (datetime.date.today() - datetime.timedelta(days=5)).isoformat()
+        _write(qp, f"## {recent}\n\n### [pending] skill · 최근\n\n"
+                   "## 2026-01-01\n\n### [pending] rule · 오래됨\n### [done] agent · 처리됨\n")
+        spec = _ilu.spec_from_file_location("rcq", os.path.join(d, "rc.py"))
+        m = _ilu.module_from_spec(spec); spec.loader.exec_module(m)
+        self.assertEqual(m.expire_pending(), 1)
+        q = _read(qp)
+        self.assertIn("### [expired] rule · 오래됨", q, "30일 초과 pending은 expired로 상태 전환")
+        self.assertIn("### [pending] skill · 최근", q, "30일 미만은 유지")
+        self.assertIn("### [done] agent · 처리됨", q, "pending 외 상태는 무변경")
+
+    def test_command_doc_forbids_direct_edit(self):
+        # 파이프의 다른 쪽 끝: 커맨드 문서가 Edit 경로를 금지하고 스크립트 경유를 지시해야
+        # LLM이 다시 26일 침묵 모드로 돌아가지 않는다.
+        doc = _read(os.path.join(CLAUDE, "commands", "claude-radar.md"))
+        self.assertIn("--append-queue", doc)
+        self.assertRegex(doc, r"직접 수정하지 마라|Edit.*금지|Edit/Write로 직접")
+
+
+class TestCommitGate(unittest.TestCase):
+    """P0-3: '커밋이 진도의 단위'를 cron에 이식. 무커밋일 = 무비용·무알림(정상 침묵),
+    pull 실패 = fail-loud(stale 채점 금지 + rc=1 재시도). live 검증 2026-08-23 gate=no-commits."""
+
+    def setUp(self):
+        self.txt = _read(os.path.join(CLAUDE, "study-coach-cron.sh"))
+
+    def test_gate_exists_with_repo_resolution(self):
+        self.assertIn("SKIP_REVIEW", self.txt)
+        self.assertIn("study-local.conf", self.txt, "repo 경로는 state 메타 + 머신별 override 규칙 그대로")
+
+    def test_pull_failure_is_loud_and_retried(self):
+        self.assertRegex(self.txt, r"pull-failed", "pull 실패는 명명된 상태여야")
+        self.assertRegex(self.txt, r'"\$SKIP_REVIEW" = "pull-failed" \] && rc=1',
+                         "pull 실패 → rc=1 → 스탬프 미갱신 → 재시도")
+        self.assertRegex(self.txt, r"stale 채점 금지", "왜 스킵하는지 근거가 코드에 남아야")
+
+    def test_notification_gated(self):
+        # 무커밋일 무알림 — 매일 알림은 죄책감 부채(브리핑 DB 사망의 재생산).
+        self.assertRegex(self.txt, r'elif \[ -z "\$SKIP_REVIEW" \]',
+                         "정상 알림은 채점이 실제로 돈 날만")
+
+    def test_slot_sync_radar_weekly(self):
+        # P0-5 짝: plist(installer)와 래퍼 SLOT_EPOCH이 같은 슬롯(수 09:33)을 봐야
+        # anacron 판정이 어긋나지 않는다.
+        wrapper = _read(os.path.join(CLAUDE, "claude-radar-cron.sh"))
+        installer = _read(os.path.join(CLAUDE, "install-claude-radar-cron.sh"))
+        self.assertIn("minute=33", wrapper)
+        self.assertIn("(now.weekday() - 2) % 7", wrapper, "수요일 기준 주간 슬롯")
+        self.assertIn("<key>Weekday</key><integer>3</integer>", installer)
+        self.assertIn("<key>Minute</key><integer>33</integer>", installer)
+
+
+class TestPromotionAndBlogStatus(unittest.TestCase):
+    """P0-6: 승격 후보(마감 이벤트 편승, 최대 1개, 보고만) + blog 발행 상태 소유처."""
+
+    def test_soobeen_check_offers_at_most_one_candidate(self):
+        txt = _read(os.path.join(CLAUDE, "skills", "soobeen-check", "SKILL.md"))
+        self.assertIn("승격 후보", txt)
+        self.assertRegex(txt, r"최대 1개", "후보 상한 1 — 밀린 목록은 큐를 죽인다")
+        self.assertRegex(txt, r"보고만|파일 수정.*않는다", "스킬의 read-only 계약은 유지돼야")
+        self.assertIn("/kb-save", txt, "실행 경로는 기존 커맨드 재사용")
+
+    def test_blog_publish_records_status(self):
+        txt = _read(os.path.join(CLAUDE, "skills", "blog-publish", "SKILL.md"))
+        self.assertIn("발행상태", txt)
+        self.assertIn("SOURCES.md", txt, "상태의 소유처는 slug 디렉토리 자신")
+
+    def test_existing_drafts_have_status_line(self):
+        # 소급 기입이 실제로 됐는지 — 관례만 있고 실체 0이던 상태의 재발 방지.
+        srcs = glob.glob(os.path.join(REPO, "blog", "*", "SOURCES.md"))
+        self.assertTrue(srcs, "positive control: blog 초안이 있어야 이 검사가 산다")
+        missing = [s for s in srcs if "발행상태:" not in _read(s)]
+        self.assertEqual(missing, [], f"발행상태 없는 SOURCES.md: {missing}")
 
 
 if __name__ == "__main__":
