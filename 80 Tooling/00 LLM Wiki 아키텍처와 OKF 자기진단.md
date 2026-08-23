@@ -16,7 +16,7 @@ source_urls:
   - https://neo4j.com/blog/genai/what-is-graphrag/
   - https://zettelkasten.de/atomicity/guide/
 notion_url: ""
-confidentiality: personal
+confidentiality: public
 ---
 
 # LLM Wiki 아키텍처와 OKF 자기진단

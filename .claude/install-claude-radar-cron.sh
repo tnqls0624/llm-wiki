@@ -34,10 +34,12 @@ cat > "$PLIST" << EOF
   </array>
   <key>RunAtLoad</key>
   <true/>
+  <!-- 주 1회 수요일 09:33 (2026-08-23 일1회->주1회, 아키텍처 P0-5. 래퍼 SLOT_EPOCH과 일치 필수) -->
   <key>StartCalendarInterval</key>
   <dict>
+    <key>Weekday</key><integer>3</integer>
     <key>Hour</key><integer>9</integer>
-    <key>Minute</key><integer>30</integer>
+    <key>Minute</key><integer>33</integer>
   </dict>
   <key>StandardOutPath</key>
   <string>$LOG</string>
@@ -50,4 +52,4 @@ EOF
 # 기존 등록이 있으면 내리고 다시 올린다 (재설치 멱등성)
 launchctl bootout "gui/$(id -u)/$LABEL" 2>/dev/null || true
 launchctl bootstrap "gui/$(id -u)" "$PLIST"
-launchctl list | grep -q "$LABEL" && echo "installed: $LABEL (daily 09:30 local) wrapper=$WRAPPER" || { echo "FAIL: not registered"; exit 1; }
+launchctl list | grep -q "$LABEL" && echo "installed: $LABEL (weekly Wed 09:33 local) wrapper=$WRAPPER" || { echo "FAIL: not registered"; exit 1; }

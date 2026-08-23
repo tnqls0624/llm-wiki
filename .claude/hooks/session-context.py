@@ -96,5 +96,51 @@ try:
 except Exception:
     pass
 
+# 데드맨 스위치(2026-08-23, 아키텍처 P0-1): 트리거를 전부 이벤트에 건 시스템에서
+# "이벤트가 없어 조용함"과 "루프가 죽어 조용함"을 구분한다. radar 26일 침묵 실패가 근거.
+# 임계 초과 항목만 1줄씩 — 평상시 무소음. 실패는 무시(부팅 비차단).
+try:
+    import json as _json
+    _today = datetime.date.today()
+    def _days_since(iso):
+        try: return (_today - datetime.date.fromisoformat(iso[:10])).days
+        except Exception: return None
+    dead = []
+    # ① 학습 검토 정지 — study-state 마지막 검토 로그(### YYYY-MM-DD)
+    st = read(os.path.join(root, ".claude", "runtime", "study-state.md"))
+    revs = re.findall(r"^### (\d{4}-\d{2}-\d{2})", st, re.M)
+    if revs:
+        d = _days_since(max(revs))
+        if d is not None and d > 10:
+            dead.append(f"- 학습 검토 로그 마지막이 **{d}일 전**({max(revs)}) — ai-infra-lab에 커밋이 있다면 `/study-coach review`.")
+    # ② radar 수집 정지 — seen ledger의 updated 필드 (주 1회 + 2일 유예)
+    try:
+        seen = _json.loads(read(os.path.join(root, ".claude", "runtime", "radar-seen.json")))
+        d = _days_since(str(seen.get("updated", "")))
+        if d is not None and d > 9:
+            dead.append(f"- radar 수집 ledger가 **{d}일째** 정지 — cron 사망 의심. `runtime/radar-cron.log` 확인.")
+    except Exception:
+        pass
+    # ③ 커리어 KB 승격 정지 — 20/30 폴더 노트의 최신 updated (도구 KB 80은 cron이 밀므로 제외)
+    latest = None
+    for dname in ("20 Architecture", "30 AI Infrastructure"):
+        dpath = os.path.join(root, dname)
+        if not os.path.isdir(dpath):
+            continue
+        for f in os.listdir(dpath):
+            if not f.endswith(".md"):
+                continue
+            m = re.search(r"^updated:\s*(\d{4}-\d{2}-\d{2})", read(os.path.join(dpath, f), 4000), re.M)
+            if m and (latest is None or m.group(1) > latest):
+                latest = m.group(1)
+    if latest:
+        d = _days_since(latest)
+        if d is not None and d > 21:
+            dead.append(f"- 커리어 KB(20/30)에 마지막 손댄 지 **{d}일** — 승격 루프가 도구 편중(63.3%)을 깎는 유일한 경로다. 버스트일이면 마감 체크에서 후보 1개.")
+    if dead:
+        parts.append("## ⏳ 데드맨 — 멈춘 루프\n" + "\n".join(dead))
+except Exception:
+    pass
+
 ctx = "\n".join(parts).strip()
 print(json.dumps({"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": ctx}}))

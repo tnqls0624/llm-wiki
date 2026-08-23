@@ -83,6 +83,44 @@ cd "$VAULT" || exit 0
     exit 0
   fi
 
+  # ── 커밋 게이트 (2026-08-23, 아키텍처 P0-3) ─────────────────────────
+  # "커밋이 진도의 단위"를 cron에 이식: 마지막 검토 이후 ai-infra-lab에 신규 커밋이 없으면
+  # LLM 채점을 스킵한다(브리핑은 아래 fallback이 항상 보장). 무커밋일 = 무비용·무알림 —
+  # 공백일은 버스트 리듬의 정상 상태이며, 매일 알림은 죄책감 부채를 만든다(브리핑 DB에서 실증).
+  # repo 경로 해석은 study-brief.py와 동일 규칙: state 메타 repo_path + study-local.conf override.
+  REPO_PATH="$(grep -o 'repo_path=[^ |]*' "$VAULT/.claude/runtime/study-state.md" 2>/dev/null | head -1 | cut -d= -f2)"
+  [ -f "$VAULT/.claude/runtime/study-local.conf" ] && \
+    OVERRIDE="$(grep -o 'repo_path=.*' "$VAULT/.claude/runtime/study-local.conf" 2>/dev/null | head -1 | cut -d= -f2)" && \
+    [ -n "$OVERRIDE" ] && REPO_PATH="$OVERRIDE"
+  REPO_PATH="${REPO_PATH/#\~/$HOME}"
+  SKIP_REVIEW=""
+  if [ -d "$REPO_PATH/.git" ]; then
+    # 다른 Mac의 산출물을 먼저 당겨온다 — READ-ONLY 불변식은 "내용을 만들지 않는다"이지
+    # pull 금지가 아니다(기존 /study-coach review 절차의 첫 스텝과 동일).
+    if ! git -C "$REPO_PATH" pull --ff-only 2>&1; then
+      # fail-loud: stale 채점은 fail-silent 재발이다(감시 ⑦). 채점 스킵 + rc=1로 재시도 유도.
+      echo "⚠ ai-infra-lab pull 실패(발산/네트워크) — stale 채점 금지, 오늘 LLM 리뷰 스킵. 수동 해소 필요."
+      SKIP_REVIEW="pull-failed"
+    else
+      LASTREV="$(grep -oE '^### [0-9]{4}-[0-9]{2}-[0-9]{2}' "$VAULT/.claude/runtime/study-state.md" 2>/dev/null | tail -1 | cut -d' ' -f2)"
+      [ -z "$LASTREV" ] && LASTREV="1970-01-01"
+      NEWC="$(git -C "$REPO_PATH" log --since="$LASTREV 23:59:59" --oneline 2>/dev/null | wc -l | tr -d ' ')"
+      if [ "$NEWC" -eq 0 ]; then
+        echo "commit gate: $LASTREV 이후 신규 커밋 0 — LLM 채점 스킵(브리핑만). 무커밋일은 정상 침묵."
+        SKIP_REVIEW="no-commits"
+      else
+        echo "commit gate: 신규 커밋 ${NEWC}건 — 채점 진행."
+      fi
+    fi
+  else
+    echo "⚠ ai-infra-lab 없음($REPO_PATH) — 이 Mac은 브리핑 전용, LLM 채점 스킵."
+    SKIP_REVIEW="no-repo"
+  fi
+
+  if [ -n "$SKIP_REVIEW" ]; then
+    rc=0
+    [ "$SKIP_REVIEW" = "pull-failed" ] && rc=1   # 스탬프 미갱신 → 다음 로그인/슬롯 재시도
+  else
   # sonnet: 검토·채점은 중간 티어로 충분(automation-safety: 무인은 cheapest tier).
   # allowlist: study-brief.py 실행 + git(ai-infra-lab 읽기/pull) + runtime 파일 쓰기.
   "$CLAUDE_BIN" -p "/study-coach review — 어제 새 산출물이 없으면 진도를 바꾸지 말고 오늘 브리핑만 생성하라." \
@@ -91,7 +129,8 @@ cd "$VAULT" || exit 0
     --allowedTools "Bash(python3 .claude/study-brief.py:*),Bash(git:*),Read,Write,Edit,Glob,Grep" \
     2>&1
   rc=$?
-  echo "=== [$(date '+%F %T')] exit=$rc ==="
+  fi
+  echo "=== [$(date '+%F %T')] exit=$rc gate=${SKIP_REVIEW:-review-ran} ==="
 
   # 2차 방어선: review는 .claude/runtime/ 만 변경해야 한다. 프롬프트 오판으로 KB/메커니즘을 건드렸으면
   # auto-commit/push 전에 되돌린다(동의 없는 생성물 차단). ai-infra-lab은 별도 repo라 vault git status에 안 잡힘.
@@ -104,10 +143,12 @@ cd "$VAULT" || exit 0
     python3 "$VAULT/.claude/study-brief.py" --brief-only && echo "(fallback: study-brief.py로 오늘 브리핑 생성 — LLM 리뷰 실패/스킵)"
   fi
 
-  # macOS 알림: 오늘 브리핑 한 줄(brief.py --notify-line은 멱등이라 이미 생성됨 → state에서 다시 못 뽑음)을
-  # study-today.md 본문 "오늘 할 것" 라인에서 추출해 표시. GUI 세션(launchd Aqua)이라 알림 노출됨.
-  # 게이트는 rc가 아니라 "오늘 브리핑 존재?" — LLM 성공/ fallback 어느 경로든 오늘 브리핑이 있으면 알린다.
-  if grep -q "date=$(date +%F)" "$TODAY_FILE" 2>/dev/null; then
+  # macOS 알림 (2026-08-23 개정): 무커밋일은 무알림 — 매일 알림은 죄책감 부채를 만든다(아키텍처 §5).
+  # 알림 조건: 채점이 실제로 돌았거나(review-ran), 사용자 행동이 필요한 실패(pull-failed)만.
+  # no-commits/no-repo 침묵은 정상 상태이고, 루프 사망 감시는 session-context 데드맨 배너가 담당.
+  if [ "$SKIP_REVIEW" = "pull-failed" ]; then
+    osascript -e "display notification \"ai-infra-lab pull 실패 — 발산 수동 해소 필요\" with title \"⚠ study-coach\" sound name \"Basso\"" 2>/dev/null || true
+  elif [ -z "$SKIP_REVIEW" ] && grep -q "date=$(date +%F)" "$TODAY_FILE" 2>/dev/null; then
     NOTE="$(grep -m1 '^\*\*W' "$TODAY_FILE" 2>/dev/null | sed 's/\*\*//g' | cut -c1-110)"
     [ -z "$NOTE" ] && NOTE="오늘의 학습 브리핑이 준비됐어요"
     osascript -e "display notification \"${NOTE//\"/\\\"}\" with title \"📚 AI Infra 학습\" sound name \"Glass\"" 2>/dev/null || true

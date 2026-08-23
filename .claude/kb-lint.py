@@ -188,7 +188,8 @@ def lint_note(path, root, required, page_names, allowed_types):
     """단일 노트 검사 → (issues, meta).
     issues = 치명적 문제(exit code 반영). meta = 정보성 집계용 dict(updated/is_moc/has_conflict 등)."""
     issues = []
-    meta = {"updated": None, "is_moc": False, "has_conflict": False, "has_type": False, "status": None}
+    meta = {"updated": None, "is_moc": False, "has_conflict": False, "has_type": False, "status": None,
+            "confidentiality": None}
     try:
         raw = open(path, encoding="utf-8").read()
     except Exception as e:
@@ -244,6 +245,15 @@ def lint_note(path, root, required, page_names, allowed_types):
     note_name = os.path.splitext(os.path.basename(path))[0]
     if parent in page_names and note_name != parent and not is_moc and parent not in links:
         issues.append("토픽 MOC 백링크 누락: [[%s]] (update duty ②)" % parent)
+
+    # confidentiality 기계 게이트(2026-08-23, 아키텍처 P0-4). 이 vault는 PUBLIC 원격으로
+    # auto-push된다 — automation-safety: 라벨은 강제가 아니므로 여기서 기계로 집행한다.
+    # company-sensitive = 치명(issues → exit 1). personal = 정보성(거버넌스 카운트만) —
+    # 공개 여부는 소유자 결정 사안이라 차단하지 않고 표면화만 한다.
+    conf = fm.get("confidentiality")
+    meta["confidentiality"] = conf
+    if conf == "company-sensitive":
+        issues.append("confidentiality: company-sensitive — 이 vault는 PUBLIC 원격에 자동 push된다. 커밋 전 제거·이동 필수")
 
     # 모순 콜아웃 보유 여부(거버넌스 메트릭 — Conflict Rate).
     meta["has_conflict"] = bool(re.search(r">\s*\[!warning\]\s*모순", raw))

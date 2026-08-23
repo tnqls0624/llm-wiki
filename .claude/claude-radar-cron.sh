@@ -37,14 +37,20 @@ fi
 
 # ── due 판정 (anacron, 매일 09:30) ───────────────────────────────
 # 직전 예정 슬롯의 epoch 계산 (plist의 StartCalendarInterval Hour/Minute과 일치 유지!)
-SLOT_EPOCH="$(python3 - <<'PY'
+# 2026-08-23(아키텍처 P0-5): 일 1회 -> 주 1회(수 09:33). 근거 — 처리가 병목이지 수집이 아니고
+# (모든 수집 표면에 미처리 잔량 실측), 26일 침묵 실패를 아무도 눈치 못 챈 것이 일 1회 과잉의 증거.
+# 정지 감시는 session-context 데드맨 배너(ledger 9일 무갱신)가 별도로 담당한다.
+# 슬롯 시각은 plist StartCalendarInterval(Weekday 3, 09:33)과 반드시 일치해야 한다.
+SLOT_EPOCH="$(python3 - <<'PYEOF'
 import datetime as d
 now = d.datetime.now()
-slot = now.replace(hour=9, minute=30, second=0, microsecond=0)
-if slot > now:            # 오늘 슬롯이 아직 안 왔으면 어제 슬롯이 직전
-    slot -= d.timedelta(days=1)
+slot = now.replace(hour=9, minute=33, second=0, microsecond=0)
+days_back = (now.weekday() - 2) % 7          # 2 = 수요일
+slot -= d.timedelta(days=days_back)
+if slot > now:                                # 오늘이 수요일인데 09:33 전이면 지난주 슬롯이 직전
+    slot -= d.timedelta(days=7)
 print(int(slot.timestamp()))
-PY
+PYEOF
 )"
 if [ "$1" != "--force" ]; then
   if [ ! -f "$STAMP" ]; then
