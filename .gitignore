@@ -61,3 +61,4 @@ inbox/_capture-candidates.md
 .smtcmp_json_db/
 # make-md 플러그인 잔재(빈 디렉토리). 추적/ignore 양쪽에 없어 git add -A 유출 경로였음
 Tags/
+.claude/runtime/radar-last-collect.json

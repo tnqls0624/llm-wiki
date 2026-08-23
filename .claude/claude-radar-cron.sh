@@ -84,6 +84,7 @@ SEEN="$VAULT/.claude/runtime/radar-seen.json"
 _seen_count() { python3 -c "import json,sys;print(len(json.load(open(sys.argv[1])).get('seen',{})))" "$1" 2>/dev/null || echo -1; }
 SEEN_BEFORE="$(_seen_count "$SEEN")"
 QUEUE_BEFORE="$(stat -f%m "$QUEUE" 2>/dev/null || echo 0)"
+RUN_START_EPOCH="$(date +%s)"
 
 {
   echo "=== [$(date '+%F %T')] claude-radar collect start ==="
@@ -92,7 +93,7 @@ QUEUE_BEFORE="$(stat -f%m "$QUEUE" 2>/dev/null || echo 0)"
   "$CLAUDE_BIN" -p "/claude-radar collect — 신규가 없으면 아무 파일도 만들지 말고 '변경 없음'만 보고하고 종료하라." \
     --model sonnet \
     --permission-mode acceptEdits \
-    --allowedTools "Bash(python3 .claude/radar-collect.py:*),Read,Write,Edit,Glob,Grep" \
+    --allowedTools "Bash(python3 .claude/radar-collect.py:*),Read,Write,Edit,Glob,Grep,WebFetch" \
     2>&1
   rc=$?
   echo "=== [$(date '+%F %T')] exit=$rc ==="
@@ -103,15 +104,26 @@ QUEUE_BEFORE="$(stat -f%m "$QUEUE" 2>/dev/null || echo 0)"
   # 가드 로직은 stray-guard.sh로 추출(kb-sync와 공유 + 계약 테스트 대상). runtime 모드 = .claude/runtime/만 허용.
   bash "$VAULT/.claude/stray-guard.sh" runtime
 
-  # 산출물 가드(2026-08-23): seen 원장이 자랐는데 큐가 그대로면 적재 실패다.
-  # exit=0 만 보면 26일간 못 잡았던 침묵이 여기서 시끄러워진다.
+  # 산출물 가드 v2 (2026-08-23): 완주 영수증 계약.
+  # v1(seen 증가 + 큐 무변경 = 실패)은 첫 실전에서 "신규 전부 정당 드롭" 정상 케이스를
+  # 실패로 오판했다(거짓 양성). 이제 LLM은 분류를 마치면 --finish <queued> <dropped>로
+  # 영수증을 남겨야 하고, 가드는 ① 신규가 있었는데 영수증이 없으면 실패(분류 미완주 —
+  # 26일 침묵과 같은 부류) ② queued>0인데 큐 mtime 무변경이면 실패(적재 유실)만 본다.
   SEEN_AFTER="$(_seen_count "$SEEN")"
   QUEUE_AFTER="$(stat -f%m "$QUEUE" 2>/dev/null || echo 0)"
-  if [ "$SEEN_BEFORE" -ge 0 ] && [ "$SEEN_AFTER" -gt "$SEEN_BEFORE" ] && [ "$QUEUE_AFTER" = "$QUEUE_BEFORE" ]; then
-    echo "⚠ 큐 적재 실패: seen $SEEN_BEFORE -> $SEEN_AFTER (신규 $((SEEN_AFTER - SEEN_BEFORE))건)인데 radar-queue.md 무변경."
-    echo "  원인 후보: harness가 runtime/ 경로를 sensitive로 분류해 무인 런의 Edit/Write를 거부. 로그에서 'sensitive file' 검색."
-    echo "  seen 은 이미 갱신됐으므로 그 신규 항목은 재추천되지 않는다(PRUNE_DAYS 경과 전까지). 수동 확인 필요."
-    rc=1
+  RECEIPT="$VAULT/.claude/runtime/radar-last-collect.json"
+  NEW_N=$((SEEN_AFTER - SEEN_BEFORE))
+  if [ "$SEEN_BEFORE" -ge 0 ] && [ "$NEW_N" -gt 0 ]; then
+    RCP_EPOCH="$(python3 -c "import json,sys;print(json.load(open(sys.argv[1])).get('epoch',0))" "$RECEIPT" 2>/dev/null || echo 0)"
+    RCP_QUEUED="$(python3 -c "import json,sys;print(json.load(open(sys.argv[1])).get('queued',-1))" "$RECEIPT" 2>/dev/null || echo -1)"
+    if [ "$RCP_EPOCH" -lt "${RUN_START_EPOCH:-0}" ]; then
+      echo "⚠ 분류 미완주: 신규 ${NEW_N}건이 seen에 기록됐는데 이번 실행의 --finish 영수증이 없다."
+      echo "  LLM 세션이 분류를 끝내지 못했거나 --finish 호출을 누락. 신규 항목은 재추천되지 않으므로 로그에서 수동 확인 필요."
+      rc=1
+    elif [ "$RCP_QUEUED" -gt 0 ] && [ "$QUEUE_AFTER" = "$QUEUE_BEFORE" ]; then
+      echo "⚠ 적재 유실: 영수증은 queued=${RCP_QUEUED}인데 radar-queue.md 무변경 — --append-queue 경로 확인 필요."
+      rc=1
+    fi
   fi
 
   # 성공 시에만 스탬프 갱신 — 실패하면 다음 로그인/슬롯에서 재시도됨

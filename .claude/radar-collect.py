@@ -28,6 +28,7 @@ SEEN_PATH = os.path.join(ROOT, "runtime", "radar-seen.json")
 QUEUE_PATH = os.path.join(ROOT, "runtime", "radar-queue.md")
 QUEUE_TTL_DAYS = 30      # pending이 이 나이를 넘으면 [expired]로 상태 전환(삭제 아님 — 이력 보존)
 QUEUE_MAX_APPEND = 8     # 회당 적재 상한(claude-radar.md §A3와 동일)
+RECEIPT_PATH = os.path.join(ROOT, "runtime", "radar-last-collect.json")  # 완주 영수증(가드가 읽음)
 ATOM = {"a": "http://www.w3.org/2005/Atom"}
 # 일부 소스(dev.to)가 'bot' UA를 Cloudflare로 차단 → 일반 브라우저 UA 사용.
 # 모두 공개 read 엔드포인트이고 하루 1회 호출이라 rate limit/ToS 무해.
@@ -500,6 +501,20 @@ def append_queue(fragment_path):
     return 0
 
 
+def write_receipt(queued, dropped):
+    """분류 완주 영수증 (2026-08-23 검증 라운드에서 도입).
+
+    배경: 래퍼 가드의 초판은 "seen 증가 + 큐 무변경 = 실패"였는데, 첫 실전(08-23 아침)에서
+    LLM이 신규 15건을 전부 정당하게 drop한 정상 케이스를 실패로 오판했다(거짓 양성).
+    큐 mtime은 "전부 드롭"과 "적재 실패"를 구분하지 못한다 — 그래서 완주 자체를 계약으로
+    만든다: LLM은 분류를 마치면 반드시 --finish <queued> <dropped> 를 호출해 영수증을 남기고,
+    가드는 영수증의 존재·신선도·정합(queued>0이면 큐도 변했는가)만 검사한다."""
+    with open(RECEIPT_PATH, "w", encoding="utf-8") as f:
+        json.dump({"epoch": int(time.time()), "queued": queued, "dropped": dropped}, f)
+    print(json.dumps({"receipt": True, "queued": queued, "dropped": dropped}, ensure_ascii=False))
+    return 0
+
+
 def expire_pending(days=QUEUE_TTL_DAYS):
     """QUEUE_TTL_DAYS를 넘긴 날짜 섹션의 [pending]을 [expired]로 상태 전환 (P0-5).
 
@@ -533,7 +548,11 @@ def main():
     ap.add_argument("--no-baseline", action="store_true", help="첫 실행도 baseline 없이 신규로 처리")
     ap.add_argument("--append-queue", metavar="FILE",
                     help="추천 마크다운 조각을 검증 후 큐에 append하고 종료(무인 LLM의 큐 쓰기 경로)")
+    ap.add_argument("--finish", nargs=2, type=int, metavar=("QUEUED", "DROPPED"),
+                    help="분류 완주 영수증 기록 후 종료 — collect 세션의 마지막 의무(래퍼 가드가 검사)")
     args = ap.parse_args()
+    if args.finish:
+        sys.exit(write_receipt(args.finish[0], args.finish[1]))
     if args.append_queue:
         sys.exit(append_queue(args.append_queue))
 

@@ -1443,16 +1443,35 @@ class TestUnattendedOutputGuards(unittest.TestCase):
     분류해 무인 런의 Edit/Write를 거부했고, seen 원장만 계속 자랐다. 그때까지 이 층
     (cron 래퍼·settings.json)에 대한 테스트 참조가 0건이라 아무도 못 잡았다."""
 
-    def test_radar_wrapper_detects_missing_queue_write(self):
+    def test_radar_wrapper_uses_receipt_contract(self):
+        # 가드 v2 (2026-08-23): v1(seen 증가+큐 무변경=실패)은 첫 실전에서 "신규 전부 정당
+        # 드롭"을 실패로 오판했다(거짓 양성). 이제 계약은 완주 영수증(--finish)이다:
+        # 신규가 있었는데 영수증이 없으면 미완주, queued>0인데 큐 무변경이면 유실.
         txt = _read(os.path.join(CLAUDE, "claude-radar-cron.sh"))
-        self.assertIn("radar-queue.md", txt, "래퍼가 산출물 경로를 알아야 가드가 성립")
-        self.assertIn("radar-seen.json", txt, "실패 서명은 'seen은 늘고 큐는 그대로'이므로 원장도 봐야 한다")
-        self.assertRegex(txt, r'SEEN_AFTER"?\s*-gt\s*"?\$SEEN_BEFORE',
-                         "seen 증가 비교가 없으면 신규 0건과 적재 실패를 구분할 수 없다")
-        self.assertRegex(txt, r"\brc=1\b", "산출물 미생성 시 rc를 실패로 바꿔야 한다")
+        self.assertIn("radar-last-collect.json", txt, "가드는 영수증 파일을 읽어야")
+        self.assertIn("분류 미완주", txt, "영수증 부재 = 미완주 실패")
+        self.assertIn("적재 유실", txt, "queued>0 + 큐 무변경 = 유실 실패")
+        self.assertRegex(txt, r"RCP_EPOCH.*-lt.*RUN_START_EPOCH",
+                         "이전 실행의 낡은 영수증을 이번 실행 것으로 오인하면 안 됨")
+        self.assertRegex(txt, r"\brc=1\b", "실패 시 rc=1")
         # positive control: 스탬프 갱신이 rc에 걸려 있어야 rc=1이 재시도를 유발한다
         self.assertRegex(txt, r'\[\s*"\$rc"\s*-eq\s*0\s*\].*STAMP',
                          "스탬프 갱신이 rc 조건부가 아니면 실패해도 다음 슬롯에서 재시도되지 않는다")
+        # 계약의 반대편: 커맨드 문서가 --finish 를 의무화해야 LLM이 영수증을 남긴다
+        doc = _read(os.path.join(CLAUDE, "commands", "claude-radar.md"))
+        self.assertIn("--finish", doc, "§A4가 완주 영수증을 의무화해야 가드가 의미를 가진다")
+
+    def test_radar_finish_writes_receipt(self):
+        d = tempfile.mkdtemp(prefix="rcpt_")
+        self.addCleanup(shutil.rmtree, d, ignore_errors=True)
+        os.makedirs(os.path.join(d, "runtime"))
+        shutil.copy(os.path.join(CLAUDE, "radar-collect.py"), os.path.join(d, "rc.py"))
+        r = subprocess.run(["python3", os.path.join(d, "rc.py"), "--finish", "0", "15"],
+                           capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        rcpt = json.loads(_read(os.path.join(d, "runtime", "radar-last-collect.json")))
+        self.assertEqual((rcpt["queued"], rcpt["dropped"]), (0, 15))
+        self.assertGreater(rcpt["epoch"], 0)
 
     def test_settings_registers_every_hook_script(self):
         # 훅 스크립트가 늘었는데 settings.json 등록을 빼먹으면 그 훅은 조용히 죽는다.

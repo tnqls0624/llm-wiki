@@ -38,8 +38,9 @@ GeekNews·GitHub·Hacker News·Anthropic 공식·dev.to·npm 등에서 Claude Co
 - 이 경로가 정상인 이유: 스크립트는 allowlist된 Bash 명령이라 runtime/ 쓰기가 허용된다(seen ledger가 증거). 무인 durable 변경을 결정론적 코드로만 하는 automation-safety 원칙에도 부합한다.
 - 하루 추천이 8개를 넘으면 가치 높은 8개만 적재하되, 나머지는 **오늘 섹션 끝에 `<!-- overflow: N건 미적재 (이미 seen 처리되어 재출현하지 않음) -->` 주석**으로 남겨 누락을 추적 가능하게 한다(보고에도 언급). `radar-collect.py`는 출력한 전 항목을 seen에 기록하므로 적재하지 않은 항목은 다음 실행에 다시 나오지 않는다 — 무인 로그(`radar-cron.log`)는 gitignore되어 사실상 소실되므로 큐 주석이 유일한 추적 수단이다.
 
-### A4. 보고
-수집 수·신규 수·분류 분포(추천 N건, kb-ingest N건, drop N건)·소스 errors를 한 단락으로 요약한다. **여기서 멈춘다 — 생성·박제는 절대 하지 않는다.**
+### A4. 완주 영수증 + 보고
+- **분류를 마치면 반드시** `python3 .claude/radar-collect.py --finish <큐적재수> <드롭수>` 를 실행한다. 이 영수증이 없으면 래퍼 가드가 "분류 미완주"로 실패 처리한다(신규 전부 drop이어도 `--finish 0 <N>` 필수 — 큐 무변경과 적재 실패를 구분하는 유일한 수단).
+- 수집 수·신규 수·분류 분포(추천 N건, kb-ingest N건, drop N건)·소스 errors를 한 단락으로 요약한다. **여기서 멈춘다 — 생성·박제는 절대 하지 않는다.**
 
 ---
 
