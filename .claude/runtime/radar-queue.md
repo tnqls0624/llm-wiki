@@ -13,6 +13,14 @@
      - **제안**: <무엇을 어떻게 만들지/박제할지>
 -->
 
+## 2026-08-23
+
+### [pending] kb-ingest · Munder Difflin — 나를 복제한 직원들로 사무실을 운영하는 에이전트 하네스
+- **source**: GeekNews
+- **url**: https://news.hada.io/topic?id=32788
+- **근거**: 제목상 자기 복제 에이전트로 조직(사무실)을 운영하는 멀티에이전트 하네스 사례로 보임 — 우리 vault의 workflow/orchestration 패턴과 인접. WebFetch 권한 미승인으로 원문 미확인(제목·source만 근거) — review 시 원문 확인 후 채택 여부 판단 필요.
+- **제안**: review에서 원문 열람 후 `80 Tooling/`에 박제할 가치(멀티에이전트 오케스트레이션 사례) 있는지 판단. 가치 없으면 dismissed 처리.
+
 ## 2026-07-27
 
 ### [done] kb-ingest · Claude Code로 대규모 코드 마이그레이션을 수행한 방법

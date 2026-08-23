@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-08-23T09:17:23",
+ "updated": "2026-08-23T16:52:20",
  "seen": {
   "acl:April 8, 2026": "2026-06-08",
   "acl:May 11, 2026": "2026-06-08",
@@ -1487,6 +1487,10 @@
   "gh:agentrq/agentrq": "2026-08-23",
   "gh:mshadmanrahman/claude-for-designers": "2026-08-23",
   "gn:https://news.hada.io/topic?id=32767": "2026-08-23",
-  "gn:https://news.hada.io/topic?id=32764": "2026-08-23"
+  "gn:https://news.hada.io/topic?id=32764": "2026-08-23",
+  "hn:49405405": "2026-08-23",
+  "ghrel:v2.1.241": "2026-08-23",
+  "gh:sandbaseai/cli": "2026-08-23",
+  "gn:https://news.hada.io/topic?id=32788": "2026-08-23"
  }
 }
