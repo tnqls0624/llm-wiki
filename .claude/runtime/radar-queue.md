@@ -13,6 +13,38 @@
      - **제안**: <무엇을 어떻게 만들지/박제할지>
 -->
 
+## 2026-08-24
+
+### [pending] kb-sync · 00 LLM Wiki 아키텍처와 OKF 자기진단: 출처 구조 변경(https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — /kb-sync --deep
+- **근거**: 2026-08-24 kb-sync §6b 2층 검출(구조 12/프로즈 41 중 구조분). 베이스라인 08-22→08-24 skel diff로 복구 적재.
+
+### [pending] kb-sync · 01 시작하기: 출처 구조 변경(how-claude-code-works) — /kb-sync --deep
+- **근거**: 2026-08-24 kb-sync §6b 2층 검출(구조 12/프로즈 41 중 구조분). 베이스라인 08-22→08-24 skel diff로 복구 적재.
+
+### [pending] kb-sync · 04 설정: 출처 구조 변경(auto-mode-config, debug-your-config, env-vars) — /kb-sync --deep
+- **근거**: 2026-08-24 kb-sync §6b 2층 검출(구조 12/프로즈 41 중 구조분). 베이스라인 08-22→08-24 skel diff로 복구 적재.
+
+### [pending] kb-sync · 06 내장 도구 레퍼런스: 출처 구조 변경(commands) — /kb-sync --deep
+- **근거**: 2026-08-24 kb-sync §6b 2층 검출(구조 12/프로즈 41 중 구조분). 베이스라인 08-22→08-24 skel diff로 복구 적재.
+
+### [pending] kb-sync · 11 플러그인: 출처 구조 변경(plugins-reference) — /kb-sync --deep
+- **근거**: 2026-08-24 kb-sync §6b 2층 검출(구조 12/프로즈 41 중 구조분). 베이스라인 08-22→08-24 skel diff로 복구 적재.
+
+### [pending] kb-sync · 14 IDE와 데스크톱: 출처 구조 변경(vs-code) — /kb-sync --deep
+- **근거**: 2026-08-24 kb-sync §6b 2층 검출(구조 12/프로즈 41 중 구조분). 베이스라인 08-22→08-24 skel diff로 복구 적재.
+
+### [pending] kb-sync · 25 트러블슈팅: 출처 구조 변경(errors) — /kb-sync --deep
+- **근거**: 2026-08-24 kb-sync §6b 2층 검출(구조 12/프로즈 41 중 구조분). 베이스라인 08-22→08-24 skel diff로 복구 적재.
+
+### [pending] kb-sync · 26 변경 이력과 용어집: 출처 구조 변경(whats-new/index) — /kb-sync --deep
+- **근거**: 2026-08-24 kb-sync §6b 2층 검출(구조 12/프로즈 41 중 구조분). 베이스라인 08-22→08-24 skel diff로 복구 적재.
+
+### [pending] kb-sync · 27 게이트웨이: 출처 구조 변경(claude-apps-gateway) — /kb-sync --deep
+- **근거**: 2026-08-24 kb-sync §6b 2층 검출(구조 12/프로즈 41 중 구조분). 베이스라인 08-22→08-24 skel diff로 복구 적재.
+
+### [pending] kb-sync · 29 자체 호스팅 환경: 출처 구조 변경(self-hosted-environments-configuration) — /kb-sync --deep
+- **근거**: 2026-08-24 kb-sync §6b 2층 검출(구조 12/프로즈 41 중 구조분). 베이스라인 08-22→08-24 skel diff로 복구 적재.
+
 ## 2026-08-23
 
 ### [pending] kb-ingest · Munder Difflin — 나를 복제한 직원들로 사무실을 운영하는 에이전트 하네스

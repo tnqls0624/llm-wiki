@@ -39,7 +39,7 @@ KB(`80 Tooling/` 공식문서 노트 29개 + `80 Tooling/80 Tooling.md` MOC)를 
   - `changed_prose_only` — 원문 바이트만 달라짐(표현·오타·링크 재작성). 노트 반영은 보통 불필요.
   - `changed_unknown` — 이전 스냅샷이 구 포맷이라 구조 비교 불가. 구조 변경이라 단정하지 않는다.
 - **큐에는 `changed_structural` 만 적재한다.** `changed` 전체를 적재하지 마라 — 이 문서 사이트는 변경 속도가 커서 `changed` 가 매 실행 출처의 60~80%를 차지한다(2026-08-22 실측: 07-27→08-10 206/251 · 08-10→08-20 187/253 · 08-20→08-22 149/254, 그리고 스냅샷 갱신 직후 수 분 만에 12건이 다시 full 변경으로 잡혔는데 그 12건 전부가 프로즈만이었다). 전체를 적재하면 큐가 노이즈로 죽는다.
-- 적재 형식: **노트 단위로 집계**해 `runtime/radar-queue.md`에 `[pending] kb-sync · <노트>: 출처 구조 변경(<슬러그들>) — /kb-sync --deep`. **노트를 직접 고치지 말 것**(자동 무효화 금지 — 사용자가 review에서 `--deep`로 결정. collect↔review 분리).
+- 적재 형식: **노트 단위로 집계**해 `### [pending] kb-sync · <노트>: 출처 구조 변경(<슬러그들>) — /kb-sync --deep` 항목들을 **임시 파일에 쓰고 `python3 .claude/radar-collect.py --append-queue <파일>`로 적재**한다(2026-08-24 확립 — radar-queue.md는 harness가 sensitive로 분류해 직접 Edit이 거부된다; 회당 상한 8이므로 초과분은 나눠 호출). **노트를 직접 고치지 말 것**(자동 무효화 금지 — 사용자가 review에서 `--deep`로 결정. collect↔review 분리).
 - 마지막에 `python3 .claude/kb-source-hashes.py --update`로 스냅샷을 갱신한다(다음 실행의 기준선). 스냅샷 값은 `{full, skel}` 형태다.
 - 참고: `errors`(fetch 차단)로 나온 항목은 이전 해시가 보존되므로 `removed` 로 오인되지 않는다(2026-08-22 버그 수정 — 그 전엔 외부 블로그 URL 2건이 매 실행 `removed` 로 보고됐다). `removed` 는 이제 "어떤 노트도 더 이상 이 출처를 참조하지 않음"만 뜻한다.
 

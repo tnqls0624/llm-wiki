@@ -449,7 +449,8 @@ def save_seen(seen):
 
 # ── main ───────────────────────────────────────────────────────
 
-QUEUE_HEADER_RE = re.compile(r"^### \[pending\] (skill|agent|command|rule|kb-ingest) · .+$")
+# kb-sync: /kb-sync §6b의 콘텐츠 드리프트 항목(2026-08-24 추가 — 첫 실전에서 enum 불일치로 적재 실패).
+QUEUE_HEADER_RE = re.compile(r"^### \[pending\] (skill|agent|command|rule|kb-ingest|kb-sync) · .+$")
 
 
 def append_queue(fragment_path):

@@ -80,7 +80,7 @@ cd "$VAULT" || exit 0
   "$CLAUDE_BIN" -p "/kb-sync — 변경이 없으면 아무 파일도 만들지 말고 '변경 없음'만 보고하고 종료하라." \
     --model sonnet \
     --permission-mode acceptEdits \
-    --allowedTools "Bash(curl -s https://code.claude.com/docs/*),Bash(python3 .claude/kb-lint.py:*),Bash(python3 .claude/kb-source-hashes.py:*),Read,Write,Edit,Glob,Grep" \
+    --allowedTools "Bash(curl -s https://code.claude.com/docs/*),Bash(python3 .claude/kb-lint.py:*),Bash(python3 .claude/kb-source-hashes.py:*),Bash(python3 .claude/radar-collect.py:*),Read,Write,Edit,Glob,Grep" \
     2>&1
   rc=$?
   echo "=== [$(date '+%F %T')] exit=$rc ==="
