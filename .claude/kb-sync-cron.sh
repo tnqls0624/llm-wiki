@@ -105,9 +105,14 @@ SPAN="$(python3 "$VAULT/.claude/span.py" start kb-sync 2>/dev/null || true)"
   # hot-append.py가 allowlist된 쓰기 경로가 된 이상 "못 썼다"는 변명이 없다 → 계약으로 만든다.
   # KB를 실제로 건드린 실행에만 적용한다(변경 없음 종료는 duty 대상이 아니다). 세션 중 Stop 훅이
   # 이미 커밋했을 수 있으므로 커밋된 변경과 미커밋 변경을 모두 센다.
+  # `-c core.quotepath=false` 는 필수다(2026-08-25 실측으로 발견한 버그 수정). 기본 설정에서 git은
+  # non-ASCII 경로를 `"80 Tooling/31 \355\225\230....md"` 로 escape하고 **따옴표로 감싼다** — 그러면
+  # KB_RE의 `^(20|30|80)` 와 `\.md$` 가 둘 다 빗나가, 이 vault의 KB 노트(전부 한글 파일명)를 하나도
+  # 세지 못한다. 즉 세션 중 Stop 훅이 이미 커밋한 통상 경로에서 KB_TOUCHED가 0이 되어 가드가 영구히
+  # 침묵했다 — 고치려던 '거짓 성공'을 가드 자신이 재생산하는 형태였다. `tr -d '"'` 는 2차 방어선.
   KB_RE='^(20|30|80) .*\.md$'
-  KB_COMMITTED="$(git -C "$VAULT" log --since="@$RUN_START_EPOCH" --name-only --pretty=format: 2>/dev/null | grep -cE "$KB_RE" || true)"
-  KB_DIRTY="$(git -C "$VAULT" status --porcelain 2>/dev/null | sed 's/^...//' | tr -d '"' | grep -cE "$KB_RE" || true)"
+  KB_COMMITTED="$(git -C "$VAULT" -c core.quotepath=false log --since="@$RUN_START_EPOCH" --name-only --pretty=format: 2>/dev/null | tr -d '"' | grep -cE "$KB_RE" || true)"
+  KB_DIRTY="$(git -C "$VAULT" -c core.quotepath=false status --porcelain 2>/dev/null | sed 's/^...//' | tr -d '"' | grep -cE "$KB_RE" || true)"
   KB_TOUCHED=$(( ${KB_COMMITTED:-0} + ${KB_DIRTY:-0} ))
   if [ "$KB_TOUCHED" -gt 0 ]; then
     HOT_RCPT="$VAULT/.claude/runtime/hot-last-append.json"
@@ -123,7 +128,9 @@ SPAN="$(python3 "$VAULT/.claude/span.py" start kb-sync 2>/dev/null || true)"
   if [ -n "$SPAN" ]; then
     SPAN_ST=error; [ "$rc" -eq 0 ] && SPAN_ST=ok
     python3 "$VAULT/.claude/span.py" end "$SPAN" --status "$SPAN_ST" \
-      --attr "rc=$rc" --attr "kb_touched=${KB_TOUCHED:-0}" >/dev/null 2>&1 || true
+      --attr "rc=$rc" --attr "kb_touched=${KB_TOUCHED:-0}" >/dev/null || true
+    # stdout만 버린다 — stderr는 블록의 >>"$LOG"로 흘러야 orphan(계측 버그) 경고가 로그에 남는다.
+    # `2>&1 >/dev/null`로 함께 버리면 span.py의 fail-loud 설계가 정확히 무인 환경에서만 무력해진다.
   fi
 
   # 무인 런의 커밋·push를 훅에 의존하지 않고 직접 수행 (2026-08-25).

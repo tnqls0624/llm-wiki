@@ -1799,6 +1799,70 @@ class TestUnattendedCompletionContracts(unittest.TestCase):
         self.assertIn("KB_COMMITTED", txt)
         self.assertIn("KB_DIRTY", txt)
 
+    def test_kb_touched_pipeline_counts_korean_filenames(self):
+        """실행 검증: 래퍼에서 KB_TOUCHED 파이프라인을 그대로 뽑아 한글 파일명에 돌린다.
+
+        왜 정적 검사로 부족한가(2026-08-25 실측): 이전 판은 문자열 `KB_COMMITTED`/`KB_DIRTY`의
+        존재만 확인해 통과했지만, 실제로는 git이 non-ASCII 경로를 `"80 Tooling/… \355\225\230…"`
+        로 escape하고 따옴표로 감싸서 KB_RE가 전부 빗나갔다. 이 vault의 KB 노트는 **전부 한글
+        파일명**이라, 가드는 통상 경로(세션 중 Stop 훅이 이미 커밋한 상태)에서 영구히 침묵했다.
+        고치려던 '거짓 성공'을 가드가 재생산한 셈이다. 그래서 이 테스트는 파이프라인을 실행한다."""
+        txt = _read(os.path.join(CLAUDE, "kb-sync-cron.sh"))
+        lines = {}
+        for key in ("KB_RE", "KB_COMMITTED", "KB_DIRTY"):
+            m = re.search(r"^\s*(%s=.*)$" % key, txt, re.M)
+            self.assertIsNotNone(m, "%s 라인을 래퍼에서 찾지 못했다" % key)
+            lines[key] = m.group(1).strip()
+
+        d = tempfile.mkdtemp(prefix="kbre_")
+        self.addCleanup(shutil.rmtree, d, ignore_errors=True)
+        ident = ["-c", "user.email=t@t", "-c", "user.name=t"]
+        subprocess.run(["git", "init", "-q", d], check=True, capture_output=True)
+        os.makedirs(os.path.join(d, "80 Tooling"))
+        # 실제 vault의 노트 이름과 같은 형태 — 공백 + 한글 + .md
+        _write(os.path.join(d, "80 Tooling", "04 설정.md"), "note body\n")
+        _write(os.path.join(d, "unrelated.py"), "x = 1\n")
+        subprocess.run(["git", "-C", d, "add", "-A"], check=True, capture_output=True)
+        subprocess.run(["git", "-C", d] + ident + ["commit", "-q", "-m", "add note"],
+                       check=True, capture_output=True)
+        # 미커밋 변경도 하나 만든다(두 카운터를 각각 살린다)
+        _write(os.path.join(d, "80 Tooling", "05 권한.md"), "another\n")
+
+        snippet = "\n".join([
+            'VAULT=%s' % json.dumps(d),
+            'RUN_START_EPOCH=0',
+            lines["KB_RE"], lines["KB_COMMITTED"], lines["KB_DIRTY"],
+            'echo "$KB_COMMITTED $KB_DIRTY"',
+        ])
+        r = subprocess.run(["bash", "-c", snippet], capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        committed, dirty = (int(x) for x in r.stdout.split())
+        self.assertGreaterEqual(committed, 1,
+                                "커밋된 한글 노트를 세지 못한다 — core.quotepath escape 회귀")
+        self.assertGreaterEqual(dirty, 1, "미커밋 한글 노트를 세지 못한다")
+
+    def test_kb_touched_pipeline_ignores_non_kb_paths(self):
+        """positive control의 반대편: 아무 변경이나 세면 가드가 항상 발동해 무의미해진다."""
+        txt = _read(os.path.join(CLAUDE, "kb-sync-cron.sh"))
+        lines = {}
+        for key in ("KB_RE", "KB_COMMITTED", "KB_DIRTY"):
+            lines[key] = re.search(r"^\s*(%s=.*)$" % key, txt, re.M).group(1).strip()
+        d = tempfile.mkdtemp(prefix="kbre2_")
+        self.addCleanup(shutil.rmtree, d, ignore_errors=True)
+        subprocess.run(["git", "init", "-q", d], check=True, capture_output=True)
+        os.makedirs(os.path.join(d, ".claude", "runtime"))
+        _write(os.path.join(d, ".claude", "runtime", "hot.md"), "runtime only\n")
+        _write(os.path.join(d, "README.md"), "root md is not a KB note\n")
+        snippet = "\n".join([
+            'VAULT=%s' % json.dumps(d), 'RUN_START_EPOCH=0',
+            lines["KB_RE"], lines["KB_COMMITTED"], lines["KB_DIRTY"],
+            'echo "$KB_COMMITTED $KB_DIRTY"',
+        ])
+        r = subprocess.run(["bash", "-c", snippet], capture_output=True, text=True)
+        committed, dirty = (int(x) for x in r.stdout.split())
+        self.assertEqual((committed, dirty), (0, 0),
+                         "runtime/·루트 md 변경은 KB 변경이 아니다(변경 없음 종료를 실패로 만들면 안 됨)")
+
     def test_study_wrapper_enforces_review_log(self):
         txt = _read(os.path.join(CLAUDE, "study-coach-cron.sh"))
         self.assertIn("채점 미완주", txt, "게이트 통과 후 리뷰 로그 부재 = 완주 실패")
@@ -2060,6 +2124,13 @@ class TestSpanLedger(unittest.TestCase):
             # 순서 계약: 가드가 rc를 바꾼 뒤에 닫아야 status가 진실이 된다.
             self.assertLess(txt.index("stray-guard.sh"), txt.index("span.py\" end"),
                             f"{w}: span end가 가드보다 앞서면 실패를 ok로 기록한다")
+            # fail-loud 계약: orphan 경고는 stderr로 나온다. `2>&1`로 함께 버리면 span.py의
+            # 계측-버그 경고가 정확히 무인 환경에서만 사라진다(2026-08-25 자체 감사에서 발견).
+            end_line = [l for l in txt.splitlines() if "span.py\" end" in l or
+                        ('--attr "rc=$rc"' in l)]
+            self.assertTrue(end_line, f"{w}: span end 호출 라인을 찾지 못했다")
+            self.assertNotIn("2>&1", "\n".join(end_line),
+                             f"{w}: span end의 stderr를 버리면 orphan 경고가 로그에 남지 않는다")
 
 
 class TestGrillSkill(unittest.TestCase):

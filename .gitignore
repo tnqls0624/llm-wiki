@@ -62,3 +62,12 @@ inbox/_capture-candidates.md
 # make-md 플러그인 잔재(빈 디렉토리). 추적/ignore 양쪽에 없어 git add -A 유출 경로였음
 Tags/
 .claude/runtime/radar-last-collect.json
+
+# span 실행 원장 + 완주 영수증 (2026-08-25 추가 — 기기-로컬 운영 부산물).
+# radar-last-collect.json을 ignore한 것과 같은 성격이고, cron.log·*-last-run을 ignore한 것과 같은
+# 이유다: 두 Mac이 각자 append하는 파일을 추적하면 동기화마다 충돌한다. 관측은 기기별로 본다.
+# 반대로 평가 점수 추이(eval-ledger.jsonl)와 골든셋(evals/cases.jsonl)은 **공유 지식**이므로
+# 계속 추적한다 — study-state.md를 추적하는 것과 같은 판단(충돌 위험을 감수할 값이 있다).
+.claude/runtime/spans.jsonl
+.claude/runtime/hot-last-append.json
+.claude/runtime/eval-last-run.json

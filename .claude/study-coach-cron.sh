@@ -174,7 +174,8 @@ SPAN="$(python3 "$VAULT/.claude/span.py" start study-coach 2>/dev/null || true)"
   if [ -n "$SPAN" ]; then
     SPAN_ST=error; [ "$rc" -eq 0 ] && SPAN_ST=ok
     python3 "$VAULT/.claude/span.py" end "$SPAN" --status "$SPAN_ST" \
-      --attr "rc=$rc" --attr "gate=${SKIP_REVIEW:-review-ran}" >/dev/null 2>&1 || true
+      --attr "rc=$rc" --attr "gate=${SKIP_REVIEW:-review-ran}" >/dev/null || true
+    # stdout만 버린다 — stderr는 로그로 흘러야 orphan(계측 버그) 경고가 보인다(fail-loud 유지).
   fi
 
   # 무인 런의 커밋·push를 훅에 의존하지 않고 직접 수행 (2026-08-25).
