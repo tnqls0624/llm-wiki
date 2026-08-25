@@ -64,7 +64,10 @@ def parse_attrs(pairs):
             out[k] = int(v)
         except ValueError:
             try:
-                out[k] = float(v)
+                f = float(v)
+                # inf/nan은 json.dump가 `Infinity`/`NaN`으로 내보내 표준 JSON이 아니게 되고,
+                # 그 줄부터 원장을 파싱하는 도구가 깨진다 → 문자열로 보존한다.
+                out[k] = v if (f != f or f in (float("inf"), float("-inf"))) else f
             except ValueError:
                 out[k] = v
     return out
@@ -109,6 +112,17 @@ def rows():
     return out
 
 
+def name_from_id(sid):
+    """span id(`{name}-{epoch}-{pid}`)에서 루프 이름을 복원한다.
+
+    `sid.split("-")[0]` 이었을 때 실제 루프 이름 셋(`kb-sync`·`study-coach`·`claude-radar`)이
+    전부 하이픈을 품고 있어 `kb`/`study`/`claude` 로 오분류됐다. 그 결과 summary의 `orphans`
+    카운터 — stderr를 로그로 되돌린 뒤 남은 유일한 기계 판독 orphan 신호 — 가 실제 루프에서
+    영구히 0이 되고, 유령 루프 이름이 집계에 나타났다(2026-08-25 독립 감사가 지적)."""
+    parts = sid.rsplit("-", 2)
+    return parts[0] if len(parts) == 3 else sid
+
+
 def cmd_start(args):
     name = re.sub(r"[^A-Za-z0-9_.-]", "", args.name)[:40]
     if not name:
@@ -135,7 +149,7 @@ def cmd_end(args):
         print("span: 짝이 되는 start를 찾지 못했다 (%s) — 계측 확인 필요" % sid, file=sys.stderr)
     epoch = int(time.time())
     dur = (epoch - start["epoch"]) if start else None
-    append({"id": sid, "name": start["name"] if start else sid.split("-")[0],
+    append({"id": sid, "name": start["name"] if start else name_from_id(sid),
             "phase": "end", "epoch": epoch,
             "date": datetime.date.today().isoformat(),
             "status": args.status, "duration_s": dur,
@@ -143,31 +157,55 @@ def cmd_end(args):
     return 0
 
 
+def median(xs):
+    """짝수 개일 때 두 중앙값의 평균. `xs[len//2]`는 상위-중간이라 median이 아니었다."""
+    if not xs:
+        return None
+    s = sorted(xs)
+    m = len(s) // 2
+    return s[m] if len(s) % 2 else round((s[m - 1] + s[m]) / 2, 1)
+
+
 def cmd_summary(args):
+    """루프별 집계.
+
+    **닫히지 않은 span(dangling start)을 분모에 넣는다.** 이전 판은 종료된 span만 세어서,
+    실행 도중 죽은 런(래퍼가 exit 0으로 빠지거나 프로세스가 죽는 경우)이 분모에서 사라졌다 —
+    4번 중 3번 죽어도 success_rate가 1.0으로 보이는, 관측 도구가 거짓을 말하는 형태였다
+    (2026-08-25 독립 감사가 재현). dangling은 별도 필드로도 노출한다."""
     cutoff = int(time.time()) - args.days * 86400
-    ends = [r for r in rows() if r.get("phase") == "end" and r.get("epoch", 0) >= cutoff]
-    if not ends:
+    window = [r for r in rows() if r.get("epoch", 0) >= cutoff]
+    ends = [r for r in window if r.get("phase") == "end"]
+    ended_ids = {r.get("id") for r in ends}
+    dangling = [r for r in window if r.get("phase") == "start" and r.get("id") not in ended_ids]
+    if not ends and not dangling:
         print(json.dumps({"ok": True, "days": args.days, "loops": {},
-                          "note": "이 기간에 종료된 span이 없다"}, ensure_ascii=False))
+                          "note": "이 기간에 span이 없다"}, ensure_ascii=False))
         return 0
     by = {}
     for r in ends:
         by.setdefault(r.get("name", "?"), []).append(r)
+    dang_by = {}
+    for r in dangling:
+        dang_by.setdefault(r.get("name", "?"), []).append(r)
     loops = {}
-    for name, rs in sorted(by.items()):
-        rs.sort(key=lambda x: x.get("epoch", 0))
-        durs = sorted(x["duration_s"] for x in rs if isinstance(x.get("duration_s"), int))
+    for name in sorted(set(by) | set(dang_by)):
+        rs = sorted(by.get(name, []), key=lambda x: x.get("epoch", 0))
+        nd = len(dang_by.get(name, []))
+        durs = [x["duration_s"] for x in rs if isinstance(x.get("duration_s"), int)]
         ok = sum(1 for x in rs if x.get("status") == "ok")
+        total = len(rs) + nd            # 미종료도 '돌았던 런'이다 — 분모에서 빼면 성공률이 거짓이 된다
         loops[name] = {
-            "runs": len(rs),
+            "runs": total,
             "ok": ok,
             "error": len(rs) - ok,
-            "success_rate": round(ok / len(rs), 3),
-            "median_duration_s": durs[len(durs) // 2] if durs else None,
-            "max_duration_s": durs[-1] if durs else None,
-            "last_run": rs[-1].get("date"),
-            "last_status": rs[-1].get("status"),
-            "last_attrs": rs[-1].get("attrs", {}),
+            "dangling": nd,             # start만 있고 end가 없음 = 도중 사망 또는 계측 누락
+            "success_rate": round(ok / total, 3) if total else None,
+            "median_duration_s": median(durs),
+            "max_duration_s": max(durs) if durs else None,
+            "last_run": rs[-1].get("date") if rs else None,
+            "last_status": rs[-1].get("status") if rs else None,
+            "last_attrs": rs[-1].get("attrs", {}) if rs else {},
             "orphans": sum(1 for x in rs if x.get("orphan")),
         }
     print(json.dumps({"ok": True, "days": args.days, "loops": loops}, ensure_ascii=False, indent=1))

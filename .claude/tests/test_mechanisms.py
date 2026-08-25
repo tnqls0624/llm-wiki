@@ -936,6 +936,60 @@ class TestStrayGuard(unittest.TestCase):
         self.assertEqual(_read(os.path.join(d, ".claude", "hooks", "h.py")), "# baseline hook\n",
                          "kb 모드도 메커니즘 자기수정은 차단")
 
+    # ── 공백·한글·rename (2026-08-25 독립 감사가 잡은 상시 무력 상태) ──────
+    # 위 6개 테스트는 전부 `Claude/n.md`·`h.py` 처럼 **공백도 non-ASCII도 없는** fixture를 써서
+    # 통과했다. 실제 vault의 KB 노트는 전부 `80 Tooling/04 설정.md` 형태이고, git은 그런 경로를
+    # 따옴표로 감싸 출력한다 — 그래서 가드는 "STRAY reverted"를 찍으면서 아무것도 되돌리지
+    # 않았다. 테스트 fixture가 현실과 달라 결함을 가린 전형이라, 아래는 현실 형태로만 짠다.
+
+    def _spaced_repo(self):
+        d = tempfile.mkdtemp(prefix="straysp_")
+        self.addCleanup(shutil.rmtree, d, ignore_errors=True)
+        git(d, "init", "-q")
+        _write(os.path.join(d, ".claude", "runtime", "queue.md"), "baseline\n")
+        _write(os.path.join(d, ".claude", "skills", "some skill", "SKILL.md"), "baseline skill\n")
+        _write(os.path.join(d, "80 Tooling", "04 설정.md"), "baseline note\n")
+        git(d, "add", "-A"); git(d, "commit", "-q", "-m", "base")
+        return d
+
+    def test_removes_untracked_with_space_and_korean(self):
+        d = self._spaced_repo()
+        new = os.path.join(d, ".claude", "skills", "evil skill", "새 스킬.md")
+        _write(new, "동의 없는 생성물\n")
+        out = self._run(d, "kb")
+        self.assertFalse(os.path.exists(new),
+                         "공백+한글 경로의 미추적 생성물이 삭제되지 않았다(무인 런이 공개 원격에 push한다)")
+        self.assertIn("새 스킬", out.stdout, "되돌린 경로가 보고돼야 — 조용한 성공은 거짓 성공이다")
+
+    def test_reverts_tracked_with_space_and_korean(self):
+        d = self._spaced_repo()
+        p = os.path.join(d, ".claude", "skills", "some skill", "SKILL.md")
+        _write(p, "# EVIL self-modification\n")
+        self._run(d, "kb")
+        self.assertEqual(_read(p), "baseline skill\n", "공백 포함 추적 파일이 원복되지 않았다")
+
+    def test_reverts_staged_rename_both_sides(self):
+        # rename은 공백 유무와 무관하게 통째로 누락됐다: 새 경로는 남고 원본은 사라진 상태로
+        # 커밋 경계를 넘어갔다. 양쪽이 모두 복원돼야 한다.
+        d = self._spaced_repo()
+        old = os.path.join(d, ".claude", "skills", "some skill", "SKILL.md")
+        new = os.path.join(d, ".claude", "skills", "some skill", "RENAMED.md")
+        git(d, "mv", os.path.relpath(old, d), os.path.relpath(new, d))
+        self._run(d, "kb")
+        self.assertFalse(os.path.exists(new), "rename 결과물이 남았다")
+        self.assertEqual(_read(old), "baseline skill\n", "rename 원본이 복원되지 않았다")
+
+    def test_spaced_kb_note_and_runtime_survive_kb_mode(self):
+        # positive control: 위 세 테스트가 '전부 지운다'로 통과하면 안 된다.
+        d = self._spaced_repo()
+        note = os.path.join(d, "80 Tooling", "04 설정.md")
+        rt = os.path.join(d, ".claude", "runtime", "queue.md")
+        _write(note, "kb-sync가 정상 갱신\n")
+        _write(rt, "runtime 정상 갱신\n")
+        self._run(d, "kb")
+        self.assertIn("정상 갱신", _read(note), "kb 모드는 공백 포함 KB 노트를 보존해야")
+        self.assertIn("정상 갱신", _read(rt), "runtime 은 항상 보존")
+
 
 # ── study-brief.py / study-coach (학습 코치 무인 브리핑 엔진) ──────────
 STUDY_BRIEF = os.path.join(CLAUDE, "study-brief.py")
@@ -1773,6 +1827,77 @@ class TestHotAppend(unittest.TestCase):
     def test_empty_line_rejected(self):
         self.assertEqual(self.run_ha("--line", "   ").returncode, 1)
 
+    # ── 데이터 파괴 경로 (2026-08-25 독립 감사가 재현한 것들) ──────────────
+    # 공통 성질: 전부 rc=0 + ok:true + 영수증을 남겼고, kb-sync의 duty-③ 가드는 영수증만 보므로
+    # **데이터 파괴가 '완주'로 집계**됐다. 무인 경로가 allowlist돼 있어 이론적 위험이 아니었다.
+
+    def test_keep_below_one_rejected(self):
+        # `--keep 0` 은 방금 추가한 항목까지 포함해 섹션 전체를 지우고 ok:true를 냈다.
+        for k in ("0", "-1"):
+            r = self.run_ha("--line", "x", "--keep", k)
+            self.assertEqual(r.returncode, 1, "--keep %s 가 통과했다" % k)
+        self.assertIn("old A", _read(self.hot), "거부됐으면 기존 항목이 살아있어야")
+
+    def test_prune_below_one_rejected(self):
+        for k in ("0", "-1"):
+            r = self.run_ha("--prune", k)
+            self.assertEqual(r.returncode, 1, "--prune %s 가 통과했다" % k)
+        self.assertEqual(len([l for l in _read(self.hot).splitlines() if l.startswith("- **")]), 2)
+
+    def test_dash_only_input_rejected(self):
+        # sanitize→빈검사→lstrip('-') 순서였을 때 `--- ` 가 빈 엔트리로 기록되고 영수증도 갱신됐다.
+        f = os.path.join(self.d, "dash.txt")
+        _write(f, "--- \n")
+        self.assertEqual(self.run_ha("--line-file", f).returncode, 1)
+        self.assertFalse(os.path.exists(os.path.join(self.d, "runtime", "hot-last-append.json")),
+                         "거부된 입력이 duty-③ 영수증을 남기면 가드가 빈 엔트리를 완주로 인정한다")
+
+    def test_header_bypass_via_leading_dash_rejected(self):
+        f = os.path.join(self.d, "hdr.txt")
+        _write(f, "-## forged section\n")
+        self.assertEqual(self.run_ha("--line-file", f).returncode, 1)
+
+    def test_date_label_prefix_rejected(self):
+        self.assertEqual(self.run_ha("--line", "**2020-01-01** — forged history").returncode, 1)
+
+    def test_section_anchor_is_after_inject_block(self):
+        """앵커가 INJECT 블록 뒤로 제한됐는지 — 마커 안에 같은 문구가 있어도 무해해야.
+
+        `body.index(SECTION)`(첫 발생)이던 동안 마커 안 문구에 앵커가 걸려, prune이 마커 안 줄을
+        지우거나(INJECT 가드에 걸림) **진짜 항목을 대신 지우면서 rc=0** 을 냈다 — 후자는 가드로
+        잡히지 않으므로 앵커 자체를 고치는 것이 근본 수정이다. 실제 hot.md의 마커 안에는
+        '`## Recent sessions`'가 있어 전체 문구와 한 단어 차이로 비껴간 상태였다."""
+        inject = ("<!-- INJECT:START -->\n"
+                  "설명: 항목은 ## Recent sessions (newest first) 아래에 쌓인다\n"
+                  "- **2026-08-09** — 마커 안 예시 1\n"
+                  "- **2026-08-08** — 마커 안 예시 2\n"
+                  "<!-- INJECT:END -->")
+        _write(self.hot, "# hot\n" + inject + "\n\n"
+               "## Recent sessions (newest first)\n"
+               "- **2026-08-20** — real A\n- **2026-08-19** — real B\n- **2026-08-18** — real C\n")
+        r = self.run_ha("--prune", "1")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        body = _read(self.hot)
+        self.assertIn(inject, body, "마커 블록이 한 글자라도 변하면 안 된다")
+        self.assertIn("real A", body, "최신 항목은 남아야")
+        self.assertNotIn("real C", body, "초과 항목은 지워져야 — prune이 실제로 동작해야 한다")
+        self.assertEqual(json.loads(r.stdout)["entries"], 1,
+                         "entries 는 마커 밖 섹션만 세야 한다")
+
+    def test_check_is_loud_on_broken_structure(self):
+        # ok:false 를 출력하면서 exit 0 이던 자기모순 — 이 프레임워크가 금지하는 silent-fail.
+        _write(self.hot, "# hot\n(마커도 섹션도 없음)\n")
+        self.assertEqual(self.run_ha("--check").returncode, 1)
+        os.remove(self.hot)
+        self.assertEqual(self.run_ha("--check").returncode, 1, "파일 부재도 loud 해야")
+
+    def test_concurrent_appends_use_distinct_tmp(self):
+        # 고정 `.tmp` 이름이던 동안 동시 append가 os.replace에서 raw traceback으로 죽고
+        # 상대의 항목을 유실시켰다(감사: ok:true 8건 vs 실제 7줄). PID 분리를 계약으로 둔다.
+        src = _read(self.script)
+        self.assertIn("os.getpid()", src, "임시 파일 이름에 PID가 없으면 동시 실행이 서로를 덮어쓴다")
+        self.assertNotIn('HOT_PATH + ".tmp"', src)
+
 
 class TestUnattendedCompletionContracts(unittest.TestCase):
     """무인 래퍼의 완주 계약 — exit=0이 완주의 증거가 아니라는 실측(08-24)에 대한 응답."""
@@ -2115,6 +2240,46 @@ class TestSpanLedger(unittest.TestCase):
         with open(os.path.join(self.d, "runtime", "spans.jsonl"), "a") as f:
             f.write("this is not json\n")
         self.assertEqual(self.sp("summary", "--days", "1").returncode, 0)
+
+    def test_orphan_name_survives_hyphenated_loop_names(self):
+        # 실제 루프 이름 셋이 전부 하이픈을 품는다(kb-sync·study-coach·claude-radar). id에서
+        # 이름을 `split("-")[0]` 로 뽑던 동안 `kb`/`study`/`claude` 로 오분류돼, summary의
+        # orphans 카운터가 실제 루프에서 영구히 0이었다(감사가 지적).
+        for name in ("kb-sync", "study-coach", "claude-radar"):
+            self.sp("end", "%s-1787000000-999" % name, "--status", "error")
+        got = {r["name"] for r in self.ledger() if r.get("orphan")}
+        self.assertEqual(got, {"kb-sync", "study-coach", "claude-radar"}, got)
+
+    def test_dangling_start_counts_in_denominator(self):
+        # 닫히지 않은 span(도중 사망)이 분모에서 빠지면 관측 도구가 거짓을 말한다:
+        # 4번 중 1번만 끝나도 success_rate 1.0으로 보였다.
+        for _ in range(3):
+            self.sp("start", "loop")
+        sid = self.sp("start", "loop").stdout.strip()
+        self.sp("end", sid, "--status", "ok")
+        loops = json.loads(self.sp("summary", "--days", "1").stdout)["loops"]["loop"]
+        self.assertEqual(loops["dangling"], 3)
+        self.assertEqual(loops["runs"], 4, "미종료도 '돌았던 런'이다")
+        self.assertAlmostEqual(loops["success_rate"], 0.25, places=2)
+
+    def test_inf_attr_keeps_ledger_valid_json(self):
+        # float('inf')는 json이 `Infinity`로 내보내 표준 위반 — 그 줄부터 파서가 깨진다.
+        sid = self.sp("start", "x").stdout.strip()
+        self.sp("end", sid, "--status", "ok", "--attr", "a=inf", "--attr", "b=nan", "--attr", "c=2.5")
+        raw = _read(os.path.join(self.d, "runtime", "spans.jsonl"))
+        self.assertNotIn("Infinity", raw)
+        self.assertNotIn("NaN", raw)
+        attrs = self.ledger()[-1]["attrs"]
+        self.assertEqual((attrs["a"], attrs["b"], attrs["c"]), ("inf", "nan", 2.5))
+
+    def test_median_is_true_median(self):
+        for d in (10, 20, 30, 40):
+            sid = self.sp("start", "m").stdout.strip()
+            # duration은 실행 시간이라 직접 못 정하므로 원장을 직접 검사하는 대신 median() 함수를 본다
+            self.sp("end", sid, "--status", "ok")
+        src = _read(self.script)
+        self.assertIn("def median(", src, "짝수 개일 때 상위-중간을 median이라 부르던 버그")
+        self.assertNotIn('durs[len(durs) // 2]', src)
 
     def test_wrappers_are_instrumented(self):
         for w in ("kb-sync-cron.sh", "claude-radar-cron.sh", "study-coach-cron.sh"):

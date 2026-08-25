@@ -136,7 +136,11 @@ try:
     if latest:
         d = _days_since(latest)
         if d is not None and d > 21:
-            dead.append(f"- 커리어 KB(20/30)에 마지막 손댄 지 **{d}일** — 승격 루프가 도구 편중(63.3%)을 깎는 유일한 경로다. 버스트일이면 마감 체크에서 후보 1개.")
+            # 편중 비율은 **하드코딩하지 않는다**: 63.3%가 박혀 있던 동안 hot.md는 64.0%로
+            # 갱신돼, 같은 SessionStart 페이로드 안에 서로 모순되는 두 수치가 실렸다
+            # (2026-08-25 독립 감사가 지적). 수치가 필요하면 Content 줄을 보게 하고, 배너는
+            # '무엇이 멈췄고 무엇을 하라'만 말한다.
+            dead.append(f"- 커리어 KB(20/30)에 마지막 손댄 지 **{d}일** — 승격 루프가 `80 Tooling/` 편중을 깎는 유일한 경로다(현재 비율은 hot.md Content 줄 참조). 버스트일이면 마감 체크에서 후보 1개.")
     if dead:
         parts.append("## ⏳ 데드맨 — 멈춘 루프\n" + "\n".join(dead))
 except Exception:
