@@ -35,7 +35,8 @@ obsidian_sync/
 │   ├── skills/                  # 스킬 (kb-assistant · soobeen-check · soobeen-grill · blog-publish)
 │   ├── rules/                   # 자동 로드 룰 3개
 │   ├── hooks/                   # 이벤트 훅 4개
-│   ├── tests/                   # 계약 테스트 (183 케이스)
+│   ├── evals/                   # kb-eval 골든셋 (cases.jsonl — 정답은 저장하지 않는다)
+│   ├── tests/                   # 계약 테스트 (299 케이스 — 정확한 수는 run-tests.sh 출력을 본다)
 │   ├── runtime/                 # 휘발성 상태 (hot.md, 큐, ledger, 로그)
 │   ├── kb-required-fields.txt · kb-allowed-types.txt   # frontmatter 스키마 정본
 │   ├── *.py / *.sh              # 스크립트 + cron 래퍼/설치기 + stray-guard.sh
@@ -161,7 +162,7 @@ obsidian_sync/
 | `radar-collect.py` | claude-radar 수집 엔진(0-LLM, 결정론적). 10개 채널 → dedup → JSON |
 | `hot-append.py` | **무인 런의 `hot.md` 쓰기 경로**(0-LLM, 결정론적, 2026-08-25). 하네스가 `runtime/hot.md`를 sensitive로 분류해 무인 Edit/Write를 거부하므로 갱신 의무 ③이 구조적으로 불가능했다(08-24 kb-sync 실측: 두 번 거부 + exit=0). `--line`이 `## Recent sessions` 맨 위에 삽입하고 같은 날 2회차는 `(n)` 카운터, 헤더·제어문자 주입 거부, `INJECT` 블록 불변 검증, 롤링 상한 25개(`--prune`), 영수증(`hot-last-append.json`) 기록 — 이 영수증이 kb-sync 래퍼의 duty-③ 완주 판정 근거다 |
 | `study-brief.py` | study-coach 아침 브리핑 엔진(0-LLM, 결정론적). `study-state.md` 읽어 요일별 다음 미완료 항목 **+ 항목 하위 학습 가이드(개념·자료·완료기준·막히면)** → `study-today.md`. 날짜 멱등(`--check`/`--dry-run`/`--force`/`--brief-only`). `--brief-only`는 브리핑만 쓰고 `last_brief_date`는 안 건드림 — cron의 LLM 리뷰 실패 시 fallback |
-| `kb-eval.py` | **산출물 품질 평가 엔진**(0-LLM, 결정론적, 2026-08-25 · 같은 날 재설계). 계약 테스트는 메커니즘만 보므로 "LLM이 쓴 내용이 맞는가"는 검증 주체가 없었다. 케이스 2종 — `grounding`(노트의 사실 주장이 `source_urls` 원문에 실재하나; kb-lint는 슬러그 *존재*만 본다)과 `routing`(radar 적재/드롭 판단). **핵심 계약은 "판단은 LLM, 산술은 코드"** — judge는 관찰한 수만 낸다(`claims_checked`/`claims_grounded`/`contradictions`, 또는 `decision`), `score`·`verdict`를 제출하면 **거부**된다. 초판은 judge가 자기 점수를 매겨서 앵커가 없었고 **삭제된 노트에 1.0/pass가 수락**됐다. 정답(gold)은 **케이스 파일에 저장하지 않고** `--record` 시점에 `radar-queue.md`(사용자 결정의 원천)에서 도출한다 — 2지선다는 해시로 숨길 수 없고, 케이스 파일은 git 추적이라 정답 요약표를 배포하는 셈이었다. 케이스는 **append-mostly**(기존 id 보존 · 사라진 대상은 삭제 대신 `retired`)라 추이가 끊기지 않고 고아 행이 게이트를 막지 않는다. `--record`는 형식 위반 하나에 **전체 거부**(중복 id·활성 케이스 수 초과·`contradictions>0`은 비율 무관 fail·`claims_checked<3` 거부). `--regress`가 보는 셋: grounding floor 미달 · 직전 대비 0.15↓(단 **노트 내용 해시가 바뀌면 `rebaselined`** — 다른 텍스트를 비교하지 않는다) · **routing이 majority baseline 이하**(9 queue/1 drop 골든셋에서 상수 "queue" 답변이 0.90을 받던 것을 차단 — 다수 클래스만 답해 얻는 점수는 통과가 아니다) |
+| `kb-eval.py` | **산출물 품질 평가 엔진**(0-LLM, 결정론적, **v3** 2026-08-26). 계약 테스트는 메커니즘만 보므로 "LLM이 쓴 내용이 맞는가"는 검증 주체가 없었다. 케이스 2종 — `grounding`(노트의 사실 주장이 `source_urls` 원문에 실재하나)과 `routing`(radar 적재/드롭 판단). v1·v2는 각각 독립 감사(12 에이전트)에서 뚫렸고, v3는 그 **경계를 인정하고** 설계됐다. **강제**: ① `--record`는 그 타입의 활성 케이스 **전량**(코호트) — v2는 유리한 9건만 골라 제출하면 통과했다 ② 같은 날 재채점은 `--force` 없이 거부 — v2는 무제한 재제출을 허용하면서 틀린 케이스를 알려줘 2회차 만점이 보장됐다 ③ 출력은 `failed_count`만 — 어느 케이스가 틀렸는지 알려주지 않는다 ④ routing 판정은 **balanced accuracy**(클래스별 recall 평균) > 0.5 — **상수 전략은 표본 크기·불균형과 무관하게 정확히 0.5**다. v2의 majority baseline은 상수 전략이 결정론적으로 달성하는 값이라 동률에서만 걸리고, 균형 표본이 커지면 약해지고, 단일 클래스에선 1.0이 되어 완벽한 채점자도 영구 실패했다 ⑤ grounding 앵커 — 노트 존재·본문 해시(frontmatter 제외, `updated:` 범프로 세탁 불가)·`claims_checked` 상한을 **본문 분량에서** 계산(v2는 13자 노트에 100/100을 1.0으로 수락) ⑥ 판정 불가(`undecidable`)를 실패·통과 어느 쪽도 아닌 제3의 상태로 분리 ⑦ 게이트가 `verdict`를 읽는다. **정답은 케이스 파일에 저장하지 않고** `--record` 시점에 `radar-queue.md`에서 도출한다. **강제하지 못하는 것**(출력의 `enforcement_limits`에 매번 함께 낸다): 채점자가 큐를 읽어 정답을 아는 것 · 원장·케이스 파일을 고치는 것 · 상한 안에서 주장 수를 발명하는 것 — 즉 **성실한 채점자의 회귀를 잡는 장치이고, 부정직한 채점자를 막는 장치가 아니다** |
 | `span.py` | **무인 루프 실행 원장**(0-LLM, 결정론적, 2026-08-25). cron 로그의 자유 텍스트 + `exit=N`으로는 "어느 단계에서 죽었나·언제부터 느려졌나·성공률이 얼마나"를 답할 수 없었다(radar 26일 침묵이 그 대가). `earendil-works/pi`의 `pi-telemetry` 계약을 우리 규모로 축약 — span(작업 1건)·attrs(명명된 사실, 숫자는 숫자로)·status(ok\|error)만, 익스포터·백엔드·전역 current-span 없이 JSONL 한 파일. `start`가 id를 stdout에 내고 `end`가 duration을 계산, 짝 없는 `end`는 **계측 버그로 경고**(orphan 플래그). `summary`는 루프별 성공률·중간 지속시간, `check`는 마지막 **성공**이 오래되면 exit 1(산출물 날짜를 보는 기존 데드맨과 상보적 — '정상 무소음'과 '사망'을 가른다). 세 cron 래퍼가 계측되며 span end는 **가드가 rc를 확정한 뒤** 닫힌다 |
 | `blog-collect.py` | 블로그 초안의 웹 참조 이미지 수집·저장(0-LLM, 결정론적). 본문 `[사진 N]` ↔ 이미지 계획(`IMG:` 줄) **1:1 대응 검증**(어긋나면 exit 4) → `web`+URL 항목을 다운로드해 `blog/<slug>/N. 이름.png` 저장(**content-type image/* + 10MB cap + SSRF 가드**: http/https·공인 호스트만) → `SOURCES.md`에 출처·라이선스 기록(저작권 판단 근거) → 빌드 섹션 뗀 발행 본문 출력. `shot`·URL없음은 대기로 보고. 어떤 URL이 맞는지 **검색은 메인 세션 몫**, 스크립트는 다운로드·검증·정리만. **메인 세션 실행**(agent·cron 아님). `--check`/`--outdir`/`--in-place`/`--allow-local-hosts`(테스트) |
 | `stray-guard.sh` | 무인 cron 런이 허용 범위 밖 파일을 건드리면 커밋 경계 이전에 되돌림(radar/study=`runtime` 모드 / kb-sync=`kb` 모드). 안전 2차 방어선 |
@@ -184,7 +185,7 @@ obsidian_sync/
 ## ✅ 테스트
 
 ```bash
-bash .claude/tests/run-tests.sh      # 135개 계약 테스트 (표준 라이브러리만, 의존성 0)
+bash .claude/tests/run-tests.sh      # 계약 테스트 (표준 라이브러리만, 의존성 0) — 케이스 수는 출력에서 확인
 ```
 
 격리 임시 vault에서 모든 훅·스크립트를 실제 호출해 계약을 검증한다(silent-fail 회귀 방지). 새 메커니즘을 추가하면 `test_mechanisms.py`에 케이스를 더하는 것이 규칙이다.
