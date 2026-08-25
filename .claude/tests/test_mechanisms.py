@@ -2015,10 +2015,12 @@ class TestUnattendedCompletionContracts(unittest.TestCase):
 
 
 class TestKbEval(unittest.TestCase):
-    """kb-eval — LLM 산출물 품질 평가 하네스 (2026-08-25).
+    """kb-eval — 산출물 품질 평가 하네스 (2026-08-25 재설계 후).
 
-    계약 테스트 231개는 메커니즘만 본다. 이 하네스는 '내용이 맞는가'를 보는 유일한 축이라,
-    그 자신의 계약(정답 누출 차단·형식 검증·회귀 판정)이 깨지면 품질 게이트가 조용히 죽는다."""
+    이 하네스는 계약 테스트가 못 보는 유일한 축(=LLM이 쓴 내용의 정확성)을 담당하므로, 그 자신의
+    계약이 깨지면 품질 게이트가 조용히 죽는다. 초판은 실제로 죽어 있었다 — judge가 자기 점수를
+    매기고(앵커 없음), gold를 케이스 파일에 넣고(2지선다는 해시로 못 숨긴다), 골든셋이 9:1이라
+    상수 답변이 0.90을 받았다. 아래 테스트는 그 세 결함이 재발하면 잡도록 짜여 있다."""
 
     def setUp(self):
         self.d = tempfile.mkdtemp(prefix="kbeval_")
@@ -2026,149 +2028,303 @@ class TestKbEval(unittest.TestCase):
         self.claude = os.path.join(self.d, ".claude")
         os.makedirs(os.path.join(self.claude, "runtime"))
         os.makedirs(os.path.join(self.claude, "evals"))
-        # 스크립트가 자기 위치로 REPO(=부모 디렉터리)를 정하므로 복사만으로 격리된다.
         self.script = os.path.join(self.claude, "kb-eval.py")
         shutil.copy(os.path.join(CLAUDE, "kb-eval.py"), self.script)
         os.makedirs(os.path.join(self.d, "80 Tooling"))
-        _write(os.path.join(self.d, "80 Tooling", "01 테스트.md"),
-               "---\nid: t-01\nsource_urls: [slug-a, slug-b]\n---\n\n본문 주장이 여기 있다.\n")
-        _write(os.path.join(self.claude, "runtime", "radar-queue.md"),
-               "### [done] kb-ingest · 채택된 항목\n\n### [dismissed] skill · 버려진 항목\n")
+        # 인라인 리스트 / 들여쓰기 0 블록 리스트 두 형태를 모두 둔다(후자는 초판 파서가 놓쳤다)
+        _write(os.path.join(self.d, "80 Tooling", "01 하나.md"),
+               "---\nid: t1\nsource_urls: [slug-a, slug-b]\n---\n\n본문 A\n")
+        _write(os.path.join(self.d, "80 Tooling", "02 둘.md"),
+               "---\nid: t2\nsource_urls:\n- https://x.example/one\n---\n\n본문 B\n")
+        # 불균형 큐(queue 4 / drop 1) → majority baseline 0.8. 실제 vault의 9:1과 같은 성질.
+        q = "".join("### [done] kb-ingest · 채택 %d\n\n" % i for i in range(1, 5))
+        q += "### [dismissed] skill · 버림 1\n"
+        _write(os.path.join(self.claude, "runtime", "radar-queue.md"), q)
 
     def ev(self, *args):
         return subprocess.run(["python3", self.script, *args], capture_output=True, text=True)
 
-    def seeded(self):
+    def seed(self):
         r = self.ev("--seed")
         self.assertEqual(r.returncode, 0, r.stderr)
         return json.loads(r.stdout)
 
     def cases(self):
-        rows = []
-        for ln in _read(os.path.join(self.claude, "evals", "cases.jsonl")).splitlines():
-            if ln.strip():
-                rows.append(json.loads(ln))
-        return rows
+        return [json.loads(l) for l in _read(os.path.join(self.claude, "evals", "cases.jsonl")).splitlines() if l.strip()]
 
-    def test_seed_builds_both_types(self):
-        out = self.seeded()
-        self.assertEqual(out["by_type"]["grounding"], 1, "source_urls 있는 노트 1개")
-        self.assertEqual(out["by_type"]["routing"], 2, "done+dismissed 레이블 2개")
+    def ids(self, ctype, retired=False):
+        return [c["id"] for c in self.cases()
+                if c["type"] == ctype and bool(c.get("retired")) == retired]
 
-    def test_seed_is_deterministic(self):
-        self.seeded()
-        first = sorted(c["id"] for c in self.cases())
-        self.seeded()
-        self.assertEqual(first, sorted(c["id"] for c in self.cases()),
-                         "표본이 실행마다 바뀌면 점수 추이가 무의미해진다")
+    def submit(self, results, judge="t"):
+        f = os.path.join(self.d, "res.json")
+        _write(f, json.dumps({"judge": judge, "results": results}))
+        return self.ev("--record", f)
+
+    def ledger(self):
+        p = os.path.join(self.claude, "runtime", "eval-ledger.jsonl")
+        return [json.loads(l) for l in _read(p).splitlines() if l.strip()] if os.path.exists(p) else []
+
+    # ── seed: append-mostly, gold 미저장, 은퇴 ───────────────────────────
+
+    def test_seed_builds_both_types_including_block_yaml(self):
+        out = self.seed()
+        self.assertEqual(out["active"]["grounding"], 2,
+                         "들여쓰기 0의 블록 리스트 노트가 표본에서 빠지면 안 된다")
+        self.assertEqual(out["active"]["routing"], 5)
+
+    def test_seed_never_stores_gold(self):
+        # 2지선다는 해시로 숨길 수 없다 → 정답은 저장하지 않고 큐에서 도출한다.
+        self.seed()
+        for c in self.cases():
+            self.assertNotIn("gold", c, "케이스 파일에 정답이 있으면 git 추적 파일로 배포된다")
+
+    def test_seed_strips_legacy_gold(self):
+        # 초판이 남긴 gold를 마이그레이션으로 제거하는지(파일은 git에 이미 커밋돼 있었다).
+        self.seed()
+        cs = self.cases()
+        cs[0]["gold"] = "queue"
+        _write(os.path.join(self.claude, "evals", "cases.jsonl"),
+               "".join(json.dumps(c, ensure_ascii=False) + "\n" for c in cs))
+        out = self.seed()
+        self.assertEqual(out["gold_stripped"], 1)
+        self.assertNotIn("gold", self.cases()[0])
+
+    def test_seed_preserves_ids_when_set_grows(self):
+        # 초판은 매번 재추첨해서 집합이 커지면 표본이 바뀌고 원장이 고아가 됐다.
+        self.seed()
+        before = sorted(c["id"] for c in self.cases())
+        _write(os.path.join(self.d, "80 Tooling", "03 셋.md"),
+               "---\nid: t3\nsource_urls: [slug-c]\n---\n\n본문 C\n")
+        with open(os.path.join(self.claude, "runtime", "radar-queue.md"), "a") as f:
+            f.write("\n### [dismissed] agent · 버림 2\n")
+        self.seed()
+        after = sorted(c["id"] for c in self.cases())
+        self.assertTrue(set(before).issubset(set(after)),
+                        "집합이 커질 때 기존 case id가 사라지면 추이가 끊긴다")
+
+    def test_seed_retires_instead_of_deleting(self):
+        self.seed()
+        gid = self.ids("grounding")[0]
+        note = next(c["note"] for c in self.cases() if c["id"] == gid)
+        os.remove(os.path.join(self.d, note))
+        out = self.seed()
+        self.assertEqual(out["retired_now"], 1)
+        self.assertIn(gid, [c["id"] for c in self.cases()], "은퇴는 삭제가 아니다 — 이력을 보존한다")
+        self.assertIn(gid, self.ids("grounding", retired=True))
+
+    def test_seed_warns_on_imbalance(self):
+        out = self.seed()
+        self.assertEqual(out["routing_balance"]["majority_baseline"], 0.8)
+        self.assertIn("치우쳤다", out.get("warning", ""),
+                      "불균형을 조용히 넘기면 무의미한 점수가 통과로 보인다")
 
     def test_moc_excluded_from_grounding(self):
-        # MOC(파일명==디렉터리명)은 종합 허브라 출처 정합 대상이 아니다.
         _write(os.path.join(self.d, "80 Tooling", "80 Tooling.md"),
                "---\nid: moc\nsource_urls: [slug-x]\n---\n\n허브\n")
-        self.seeded()
-        notes = [c.get("note", "") for c in self.cases() if c["type"] == "grounding"]
+        self.seed()
+        notes = [c.get("note") for c in self.cases() if c["type"] == "grounding"]
         self.assertNotIn("80 Tooling/80 Tooling.md", notes)
 
-    def test_list_hides_gold_and_floor(self):
-        # 정답을 본 채점자는 채점할 수 없다 — 누출 차단이 이 하네스의 핵심 계약.
-        self.seeded()
-        r = self.ev("--list", "--type", "routing")
-        self.assertEqual(r.returncode, 0, r.stderr)
-        blob = json.loads(r.stdout)
+    # ── list: 합격선 은닉 + 제출 계약 안내 ───────────────────────────────
+
+    def test_list_hides_floor_and_states_submit_contract(self):
+        self.seed()
+        blob = json.loads(self.ev("--list").stdout)
         for c in blob["cases"]:
-            self.assertNotIn("gold", c, "gold 노출 = 자기충족 평가")
-            self.assertNotIn("min_score", c, "합격선 노출 = 점수를 합격선에 맞추는 유인")
-        self.assertTrue(all(c.get("gold") in ("queue", "drop") for c in self.cases()
-                            if c["type"] == "routing"),
-                        "positive control: 케이스 파일에는 gold가 실제로 있어야 대조가 가능")
+            self.assertNotIn("min_score", c, "합격선을 알면 점수를 합격선에 맞추려는 유인이 생긴다")
+            self.assertIn("score", c["submit"], "score 미제출 계약이 안내에 있어야")
 
-    def test_routing_rejects_self_scoring(self):
-        self.seeded()
-        rid = [c["id"] for c in self.cases() if c["type"] == "routing"][0]
-        f = os.path.join(self.d, "res.json")
-        _write(f, json.dumps({"judge": "t", "results": [
-            {"case": rid, "decision": "drop", "score": 1.0}]}))
-        self.assertEqual(self.ev("--record", f).returncode, 1,
-                         "routing 점수는 스크립트가 gold와 대조해 매긴다")
+    # ── record: 점수는 스크립트가 계산한다 ──────────────────────────────
 
-    def test_routing_scored_against_gold(self):
-        self.seeded()
-        cases = {c["id"]: c for c in self.cases() if c["type"] == "routing"}
-        rid = next(i for i, c in cases.items() if c["gold"] == "drop")
-        f = os.path.join(self.d, "res.json")
-        _write(f, json.dumps({"judge": "t", "results": [{"case": rid, "decision": "queue"}]}))
-        r = self.ev("--record", f)
+    def test_rejects_judge_submitted_score(self):
+        self.seed()
+        rid, gid = self.ids("routing")[0], self.ids("grounding")[0]
+        self.assertEqual(self.submit([{"case": rid, "decision": "queue", "score": 1.0}]).returncode, 1)
+        self.assertEqual(self.submit([{"case": gid, "claims_checked": 5,
+                                       "claims_grounded": 5, "verdict": "pass"}]).returncode, 1)
+
+    def test_routing_scored_against_queue_not_case_file(self):
+        self.seed()
+        # 정답의 출처는 radar-queue.md 하나다. '버림 1'은 dismissed → drop.
+        rid = next(c["id"] for c in self.cases()
+                   if c["type"] == "routing" and "버림" in c["title"])
+        r = self.submit([{"case": rid, "decision": "drop"}])
         self.assertEqual(r.returncode, 0, r.stderr)
-        self.assertEqual(json.loads(r.stdout)["failed"], [rid], "gold와 다르면 fail")
+        self.assertEqual(self.ledger()[-1]["score"], 1.0)
+        self.assertEqual(json.loads(r.stdout)["failed"], [])
 
-    def test_rejects_unknown_case_wholesale(self):
-        self.seeded()
-        gid = [c["id"] for c in self.cases() if c["type"] == "grounding"][0]
-        f = os.path.join(self.d, "res.json")
-        _write(f, json.dumps({"judge": "t", "results": [
-            {"case": gid, "score": 0.9, "verdict": "pass"},
-            {"case": "g-deadbeef", "score": 1.0, "verdict": "pass"}]}))
-        self.assertEqual(self.ev("--record", f).returncode, 1)
-        # 원장 파일이 아예 만들어지지 않는 것이 정답 — 유효한 1건도 적재되면 안 된다.
-        self.assertFalse(os.path.exists(os.path.join(self.claude, "runtime", "eval-ledger.jsonl")),
-                         "부분 적재 금지 — 원장이 오염되면 추이 전체가 오염된다")
+    def test_routing_fails_when_decision_contradicts_queue(self):
+        self.seed()
+        rid = next(c["id"] for c in self.cases()
+                   if c["type"] == "routing" and "버림" in c["title"])
+        r = self.submit([{"case": rid, "decision": "queue"}])
+        self.assertEqual(json.loads(r.stdout)["failed"], [rid])
 
-    def test_rejects_out_of_range_score(self):
-        self.seeded()
-        gid = [c["id"] for c in self.cases() if c["type"] == "grounding"][0]
-        f = os.path.join(self.d, "res.json")
-        _write(f, json.dumps({"judge": "t", "results": [
-            {"case": gid, "score": 1.5, "verdict": "pass"}]}))
-        self.assertEqual(self.ev("--record", f).returncode, 1)
-
-    def record_score(self, cid, score):
-        f = os.path.join(self.d, "res.json")
-        _write(f, json.dumps({"judge": "t", "results": [
-            {"case": cid, "score": score, "verdict": "pass" if score >= 0.8 else "fail"}]}))
-        r = self.ev("--record", f)
+    def test_grounding_score_is_arithmetic(self):
+        self.seed()
+        gid = self.ids("grounding")[0]
+        r = self.submit([{"case": gid, "claims_checked": 8, "claims_grounded": 6}])
         self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(self.ledger()[-1]["score"], 0.75, "score = grounded/checked")
 
-    def test_record_writes_ledger_and_receipt(self):
-        self.seeded()
-        gid = [c["id"] for c in self.cases() if c["type"] == "grounding"][0]
-        self.record_score(gid, 0.9)
-        self.assertIn(gid, _read(os.path.join(self.claude, "runtime", "eval-ledger.jsonl")))
-        rcpt = json.loads(_read(os.path.join(self.claude, "runtime", "eval-last-run.json")))
-        self.assertEqual(rcpt["recorded"], 1)
-        self.assertGreater(rcpt["epoch"], 0)
+    def test_grounding_requires_minimum_claims(self):
+        # 노트를 열지도 않고 통과하는 경로를 막는다(초판은 삭제된 노트에 1.0을 수락했다).
+        self.seed()
+        gid = self.ids("grounding")[0]
+        self.assertEqual(self.submit([{"case": gid, "claims_checked": 2,
+                                       "claims_grounded": 2}]).returncode, 1)
 
-    def test_regress_first_run_sets_baseline(self):
-        # 첫 실행이 항상 실패하면 게이트가 죽는다 — 신규 케이스는 baseline만.
-        self.seeded()
-        gid = [c["id"] for c in self.cases() if c["type"] == "grounding"][0]
-        self.record_score(gid, 0.9)
-        self.assertEqual(self.ev("--regress").returncode, 0)
+    def test_grounding_rejects_impossible_counts(self):
+        self.seed()
+        gid = self.ids("grounding")[0]
+        self.assertEqual(self.submit([{"case": gid, "claims_checked": 3,
+                                       "claims_grounded": 5}]).returncode, 1)
 
-    def test_regress_detects_drop(self):
-        self.seeded()
-        gid = [c["id"] for c in self.cases() if c["type"] == "grounding"][0]
-        self.record_score(gid, 0.95)
-        self.record_score(gid, 0.70)
+    def test_contradiction_fails_regardless_of_ratio(self):
+        self.seed()
+        gid = self.ids("grounding")[0]
+        r = self.submit([{"case": gid, "claims_checked": 10, "claims_grounded": 10,
+                          "contradictions": 1}])
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(json.loads(r.stdout)["failed"], [gid],
+                         "원문과 반대되는 주장은 비율과 무관하게 실패다")
+
+    def test_records_note_hash_as_version_anchor(self):
+        self.seed()
+        gid = self.ids("grounding")[0]
+        self.submit([{"case": gid, "claims_checked": 5, "claims_grounded": 5}])
+        self.assertTrue(self.ledger()[-1].get("note_hash"),
+                        "버전 앵커가 없으면 재작성된 노트와 옛 점수를 비교하게 된다")
+
+    def test_rejects_duplicate_and_overflow_and_unknown(self):
+        self.seed()
+        rid = self.ids("routing")[0]
+        allr = self.ids("routing")
+        # 중복 id는 같은 케이스에 두 점수를 남겨 가짜 회귀를 만든다
+        self.assertEqual(self.submit([{"case": rid, "decision": "queue"},
+                                      {"case": rid, "decision": "drop"}]).returncode, 1)
+        # 상한이 없던 동안 감사가 63.7MB를 git 추적 원장에 써넣었다
+        over = [{"case": c, "decision": "queue"} for c in allr] * 3
+        self.assertEqual(self.submit(over).returncode, 1)
+        # 미등록 1건이 섞이면 유효한 나머지도 적재되지 않는다
+        self.assertEqual(self.submit([{"case": rid, "decision": "queue"},
+                                      {"case": "r-deadbeef", "decision": "queue"}]).returncode, 1)
+        self.assertEqual(self.ledger(), [], "부분 적재 금지 — 원장이 오염되면 추이 전체가 오염된다")
+
+    def test_rejects_retired_case(self):
+        self.seed()
+        gid = self.ids("grounding")[0]
+        note = next(c["note"] for c in self.cases() if c["id"] == gid)
+        os.remove(os.path.join(self.d, note))
+        self.seed()
+        self.assertEqual(self.submit([{"case": gid, "claims_checked": 5,
+                                       "claims_grounded": 5}]).returncode, 1)
+
+    def test_sanitize_strips_zero_width_and_bidi(self):
+        self.seed()
+        rid = self.ids("routing")[0]
+        self.submit([{"case": rid, "decision": "queue",
+                      "findings": ["a​b‮c"]}])
+        f = self.ledger()[-1]["findings"][0]
+        self.assertNotIn("​", f)
+        self.assertNotIn("‮", f, "bidi 제어는 원장을 읽는 사람에게 보이는 순서를 조작한다")
+
+    # ── regress: baseline 게이트가 이 하네스의 핵심이다 ────────────────────
+
+    def test_lazy_majority_judge_fails_the_gate(self):
+        """항상 다수 클래스만 답하는 채점자를 통과시키면 그 평가는 아무것도 측정하지 않는다.
+
+        초판은 정확히 이것을 통과시켰다: 9 queue / 1 drop 골든셋에서 상수 "queue" 답변이
+        0.90을 받고 floor 0.8을 넘겼다."""
+        self.seed()
+        self.submit([{"case": c, "decision": "queue"} for c in self.ids("routing")])
         r = self.ev("--regress")
-        self.assertEqual(r.returncode, 1, "0.25 하락은 회귀")
+        self.assertEqual(r.returncode, 1, "게으른 상수 채점자가 게이트를 통과했다")
+        chk = json.loads(r.stdout)["baseline_check"]
+        self.assertEqual(chk["routing_accuracy"], chk["majority_baseline"])
+
+    def test_discriminating_judge_passes_the_gate(self):
+        # positive control: 위 테스트가 '전부 실패'로 통과하면 안 된다.
+        self.seed()
+        results = [{"case": c["id"], "decision": ("drop" if "버림" in c["title"] else "queue")}
+                   for c in self.cases() if c["type"] == "routing"]
+        self.submit(results)
+        r = self.ev("--regress")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertEqual(json.loads(r.stdout)["baseline_check"], "pass")
+
+    def test_grounding_regression_detected(self):
+        self.seed()
+        gid = self.ids("grounding")[0]
+        self.submit([{"case": gid, "claims_checked": 10, "claims_grounded": 10}])
+        self.submit([{"case": gid, "claims_checked": 10, "claims_grounded": 6}])
+        r = self.ev("--regress")
+        self.assertEqual(r.returncode, 1)
+        self.assertEqual(json.loads(r.stdout)["regressions"][0]["case"], gid)
+
+    def test_note_rewrite_rebaselines_instead_of_regressing(self):
+        self.seed()
+        gid = self.ids("grounding")[0]
+        note = os.path.join(self.d, next(c["note"] for c in self.cases() if c["id"] == gid))
+        self.submit([{"case": gid, "claims_checked": 10, "claims_grounded": 10}])
+        _write(note, "---\nid: t1\nsource_urls: [slug-a]\n---\n\n전면 재작성된 본문\n")
+        self.submit([{"case": gid, "claims_checked": 10, "claims_grounded": 3}])
+        out = json.loads(self.ev("--regress").stdout)
+        self.assertEqual(out["regressions"], [], "다른 텍스트끼리 비교해 회귀라 부르면 안 된다")
+        self.assertEqual(out["rebaselined"][0]["case"], gid)
+
+    def test_routing_not_subject_to_grounding_floor(self):
+        # routing은 케이스당 0/1이라 개별 floor를 적용하면 오답 1건이 곧 게이트 실패가 된다.
+        self.seed()
+        results = [{"case": c["id"], "decision": ("drop" if "버림" in c["title"] else "queue")}
+                   for c in self.cases() if c["type"] == "routing"]
+        results[0]["decision"] = "drop" if results[0]["decision"] == "queue" else "queue"
+        self.submit(results)
+        out = json.loads(self.ev("--regress").stdout)
+        self.assertEqual(out["below_floor"], [], "routing 개별 오답을 floor 위반으로 보면 안 된다")
+
+    def test_retired_and_orphan_do_not_pin_the_gate(self):
+        # 초판은 재추첨으로 생긴 고아 때문에 게이트가 exit 1에 고정될 수 있었다.
+        self.seed()
+        gid = self.ids("grounding")[0]
+        note = next(c["note"] for c in self.cases() if c["id"] == gid)
+        self.submit([{"case": gid, "claims_checked": 10, "claims_grounded": 10}])
+        self.submit([{"case": gid, "claims_checked": 10, "claims_grounded": 2}])
+        os.remove(os.path.join(self.d, note))
+        self.seed()
+        with open(os.path.join(self.claude, "runtime", "eval-ledger.jsonl"), "a") as f:
+            f.write(json.dumps({"epoch": 1, "date": "2026-01-01", "case": "g-orphan99",
+                                "type": "grounding", "score": 0.0, "verdict": "fail"}) + "\n")
+        r = self.ev("--regress")
         out = json.loads(r.stdout)
-        self.assertEqual(out["regressions"][0]["case"], gid)
-        self.assertTrue(out["below_floor"], "min_score 0.8 미달도 함께 잡혀야")
+        self.assertEqual(r.returncode, 0, "은퇴/고아가 게이트를 영구 실패로 만들면 아무도 못 고친다")
+        self.assertIn("g-orphan99", out["orphans_ignored"])
 
-    def test_summary_reports_history(self):
-        self.seeded()
-        gid = [c["id"] for c in self.cases() if c["type"] == "grounding"][0]
-        self.record_score(gid, 0.9)
+    def test_broken_cases_file_fails_loudly(self):
+        self.seed()
+        with open(os.path.join(self.claude, "evals", "cases.jsonl"), "a") as f:
+            f.write("{broken\n")
+        for args in (("--regress",), ("--summary",), ("--list",)):
+            r = self.ev(*args)
+            self.assertEqual(r.returncode, 1, "%s 가 raw traceback 대신 명시적 실패를 내야" % (args,))
+            self.assertIn("파싱 실패", r.stderr)
+
+    def test_summary_marks_state(self):
+        self.seed()
+        gid = self.ids("grounding")[0]
+        self.submit([{"case": gid, "claims_checked": 5, "claims_grounded": 5}])
         out = json.loads(self.ev("--summary").stdout)
-        self.assertEqual(out["cases"], 1)
-        self.assertEqual(out["rows"][0]["latest"], 0.9)
+        self.assertEqual(out["rows"][0]["state"], "active")
+        self.assertEqual(out["mean_latest_active"], 1.0)
 
-    def test_command_doc_forbids_cron_and_documents_leak_rule(self):
+    def test_command_doc_states_the_new_contract(self):
         doc = _read(os.path.join(CLAUDE, "commands", "kb-eval.md"))
         self.assertIn("cron", doc)
-        self.assertIn("오염", doc, "정답을 본 컨텍스트는 채점할 수 없다는 규칙이 문서에 있어야")
-        self.assertIn("--record", doc, "원장 쓰기는 스크립트 경로로만")
+        self.assertIn("오염", doc, "정답을 본 컨텍스트는 채점할 수 없다는 규칙")
+        self.assertIn("claims_checked", doc, "grounding 제출 형식이 문서에 있어야")
+        self.assertIn("baseline", doc, "baseline 게이트를 모르면 judge가 상수 답변을 낸다")
+        self.assertIn("판단은 LLM, 산술은 코드", doc, "역할 분리가 문서의 첫 계약이어야")
 
 
 class TestSpanLedger(unittest.TestCase):
