@@ -28,6 +28,7 @@ KB(`80 Tooling/` 공식문서 노트 29개 + `80 Tooling/80 Tooling.md` MOC)를 
 
 ## 5. 갱신 의무
 - 노트를 만들거나 바꿨으면 `.claude/rules/vault-rules.md`의 "Update duty (CANONICAL — 3 steps)"를 수행한다(정본 참조 — 단계·수치는 여기서 재명세하지 않는다). MOC는 `80 Tooling/80 Tooling.md`를 갱신한다.
+- **duty-③은 `python3 .claude/hot-append.py --line "<영어 한 줄>"`로 수행한다.** `hot.md`를 Edit/Write로 직접 고치려 하면 무인 런에서 sensitive-file로 거부된다(2026-08-24 실측: 두 번 거부돼 duty-③만 미완료였는데 exit=0). 이 호출의 영수증이 없으면 래퍼 가드가 **rc=1로 실패 처리**하므로 KB를 건드린 실행은 이 단계를 건너뛸 수 없다. 반대로 "변경 없음" 종료는 호출하지 않는다(가드도 검사하지 않는다).
 
 ## 6. 검증 (마무리)
 - `bash`로 `python3 .claude/kb-lint.py --online`을 실행해 KB가 공식 인덱스와 정합한지 확인한다. 남은 문제가 있으면 고치고 재실행해 0을 확인한다.

@@ -1688,5 +1688,414 @@ class TestPromotionAndBlogStatus(unittest.TestCase):
         self.assertEqual(missing, [], f"발행상태 없는 SOURCES.md: {missing}")
 
 
+class TestHotAppend(unittest.TestCase):
+    """hot-append.py — 무인 런의 duty-③(hot.md 한 줄) 결정론적 쓰기 경로 (2026-08-25).
+
+    배경: harness가 runtime/hot.md를 sensitive로 분류해 무인 Edit/Write를 거부한다(08-24 kb-sync
+    실측: duty-③만 미완료인데 exit=0). radar-queue의 --append-queue와 같은 패턴으로 우회하되,
+    hot.md는 사람이 관리하는 INJECT 블록을 품고 있어 '건드리지 않음'이 추가 계약이다."""
+
+    HOT = ("# hot — session boot context (L1)\n"
+           "<!-- INJECT:START — keep stable -->\n## Vault state\nstate line\n<!-- INJECT:END -->\n\n"
+           "## Recent sessions (newest first)\n"
+           "- **2026-08-24** — old A\n- **2026-08-23** — old B\n\n"
+           "## New entities/concepts (recent)\n- foo\n")
+
+    def setUp(self):
+        self.d = tempfile.mkdtemp(prefix="hotap_")
+        self.addCleanup(shutil.rmtree, self.d, ignore_errors=True)
+        os.makedirs(os.path.join(self.d, "runtime"))
+        # 스크립트가 자기 위치 기준으로 runtime/hot.md 를 찾으므로 복사만으로 격리된다.
+        self.script = os.path.join(self.d, "ha.py")
+        shutil.copy(os.path.join(CLAUDE, "hot-append.py"), self.script)
+        self.hot = os.path.join(self.d, "runtime", "hot.md")
+        _write(self.hot, self.HOT)
+
+    def run_ha(self, *args):
+        return subprocess.run(["python3", self.script, *args], capture_output=True, text=True)
+
+    def test_inserts_newest_first(self):
+        r = self.run_ha("--line", "unattended duty-3 line")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        lines = [l for l in _read(self.hot).splitlines() if l.startswith("- **")]
+        self.assertIn("unattended duty-3 line", lines[0], "최신 항목이 섹션 맨 위여야")
+        self.assertTrue(lines[1].startswith("- **2026-08-24**"), "기존 항목은 밀려 보존")
+
+    def test_same_day_gets_counter(self):
+        self.run_ha("--line", "first")
+        r = self.run_ha("--line", "second")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        # 하루 여러 세션은 기존 관행대로 `(n)` 카운터 — 같은 라벨 중복을 만들지 않는다.
+        self.assertIn("(2)", json.loads(r.stdout)["label"])
+
+    def test_rejects_section_header(self):
+        r = self.run_ha("--line", "## injected section")
+        self.assertEqual(r.returncode, 1, "헤더로 시작하는 줄은 hot.md 구조를 오염시킨다")
+        self.assertNotIn("injected section", _read(self.hot))
+
+    def test_normalizes_control_chars(self):
+        # 무인 LLM이 만든 텍스트가 그대로 파일 구조가 되므로 개행/제어문자는 한 줄로 접어야 한다.
+        r = self.run_ha("--line", "a\nb\tc")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        entries = [l for l in _read(self.hot).splitlines() if l.startswith("- **")]
+        self.assertIn("a b c", entries[0])
+        self.assertEqual(len(entries), 3, "개행 주입이 항목을 쪼개면 안 됨")
+
+    def test_preserves_inject_block(self):
+        self.run_ha("--line", "x")
+        self.assertIn("<!-- INJECT:START — keep stable -->\n## Vault state\nstate line\n<!-- INJECT:END -->",
+                     _read(self.hot), "사람이 관리하는 vault state는 무인 경로가 건드리지 않는다")
+
+    def test_preserves_following_section(self):
+        self.run_ha("--line", "x")
+        self.assertIn("## New entities/concepts (recent)", _read(self.hot))
+
+    def test_prune_keeps_rolling_cap(self):
+        # vault-rules의 '~500 words 롤링'은 사람 손 계약이라 실측 7100 words까지 자랐다 → 기계 상한.
+        self.run_ha("--line", "one")
+        r = self.run_ha("--prune", "2")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(json.loads(r.stdout)["entries"], 2)
+
+    def test_writes_receipt(self):
+        r = self.run_ha("--line", "receipt me")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        rcpt = json.loads(_read(os.path.join(self.d, "runtime", "hot-last-append.json")))
+        self.assertGreater(rcpt["epoch"], 0, "래퍼 가드는 이 epoch의 신선도로 완주를 판정한다")
+
+    def test_fails_loud_on_broken_structure(self):
+        # positive control: 구조가 깨진 hot.md에 조용히 쓰지 않고 exit 1로 알린다.
+        _write(self.hot, "# hot\n(마커도 섹션도 없음)\n")
+        r = self.run_ha("--line", "x")
+        self.assertEqual(r.returncode, 1)
+        self.assertNotIn("- **", _read(self.hot))
+
+    def test_empty_line_rejected(self):
+        self.assertEqual(self.run_ha("--line", "   ").returncode, 1)
+
+
+class TestUnattendedCompletionContracts(unittest.TestCase):
+    """무인 래퍼의 완주 계약 — exit=0이 완주의 증거가 아니라는 실측(08-24)에 대한 응답."""
+
+    def test_kb_sync_allowlists_hot_append(self):
+        txt = _read(os.path.join(CLAUDE, "kb-sync-cron.sh"))
+        self.assertIn("Bash(python3 .claude/hot-append.py:*)", txt,
+                      "duty-③를 계약으로 강제하려면 쓰기 경로가 먼저 allowlist돼야 한다")
+
+    def test_kb_sync_enforces_duty3_receipt(self):
+        txt = _read(os.path.join(CLAUDE, "kb-sync-cron.sh"))
+        self.assertIn("hot-last-append.json", txt, "가드는 hot.md 영수증을 읽어야")
+        self.assertIn("duty-③ 미완주", txt)
+        self.assertRegex(txt, r"HOT_EPOCH.*-lt.*RUN_START_EPOCH",
+                         "낡은 영수증을 이번 실행 것으로 오인하면 가드가 무의미")
+        self.assertRegex(txt, r"KB_TOUCHED.*-gt.*0",
+                         "KB를 건드리지 않은 '변경 없음' 종료는 duty 대상이 아니다(거짓 양성 방지)")
+        self.assertRegex(txt, r'\[\s*"\$rc"\s*-eq\s*0\s*\].*STAMP',
+                         "positive control: 스탬프가 rc 조건부여야 실패가 재시도를 유발한다")
+
+    def test_kb_sync_counts_committed_and_dirty(self):
+        # Stop 훅이 세션 중 이미 커밋했을 수 있어, 미커밋 변경만 세면 KB 변경을 놓친다.
+        txt = _read(os.path.join(CLAUDE, "kb-sync-cron.sh"))
+        self.assertIn("KB_COMMITTED", txt)
+        self.assertIn("KB_DIRTY", txt)
+
+    def test_study_wrapper_enforces_review_log(self):
+        txt = _read(os.path.join(CLAUDE, "study-coach-cron.sh"))
+        self.assertIn("채점 미완주", txt, "게이트 통과 후 리뷰 로그 부재 = 완주 실패")
+        self.assertRegex(txt, r'\[\s*-z\s*"\$SKIP_REVIEW"\s*\]',
+                         "게이트로 스킵된 날(no-commits 등)은 대상이 아니다 — 정상 침묵을 실패로 만들면 안 됨")
+
+    def test_all_wrappers_commit_and_push_directly(self):
+        # 실측: headless 런에서 SessionEnd 훅이 `Hook cancelled`로 33회 취소 → push가 훅 의존이면 유실.
+        for w in ("kb-sync-cron.sh", "claude-radar-cron.sh", "study-coach-cron.sh"):
+            txt = _read(os.path.join(CLAUDE, w))
+            self.assertIn("hooks/auto-commit.py", txt, f"{w}: 무인 런은 커밋·push를 직접 호출해야")
+            self.assertIn('"hook_event_name":"SessionEnd"', txt,
+                          f"{w}: push 경로는 SessionEnd 페이로드로 트리거된다")
+
+    def test_wrappers_are_syntactically_valid(self):
+        # positive control: 위 문자열 검사가 통과해도 스크립트가 깨졌으면 무인 런은 즉시 죽는다.
+        for w in ("kb-sync-cron.sh", "claude-radar-cron.sh", "study-coach-cron.sh"):
+            r = subprocess.run(["bash", "-n", os.path.join(CLAUDE, w)], capture_output=True, text=True)
+            self.assertEqual(r.returncode, 0, f"{w}: {r.stderr}")
+
+    def test_update_duty_documents_script_path(self):
+        # 문서 동기화 의무: 규칙이 '무인 런은 hot.md를 Edit할 수 없다'를 모르면 LLM은 또 Edit을 시도한다.
+        txt = _read(os.path.join(CLAUDE, "rules", "vault-rules.md"))
+        self.assertIn("hot-append.py", txt, "Update duty가 결정론적 경로를 가리켜야")
+
+
+class TestKbEval(unittest.TestCase):
+    """kb-eval — LLM 산출물 품질 평가 하네스 (2026-08-25).
+
+    계약 테스트 231개는 메커니즘만 본다. 이 하네스는 '내용이 맞는가'를 보는 유일한 축이라,
+    그 자신의 계약(정답 누출 차단·형식 검증·회귀 판정)이 깨지면 품질 게이트가 조용히 죽는다."""
+
+    def setUp(self):
+        self.d = tempfile.mkdtemp(prefix="kbeval_")
+        self.addCleanup(shutil.rmtree, self.d, ignore_errors=True)
+        self.claude = os.path.join(self.d, ".claude")
+        os.makedirs(os.path.join(self.claude, "runtime"))
+        os.makedirs(os.path.join(self.claude, "evals"))
+        # 스크립트가 자기 위치로 REPO(=부모 디렉터리)를 정하므로 복사만으로 격리된다.
+        self.script = os.path.join(self.claude, "kb-eval.py")
+        shutil.copy(os.path.join(CLAUDE, "kb-eval.py"), self.script)
+        os.makedirs(os.path.join(self.d, "80 Tooling"))
+        _write(os.path.join(self.d, "80 Tooling", "01 테스트.md"),
+               "---\nid: t-01\nsource_urls: [slug-a, slug-b]\n---\n\n본문 주장이 여기 있다.\n")
+        _write(os.path.join(self.claude, "runtime", "radar-queue.md"),
+               "### [done] kb-ingest · 채택된 항목\n\n### [dismissed] skill · 버려진 항목\n")
+
+    def ev(self, *args):
+        return subprocess.run(["python3", self.script, *args], capture_output=True, text=True)
+
+    def seeded(self):
+        r = self.ev("--seed")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        return json.loads(r.stdout)
+
+    def cases(self):
+        rows = []
+        for ln in _read(os.path.join(self.claude, "evals", "cases.jsonl")).splitlines():
+            if ln.strip():
+                rows.append(json.loads(ln))
+        return rows
+
+    def test_seed_builds_both_types(self):
+        out = self.seeded()
+        self.assertEqual(out["by_type"]["grounding"], 1, "source_urls 있는 노트 1개")
+        self.assertEqual(out["by_type"]["routing"], 2, "done+dismissed 레이블 2개")
+
+    def test_seed_is_deterministic(self):
+        self.seeded()
+        first = sorted(c["id"] for c in self.cases())
+        self.seeded()
+        self.assertEqual(first, sorted(c["id"] for c in self.cases()),
+                         "표본이 실행마다 바뀌면 점수 추이가 무의미해진다")
+
+    def test_moc_excluded_from_grounding(self):
+        # MOC(파일명==디렉터리명)은 종합 허브라 출처 정합 대상이 아니다.
+        _write(os.path.join(self.d, "80 Tooling", "80 Tooling.md"),
+               "---\nid: moc\nsource_urls: [slug-x]\n---\n\n허브\n")
+        self.seeded()
+        notes = [c.get("note", "") for c in self.cases() if c["type"] == "grounding"]
+        self.assertNotIn("80 Tooling/80 Tooling.md", notes)
+
+    def test_list_hides_gold_and_floor(self):
+        # 정답을 본 채점자는 채점할 수 없다 — 누출 차단이 이 하네스의 핵심 계약.
+        self.seeded()
+        r = self.ev("--list", "--type", "routing")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        blob = json.loads(r.stdout)
+        for c in blob["cases"]:
+            self.assertNotIn("gold", c, "gold 노출 = 자기충족 평가")
+            self.assertNotIn("min_score", c, "합격선 노출 = 점수를 합격선에 맞추는 유인")
+        self.assertTrue(all(c.get("gold") in ("queue", "drop") for c in self.cases()
+                            if c["type"] == "routing"),
+                        "positive control: 케이스 파일에는 gold가 실제로 있어야 대조가 가능")
+
+    def test_routing_rejects_self_scoring(self):
+        self.seeded()
+        rid = [c["id"] for c in self.cases() if c["type"] == "routing"][0]
+        f = os.path.join(self.d, "res.json")
+        _write(f, json.dumps({"judge": "t", "results": [
+            {"case": rid, "decision": "drop", "score": 1.0}]}))
+        self.assertEqual(self.ev("--record", f).returncode, 1,
+                         "routing 점수는 스크립트가 gold와 대조해 매긴다")
+
+    def test_routing_scored_against_gold(self):
+        self.seeded()
+        cases = {c["id"]: c for c in self.cases() if c["type"] == "routing"}
+        rid = next(i for i, c in cases.items() if c["gold"] == "drop")
+        f = os.path.join(self.d, "res.json")
+        _write(f, json.dumps({"judge": "t", "results": [{"case": rid, "decision": "queue"}]}))
+        r = self.ev("--record", f)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(json.loads(r.stdout)["failed"], [rid], "gold와 다르면 fail")
+
+    def test_rejects_unknown_case_wholesale(self):
+        self.seeded()
+        gid = [c["id"] for c in self.cases() if c["type"] == "grounding"][0]
+        f = os.path.join(self.d, "res.json")
+        _write(f, json.dumps({"judge": "t", "results": [
+            {"case": gid, "score": 0.9, "verdict": "pass"},
+            {"case": "g-deadbeef", "score": 1.0, "verdict": "pass"}]}))
+        self.assertEqual(self.ev("--record", f).returncode, 1)
+        # 원장 파일이 아예 만들어지지 않는 것이 정답 — 유효한 1건도 적재되면 안 된다.
+        self.assertFalse(os.path.exists(os.path.join(self.claude, "runtime", "eval-ledger.jsonl")),
+                         "부분 적재 금지 — 원장이 오염되면 추이 전체가 오염된다")
+
+    def test_rejects_out_of_range_score(self):
+        self.seeded()
+        gid = [c["id"] for c in self.cases() if c["type"] == "grounding"][0]
+        f = os.path.join(self.d, "res.json")
+        _write(f, json.dumps({"judge": "t", "results": [
+            {"case": gid, "score": 1.5, "verdict": "pass"}]}))
+        self.assertEqual(self.ev("--record", f).returncode, 1)
+
+    def record_score(self, cid, score):
+        f = os.path.join(self.d, "res.json")
+        _write(f, json.dumps({"judge": "t", "results": [
+            {"case": cid, "score": score, "verdict": "pass" if score >= 0.8 else "fail"}]}))
+        r = self.ev("--record", f)
+        self.assertEqual(r.returncode, 0, r.stderr)
+
+    def test_record_writes_ledger_and_receipt(self):
+        self.seeded()
+        gid = [c["id"] for c in self.cases() if c["type"] == "grounding"][0]
+        self.record_score(gid, 0.9)
+        self.assertIn(gid, _read(os.path.join(self.claude, "runtime", "eval-ledger.jsonl")))
+        rcpt = json.loads(_read(os.path.join(self.claude, "runtime", "eval-last-run.json")))
+        self.assertEqual(rcpt["recorded"], 1)
+        self.assertGreater(rcpt["epoch"], 0)
+
+    def test_regress_first_run_sets_baseline(self):
+        # 첫 실행이 항상 실패하면 게이트가 죽는다 — 신규 케이스는 baseline만.
+        self.seeded()
+        gid = [c["id"] for c in self.cases() if c["type"] == "grounding"][0]
+        self.record_score(gid, 0.9)
+        self.assertEqual(self.ev("--regress").returncode, 0)
+
+    def test_regress_detects_drop(self):
+        self.seeded()
+        gid = [c["id"] for c in self.cases() if c["type"] == "grounding"][0]
+        self.record_score(gid, 0.95)
+        self.record_score(gid, 0.70)
+        r = self.ev("--regress")
+        self.assertEqual(r.returncode, 1, "0.25 하락은 회귀")
+        out = json.loads(r.stdout)
+        self.assertEqual(out["regressions"][0]["case"], gid)
+        self.assertTrue(out["below_floor"], "min_score 0.8 미달도 함께 잡혀야")
+
+    def test_summary_reports_history(self):
+        self.seeded()
+        gid = [c["id"] for c in self.cases() if c["type"] == "grounding"][0]
+        self.record_score(gid, 0.9)
+        out = json.loads(self.ev("--summary").stdout)
+        self.assertEqual(out["cases"], 1)
+        self.assertEqual(out["rows"][0]["latest"], 0.9)
+
+    def test_command_doc_forbids_cron_and_documents_leak_rule(self):
+        doc = _read(os.path.join(CLAUDE, "commands", "kb-eval.md"))
+        self.assertIn("cron", doc)
+        self.assertIn("오염", doc, "정답을 본 컨텍스트는 채점할 수 없다는 규칙이 문서에 있어야")
+        self.assertIn("--record", doc, "원장 쓰기는 스크립트 경로로만")
+
+
+class TestSpanLedger(unittest.TestCase):
+    """span — 무인 루프의 구조화 실행 원장. cron 로그의 자유 텍스트를 기계 판독 가능하게."""
+
+    def setUp(self):
+        self.d = tempfile.mkdtemp(prefix="span_")
+        self.addCleanup(shutil.rmtree, self.d, ignore_errors=True)
+        os.makedirs(os.path.join(self.d, "runtime"))
+        self.script = os.path.join(self.d, "span.py")
+        shutil.copy(os.path.join(CLAUDE, "span.py"), self.script)
+
+    def sp(self, *args):
+        return subprocess.run(["python3", self.script, *args], capture_output=True, text=True)
+
+    def ledger(self):
+        rows = []
+        for ln in _read(os.path.join(self.d, "runtime", "spans.jsonl")).splitlines():
+            if ln.strip():
+                rows.append(json.loads(ln))
+        return rows
+
+    def test_start_end_roundtrip(self):
+        sid = self.sp("start", "kb-sync").stdout.strip()
+        self.assertTrue(sid.startswith("kb-sync-"), sid)
+        self.assertEqual(self.sp("end", sid, "--status", "ok").returncode, 0)
+        rows = self.ledger()
+        self.assertEqual([r["phase"] for r in rows], ["start", "end"])
+        self.assertIsInstance(rows[1]["duration_s"], int)
+        self.assertFalse(rows[1]["orphan"])
+
+    def test_attrs_typed_as_numbers(self):
+        # 추이 계산에 쓰이므로 숫자는 숫자로 저장돼야 한다(문자열이면 집계가 죽는다).
+        sid = self.sp("start", "x").stdout.strip()
+        self.sp("end", sid, "--status", "ok", "--attr", "notes=3", "--attr", "gate=review-ran")
+        attrs = self.ledger()[1]["attrs"]
+        self.assertEqual(attrs["notes"], 3)
+        self.assertEqual(attrs["gate"], "review-ran")
+
+    def test_orphan_end_is_loud_but_recorded(self):
+        # 짝 없는 end는 계측 버그다. 조용히 삼키면 원장이 거짓말을 한다.
+        r = self.sp("end", "ghost-1-1", "--status", "error")
+        self.assertIn("계측", r.stderr)
+        self.assertTrue(self.ledger()[0]["orphan"])
+
+    def test_summary_computes_success_rate(self):
+        for status in ("ok", "ok", "error"):
+            sid = self.sp("start", "loop").stdout.strip()
+            self.sp("end", sid, "--status", status)
+        loops = json.loads(self.sp("summary", "--days", "1").stdout)["loops"]["loop"]
+        self.assertEqual((loops["runs"], loops["ok"], loops["error"]), (3, 2, 1))
+        self.assertAlmostEqual(loops["success_rate"], 0.667, places=2)
+
+    def test_check_fails_when_no_success(self):
+        sid = self.sp("start", "dead").stdout.strip()
+        self.sp("end", sid, "--status", "error")
+        self.assertEqual(self.sp("check", "dead", "--max-age-days", "9").returncode, 1,
+                         "error만 있으면 성공 기록 없음 = stale")
+
+    def test_check_passes_on_fresh_success(self):
+        sid = self.sp("start", "alive").stdout.strip()
+        self.sp("end", sid, "--status", "ok")
+        self.assertEqual(self.sp("check", "alive", "--max-age-days", "9").returncode, 0)
+
+    def test_corrupt_line_does_not_kill_reads(self):
+        # 원장 한 줄이 깨져서 루프가 죽으면 관측 도구가 장애 원인이 된다.
+        sid = self.sp("start", "ok-loop").stdout.strip()
+        self.sp("end", sid, "--status", "ok")
+        with open(os.path.join(self.d, "runtime", "spans.jsonl"), "a") as f:
+            f.write("this is not json\n")
+        self.assertEqual(self.sp("summary", "--days", "1").returncode, 0)
+
+    def test_wrappers_are_instrumented(self):
+        for w in ("kb-sync-cron.sh", "claude-radar-cron.sh", "study-coach-cron.sh"):
+            txt = _read(os.path.join(CLAUDE, w))
+            self.assertIn("span.py\" start", txt, f"{w}: span 시작 계측 누락")
+            self.assertIn("span.py\" end", txt, f"{w}: span 종료 계측 누락")
+            # 순서 계약: 가드가 rc를 바꾼 뒤에 닫아야 status가 진실이 된다.
+            self.assertLess(txt.index("stray-guard.sh"), txt.index("span.py\" end"),
+                            f"{w}: span end가 가드보다 앞서면 실패를 ok로 기록한다")
+
+
+class TestGrillSkill(unittest.TestCase):
+    """soobeen-grill — 착수 전 질문 공세. soobeen-check(사후)의 사전 짝."""
+
+    def setUp(self):
+        self.txt = _read(os.path.join(CLAUDE, "skills", "soobeen-grill", "SKILL.md"))
+
+    def test_exists_with_name(self):
+        self.assertIn("name: soobeen-grill", self.txt)
+
+    def test_interactive_only_not_in_cron(self):
+        # 사람이 답해야 성립하는 스킬 — 무인 연결은 설계 위반.
+        self.assertIn("cron", self.txt)
+        self.assertIn("대화형 전용", self.txt)
+
+    def test_refuses_to_write_answers(self):
+        # 완성 문장·코드를 주면 복붙된다(검증된 실패 모드). 이 계약이 스킬의 존재 이유다.
+        self.assertIn("답을 쓰지 마라", self.txt)
+        self.assertIn("빈칸", self.txt)
+
+    def test_read_only_on_lab_repo(self):
+        self.assertIn("읽기 전용", self.txt)
+
+    def test_targets_watchlist_items(self):
+        # 감시 목록 중 '마감 시점엔 이미 늦은' 항목들을 사전에 겨냥해야 의미가 있다.
+        for mark in ("①", "②", "③", "⑤"):
+            self.assertIn(mark, self.txt, f"감시 목록 {mark} 대응 누락")
+
+    def test_declares_unverified_status(self):
+        # 페르소나 규칙: 처방의 검증 상태를 표기한다. 빈칸 템플릿은 아직 효과 미검증.
+        self.assertIn("미검증", self.txt)
+
+    def test_defers_to_check_on_close(self):
+        self.assertIn("soobeen-check", self.txt, "마감은 사후 스킬로 넘겨야 역할이 겹치지 않는다")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -2,7 +2,7 @@
 
 Claude Code 지식 베이스 + 포터블 자동화 프레임워크를 담은 Obsidian vault.
 
-- **토픽 디렉토리** — 한국어 KB 콘텐츠. 각 `<Topic>/`는 노트 + `<Topic>/<Topic>.md` MOC 허브. 현재: `80 Tooling/`(Claude Code 공식문서 30 + vault 자기진단 1) · `20 Architecture/`(10) · `30 AI Infrastructure/`(8). md 52개 = 노트 49 + MOC 3.
+- **토픽 디렉토리** — 한국어 KB 콘텐츠. 각 `<Topic>/`는 노트 + `<Topic>/<Topic>.md` MOC 허브. 현재: `80 Tooling/`(Claude Code 공식문서 30 + vault 자기진단 1 + 하네스 엔지니어링 1) · `20 Architecture/`(10) · `30 AI Infrastructure/`(8). md 53개 = 노트 50 + MOC 3.
 - **`.claude/`** — 커맨드·에이전트·스킬·룰·훅·cron으로 이뤄진 프레임워크(메커니즘). 다른 vault로 복사 가능.
 
 전체 사용법은 [`README.md`](README.md), AI 운영 규칙 정본은 [`.claude/rules/vault-rules.md`](.claude/rules/vault-rules.md)와 [`.claude/rules/automation-safety-rules.md`](.claude/rules/automation-safety-rules.md)에 있다(둘 다 매 세션 자동 로드).

@@ -30,7 +30,7 @@ Body is Korean prose. Commands, flags, config keys, env vars, and code stay **En
 Single source of truth for the update obligation. Commands and agents **reference this; they don't re-spec it.** Any action that creates or changes a note must do all three, in order:
 1. Bump `updated` in the note's frontmatter.
 2. Reflect the change in that directory's MOC (`<dir>/<dir>.md` — e.g. `80 Tooling/80 Tooling.md`) — a new note gets a link + one-line summary.
-3. Add one **English** line to `.claude/runtime/hot.md`; keep it rolling at ~500 words.
+3. Add one **English** line to `.claude/runtime/hot.md`. **Interactive sessions** may Edit it directly; **unattended runs MUST use `python3 .claude/hot-append.py --line "<English one-liner>"`** — the harness classifies that path as sensitive and denies unattended Edit/Write (the 2026-08-24 kb-sync run finished its KB work but failed duty-③ twice for exactly this reason, and still exited 0). The script inserts at the top of `## Recent sessions`, auto-numbers a second same-day entry, refuses header/control-char injection, leaves the `INJECT` block untouched, and writes `runtime/hot-last-append.json` — the receipt the kb-sync wrapper checks to decide whether duty-③ actually completed. Rolling size is a **mechanical cap (25 entries, `--prune`)**, replacing the old "~500 words" hand contract that had drifted to 7,100 words unnoticed.
 
 (The old four-step duty that touched `index.md` / `log.md` is retired — do not reference it.)
 

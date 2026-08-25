@@ -68,6 +68,10 @@ trap 'rm -f "$LOCK"' EXIT
 
 cd "$VAULT" || exit 0
 
+# 구조화 실행 원장(2026-08-25). 이 루프는 게이트로 스킵되는 날이 정상이라 로그만으로는
+# '침묵'과 '사망'을 못 가른다 — span의 gate attr이 그 둘을 기계 판독 가능하게 만든다.
+SPAN="$(python3 "$VAULT/.claude/span.py" start study-coach 2>/dev/null || true)"
+
 {
   echo "=== [$(date '+%F %T')] study-coach review start ==="
   # 멀티 머신: 다른 Mac의 진도를 먼저 당겨온다(ff-only → 로컬 미커밋 있으면 안전하게 skip).
@@ -136,6 +140,18 @@ cd "$VAULT" || exit 0
   # auto-commit/push 전에 되돌린다(동의 없는 생성물 차단). ai-infra-lab은 별도 repo라 vault git status에 안 잡힘.
   bash "$VAULT/.claude/stray-guard.sh" runtime
 
+  # 완주 영수증 (2026-08-25): 채점이 실제로 돌았다면(게이트 통과) study-state.md에 오늘 날짜
+  # 리뷰 로그가 남아야 한다 — 그게 이 루프의 유일한 durable 산출물이다.
+  # 근거: radar 26일 침묵·kb-sync duty-③ 누락과 같은 부류. "LLM이 돌았고 exit=0"은 완주의 증거가
+  # 아니다. 게이트로 스킵된 날(no-commits/no-repo/pull-failed)은 대상 아님(정상 침묵).
+  if [ -z "$SKIP_REVIEW" ] && [ "$rc" -eq 0 ]; then
+    if ! grep -qE "^### $(date +%F)" "$VAULT/.claude/runtime/study-state.md" 2>/dev/null; then
+      echo "⚠ 채점 미완주: 게이트를 통과해 LLM 리뷰가 돌았는데 study-state.md에 오늘 리뷰 로그가 없다."
+      echo "  채점 결과 유실 — 체크박스·진도가 미반영일 수 있다. /study-coach review 재실행 필요."
+      rc=1
+    fi
+  fi
+
   # LLM 리뷰가 어떤 이유로든(사용 한도·네트워크) 오늘 브리핑을 못 냈으면 0-LLM 엔진으로 직접 보장.
   # study-brief.py --brief-only는 last_brief_date를 안 건드려, 한도 리셋 후 재시도가 채점을 재수행할 수 있다.
   # rc 무관하게 "오늘 날짜 브리핑 존재?"로 게이트 → 실패 케이스에서만 발동(성공 시 중복 overwrite 없음).
@@ -153,6 +169,20 @@ cd "$VAULT" || exit 0
     [ -z "$NOTE" ] && NOTE="오늘의 학습 브리핑이 준비됐어요"
     osascript -e "display notification \"${NOTE//\"/\\\"}\" with title \"📚 AI Infra 학습\" sound name \"Glass\"" 2>/dev/null || true
   fi
+
+  # span 종료 — 완주 가드가 rc를 바꾼 뒤에 닫는다. gate attr이 '정상 침묵'과 '실패'를 구분한다.
+  if [ -n "$SPAN" ]; then
+    SPAN_ST=error; [ "$rc" -eq 0 ] && SPAN_ST=ok
+    python3 "$VAULT/.claude/span.py" end "$SPAN" --status "$SPAN_ST" \
+      --attr "rc=$rc" --attr "gate=${SKIP_REVIEW:-review-ran}" >/dev/null 2>&1 || true
+  fi
+
+  # 무인 런의 커밋·push를 훅에 의존하지 않고 직접 수행 (2026-08-25).
+  # 근거(실측): headless 런에서 SessionEnd 훅이 `Hook cancelled`로 33회 취소됐다(radar 27·kb-sync 6).
+  # Stop 훅의 turn 커밋은 살아있어 로컬 커밋은 됐지만 push는 SessionEnd 전용이라 누락돼 왔다 —
+  # 멀티맥 vault에서 push 누락은 다른 Mac이 낡은 study-state로 다음 런을 도는 것을 뜻한다.
+  # auto-commit.py를 재사용하므로 발산 감지·sync-status 마커가 중복 구현되지 않는다(멱등).
+  echo '{"hook_event_name":"SessionEnd"}' | CLAUDE_PROJECT_DIR="$VAULT" python3 "$VAULT/.claude/hooks/auto-commit.py" >/dev/null 2>&1 || true
 
   [ "$rc" -eq 0 ] && date +%s > "$STAMP"
 } >> "$LOG" 2>&1

@@ -86,6 +86,9 @@ SEEN_BEFORE="$(_seen_count "$SEEN")"
 QUEUE_BEFORE="$(stat -f%m "$QUEUE" 2>/dev/null || echo 0)"
 RUN_START_EPOCH="$(date +%s)"
 
+# 구조화 실행 원장(2026-08-25) — 26일 침묵을 사후에 세어야 했던 경험의 응답. span 1건 = 실행 1건.
+SPAN="$(python3 "$VAULT/.claude/span.py" start claude-radar 2>/dev/null || true)"
+
 {
   echo "=== [$(date '+%F %T')] claude-radar collect start ==="
   # sonnet: 수집·분류·추천은 중간 티어로 충분(비용 레버). collect 모드는 큐+seen만 변경.
@@ -128,6 +131,20 @@ RUN_START_EPOCH="$(date +%s)"
 
   # 성공 시에만 스탬프 갱신 — 실패하면 다음 로그인/슬롯에서 재시도됨
   [ "$rc" -eq 0 ] && date +%s > "$STAMP"
+
+  # span 종료 — 영수증 가드가 rc를 바꾼 뒤에 닫는다.
+  if [ -n "$SPAN" ]; then
+    SPAN_ST=error; [ "$rc" -eq 0 ] && SPAN_ST=ok
+    python3 "$VAULT/.claude/span.py" end "$SPAN" --status "$SPAN_ST" \
+      --attr "rc=$rc" --attr "new=${NEW_N:-0}" --attr "queued=${RCP_QUEUED:-0}" >/dev/null 2>&1 || true
+  fi
+
+  # 무인 런의 커밋·push를 훅에 의존하지 않고 직접 수행 (2026-08-25).
+  # 근거(실측): headless 런에서 SessionEnd 훅이 `Hook cancelled`로 33회 취소됐다(radar 27·kb-sync 6).
+  # Stop 훅의 turn 커밋은 살아있어 로컬 커밋은 됐지만 push는 SessionEnd 전용이라 누락돼 왔다 —
+  # 멀티맥 vault에서 push 누락은 다른 Mac이 낡은 상태로 다음 런을 도는 것을 뜻한다.
+  # auto-commit.py를 재사용하므로 발산 감지·sync-status 마커가 중복 구현되지 않는다(멱등).
+  echo '{"hook_event_name":"SessionEnd"}' | CLAUDE_PROJECT_DIR="$VAULT" python3 "$VAULT/.claude/hooks/auto-commit.py" >/dev/null 2>&1 || true
 } >> "$LOG" 2>&1
 
 # 로그 로테이션: 512KB 초과 시 뒤쪽 절반만 유지

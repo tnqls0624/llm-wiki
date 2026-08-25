@@ -32,7 +32,7 @@ obsidian_sync/
 ├── .claude/                     # 메커니즘: 포터블 프레임워크
 │   ├── commands/                # 슬래시 커맨드 8개
 │   ├── agents/                  # 서브에이전트 3개
-│   ├── skills/                  # 스킬 (kb-assistant · soobeen-check · blog-publish)
+│   ├── skills/                  # 스킬 (kb-assistant · soobeen-check · soobeen-grill · blog-publish)
 │   ├── rules/                   # 자동 로드 룰 3개
 │   ├── hooks/                   # 이벤트 훅 4개
 │   ├── tests/                   # 계약 테스트 (183 케이스)
@@ -60,6 +60,7 @@ obsidian_sync/
 | `/claude-radar` | `[collect\|review]` | Claude 생태계 정보 수집·추천(collect) / 큐 검토·동의 후 생성(review) |
 | `/study-coach` | `[review\|brief\|plan]` | AI Infra 학습 코치 — 어제 산출물(별도 `ai-infra-lab` repo)을 LLM이 검토·채점하고(review) 오늘 할 것을 브리핑(brief). 진도는 `runtime/study-state.md`(git 공유) |
 | `/skill-audit` | `[--global] [--plugins]` | 설치된 skill의 description 토큰 풋프린트(매 세션 상시 비용) 점검 |
+| `/kb-eval` | `[--type grounding\|routing]` | **LLM 산출물 품질**을 골든셋으로 채점하고 회귀를 잡는다 — 계약 테스트가 못 보는 축(메커니즘이 아니라 내용). 대화형 전용, cron 금지 |
 
 ### 자주 쓰는 흐름
 ```bash
@@ -118,6 +119,7 @@ obsidian_sync/
 |---|---|
 | `kb-assistant` | 사용자의 KB 관련 의도("훅 어떻게 설정해", "문서 최신화", "이 글 정리해줘")를 감지해 올바른 kb-* 커맨드로 **라우팅** |
 | `soobeen-check` | 개인화 **세션 마감 체크**("마감 체크", "오늘 끝") — 감시 목록 ①~⑦(`soobeen-profile` 룰)을 git status·diff·log.md와 대조해 통과/미달 표 반환. ai-infra-lab 읽기 전용, 대화형 전용 |
+| `soobeen-grill` | 개인화 **착수 전 질문 공세**("이거 시작할게", "~ 구현하려는데") — 완료 조건·기억 회수(retrieval-first)·실패 예상·커밋 단위·다음 스텝을 되묻는다. `soobeen-check`(사후)의 **사전 짝**: 감시 목록 ①③⑤는 마감에 지적해도 늦은 항목이다. **답을 대신 쓰지 않고 빈칸만** 준다(완성 문장을 주면 복붙되는 실패 모드가 검증됨). 효과는 미검증 — "그냥 시작하자"면 즉시 물러난다. ai-infra-lab 읽기 전용, 대화형 전용 |
 | `blog-publish` | `blog/<slug>/` 발행 본문을 Tistory 에디터에 **반자동 게시**("블로그 올려줘") — `aside repl`(aside-browser)로 마크다운 모드 제목·본문 입력 + `[사진 N]` 위치 마커 + **임시저장까지만**. 이미지 첨부·최종 발행은 사용자 직접(automation-safety: 발행은 승인 후). 대화형 전용 |
 
 > 플러그인 marketplace로 설치된 다른 스킬(`data:*`, `figma:*`, `claude-mem:*` 등)은 이 프로젝트가 만든 것이 아니다. `/skill-audit --plugins`로 상시 비용을 점검할 수 있다.
@@ -157,7 +159,10 @@ obsidian_sync/
 | `kb-source-hashes.py` | 출처 원문을 추적해 **같은 슬러그 내 본문 변경**(슬러그 diff가 못 잡는) 감지. 해시 2층(`full`=원문 전체 / `skel`=헤딩+식별자 구조 지문)으로 **구조 변경과 프로즈 변경을 분리** — 큐에는 구조 변경만 적재(노트 자동수정 X). kb-sync 흐름에서 호출 |
 | `scrub-secrets.py` | 크리덴셜 탐지·마스킹 코어(GitHub PAT·AWS·OpenAI·Anthropic 등). ingest 시 1차 방어 |
 | `radar-collect.py` | claude-radar 수집 엔진(0-LLM, 결정론적). 10개 채널 → dedup → JSON |
+| `hot-append.py` | **무인 런의 `hot.md` 쓰기 경로**(0-LLM, 결정론적, 2026-08-25). 하네스가 `runtime/hot.md`를 sensitive로 분류해 무인 Edit/Write를 거부하므로 갱신 의무 ③이 구조적으로 불가능했다(08-24 kb-sync 실측: 두 번 거부 + exit=0). `--line`이 `## Recent sessions` 맨 위에 삽입하고 같은 날 2회차는 `(n)` 카운터, 헤더·제어문자 주입 거부, `INJECT` 블록 불변 검증, 롤링 상한 25개(`--prune`), 영수증(`hot-last-append.json`) 기록 — 이 영수증이 kb-sync 래퍼의 duty-③ 완주 판정 근거다 |
 | `study-brief.py` | study-coach 아침 브리핑 엔진(0-LLM, 결정론적). `study-state.md` 읽어 요일별 다음 미완료 항목 **+ 항목 하위 학습 가이드(개념·자료·완료기준·막히면)** → `study-today.md`. 날짜 멱등(`--check`/`--dry-run`/`--force`/`--brief-only`). `--brief-only`는 브리핑만 쓰고 `last_brief_date`는 안 건드림 — cron의 LLM 리뷰 실패 시 fallback |
+| `kb-eval.py` | **산출물 품질 평가 엔진**(0-LLM, 결정론적, 2026-08-25). 계약 테스트는 메커니즘만 보므로 "LLM이 쓴 내용이 맞는가"는 검증 주체가 없었다. 케이스 2종 — `grounding`(노트의 사실 주장이 `source_urls` 원문에 실재하나; kb-lint는 슬러그 *존재*만 본다)과 `routing`(radar 적재/드롭 판단; **정답은 사용자가 review에서 내린 `[done]`/`[dismissed]` 결정**). 표본은 노트명 sha256 정렬로 **결정론적**(실행마다 바뀌면 추이가 무의미). `--list`는 `gold`·`min_score`를 **숨긴다**(정답 누출 = 자기충족 평가), routing은 `score` 제출을 거부하고 스크립트가 gold와 대조해 매긴다. `--record`는 하나라도 형식 위반이면 **전체 거부**(부분 적재 금지), `--regress`는 기준 미달·직전 대비 0.15↓에 exit 1(신규 케이스는 baseline만) |
+| `span.py` | **무인 루프 실행 원장**(0-LLM, 결정론적, 2026-08-25). cron 로그의 자유 텍스트 + `exit=N`으로는 "어느 단계에서 죽었나·언제부터 느려졌나·성공률이 얼마나"를 답할 수 없었다(radar 26일 침묵이 그 대가). `earendil-works/pi`의 `pi-telemetry` 계약을 우리 규모로 축약 — span(작업 1건)·attrs(명명된 사실, 숫자는 숫자로)·status(ok\|error)만, 익스포터·백엔드·전역 current-span 없이 JSONL 한 파일. `start`가 id를 stdout에 내고 `end`가 duration을 계산, 짝 없는 `end`는 **계측 버그로 경고**(orphan 플래그). `summary`는 루프별 성공률·중간 지속시간, `check`는 마지막 **성공**이 오래되면 exit 1(산출물 날짜를 보는 기존 데드맨과 상보적 — '정상 무소음'과 '사망'을 가른다). 세 cron 래퍼가 계측되며 span end는 **가드가 rc를 확정한 뒤** 닫힌다 |
 | `blog-collect.py` | 블로그 초안의 웹 참조 이미지 수집·저장(0-LLM, 결정론적). 본문 `[사진 N]` ↔ 이미지 계획(`IMG:` 줄) **1:1 대응 검증**(어긋나면 exit 4) → `web`+URL 항목을 다운로드해 `blog/<slug>/N. 이름.png` 저장(**content-type image/* + 10MB cap + SSRF 가드**: http/https·공인 호스트만) → `SOURCES.md`에 출처·라이선스 기록(저작권 판단 근거) → 빌드 섹션 뗀 발행 본문 출력. `shot`·URL없음은 대기로 보고. 어떤 URL이 맞는지 **검색은 메인 세션 몫**, 스크립트는 다운로드·검증·정리만. **메인 세션 실행**(agent·cron 아님). `--check`/`--outdir`/`--in-place`/`--allow-local-hosts`(테스트) |
 | `stray-guard.sh` | 무인 cron 런이 허용 범위 밖 파일을 건드리면 커밋 경계 이전에 되돌림(radar/study=`runtime` 모드 / kb-sync=`kb` 모드). 안전 2차 방어선 |
 

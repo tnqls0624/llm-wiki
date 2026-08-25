@@ -72,6 +72,13 @@ trap 'rm -f "$LOCK"' EXIT
 
 cd "$VAULT" || exit 0
 
+# 영수증 신선도 기준선(2026-08-25). 낡은 영수증을 이번 실행 것으로 오인하면 가드가 무의미해진다.
+RUN_START_EPOCH="$(date +%s)"
+
+# 구조화 실행 원장(2026-08-25). cron 로그의 자유 텍스트로는 "어느 단계에서 죽었나 / 언제부터
+# 느려졌나 / 이 루프 성공률이 얼마나"를 답할 수 없다. span 하나 = 이 실행 1건.
+SPAN="$(python3 "$VAULT/.claude/span.py" start kb-sync 2>/dev/null || true)"
+
 {
   echo "=== [$(date '+%F %T')] kb-sync run start ==="
   # sonnet: 주기 diff 반영은 중간 티어로 충분(비용 레버). acceptEdits + 최소 도구 allowlist로 무인 실행.
@@ -80,7 +87,7 @@ cd "$VAULT" || exit 0
   "$CLAUDE_BIN" -p "/kb-sync — 변경이 없으면 아무 파일도 만들지 말고 '변경 없음'만 보고하고 종료하라." \
     --model sonnet \
     --permission-mode acceptEdits \
-    --allowedTools "Bash(curl -s https://code.claude.com/docs/*),Bash(python3 .claude/kb-lint.py:*),Bash(python3 .claude/kb-source-hashes.py:*),Bash(python3 .claude/radar-collect.py:*),Read,Write,Edit,Glob,Grep" \
+    --allowedTools "Bash(curl -s https://code.claude.com/docs/*),Bash(python3 .claude/kb-lint.py:*),Bash(python3 .claude/kb-source-hashes.py:*),Bash(python3 .claude/radar-collect.py:*),Bash(python3 .claude/hot-append.py:*),Read,Write,Edit,Glob,Grep" \
     2>&1
   rc=$?
   echo "=== [$(date '+%F %T')] exit=$rc ==="
@@ -91,6 +98,40 @@ cd "$VAULT" || exit 0
   # auto-commit/push로 다른 머신에 전파되지 않게, 커밋 경계 이전에 되돌린다. KB 쓰기는 허용하므로
   # radar처럼 전부 되돌리지 않고 '.claude/ 메커니즘 경로'만 STRAY 처리한다(kb 모드 = 블랙리스트).
   bash "$VAULT/.claude/stray-guard.sh" kb
+
+  # 산출물 가드: 갱신 의무 ③(hot.md 한 줄) 완주 영수증 (2026-08-25).
+  # 근거(실측): 08-24 무인 런은 §6b 처리를 끝내고도 hot.md Edit이 sensitive-file로 두 번 거부돼
+  # duty-③만 미완료로 끝났는데 exit=0이었다 — radar 26일 침묵과 같은 부류(거짓 성공).
+  # hot-append.py가 allowlist된 쓰기 경로가 된 이상 "못 썼다"는 변명이 없다 → 계약으로 만든다.
+  # KB를 실제로 건드린 실행에만 적용한다(변경 없음 종료는 duty 대상이 아니다). 세션 중 Stop 훅이
+  # 이미 커밋했을 수 있으므로 커밋된 변경과 미커밋 변경을 모두 센다.
+  KB_RE='^(20|30|80) .*\.md$'
+  KB_COMMITTED="$(git -C "$VAULT" log --since="@$RUN_START_EPOCH" --name-only --pretty=format: 2>/dev/null | grep -cE "$KB_RE" || true)"
+  KB_DIRTY="$(git -C "$VAULT" status --porcelain 2>/dev/null | sed 's/^...//' | tr -d '"' | grep -cE "$KB_RE" || true)"
+  KB_TOUCHED=$(( ${KB_COMMITTED:-0} + ${KB_DIRTY:-0} ))
+  if [ "$KB_TOUCHED" -gt 0 ]; then
+    HOT_RCPT="$VAULT/.claude/runtime/hot-last-append.json"
+    HOT_EPOCH="$(python3 -c "import json,sys;print(json.load(open(sys.argv[1])).get('epoch',0))" "$HOT_RCPT" 2>/dev/null || echo 0)"
+    if [ "${HOT_EPOCH:-0}" -lt "$RUN_START_EPOCH" ]; then
+      echo "⚠ duty-③ 미완주: KB 파일 ${KB_TOUCHED}건을 건드렸는데 이번 실행의 hot.md 영수증이 없다."
+      echo "  hot-append.py --line 호출 누락 — hot.md가 안 갱신되면 다음 세션 L1 부팅 컨텍스트가 이 변경을 모른다."
+      rc=1
+    fi
+  fi
+
+  # span 종료 — rc가 최종 확정된 뒤에 닫는다(가드가 rc를 바꿀 수 있으므로 순서가 중요).
+  if [ -n "$SPAN" ]; then
+    SPAN_ST=error; [ "$rc" -eq 0 ] && SPAN_ST=ok
+    python3 "$VAULT/.claude/span.py" end "$SPAN" --status "$SPAN_ST" \
+      --attr "rc=$rc" --attr "kb_touched=${KB_TOUCHED:-0}" >/dev/null 2>&1 || true
+  fi
+
+  # 무인 런의 커밋·push를 훅에 의존하지 않고 직접 수행 (2026-08-25).
+  # 근거(실측): headless 런에서 SessionEnd 훅이 `Hook cancelled`로 33회 취소됐다(radar 27·kb-sync 6).
+  # Stop 훅의 turn 커밋은 살아있어 로컬 커밋은 됐지만 push는 SessionEnd 전용이라 누락돼 왔다 —
+  # 멀티맥 vault에서 push 누락은 다른 Mac이 낡은 상태로 다음 런을 도는 것을 뜻한다.
+  # auto-commit.py를 그대로 재사용하므로 발산 감지·sync-status 마커가 중복 구현되지 않는다(멱등).
+  echo '{"hook_event_name":"SessionEnd"}' | CLAUDE_PROJECT_DIR="$VAULT" python3 "$VAULT/.claude/hooks/auto-commit.py" >/dev/null 2>&1 || true
 
   # 성공 시에만 스탬프 갱신 — 실패하면 다음 로그인/슬롯에서 재시도됨
   [ "$rc" -eq 0 ] && date +%s > "$STAMP"

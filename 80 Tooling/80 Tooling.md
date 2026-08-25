@@ -106,6 +106,8 @@ confidentiality: public
 - [[26 변경 이력과 용어집]] — 용어집 전체, 최근 3개월 changelog, 주간 What's New(w13~w34, w31 없음), 팀 도입용 챔피언 킷·커뮤니케이션 킷.
 - [[28 대규모 코드 마이그레이션]] — 판정자(judge) 사전 준비부터 규칙집·의존성 맵·갭 인벤토리, 규칙 스트레스 테스트, 다중 에이전트 번역 루프, 컴파일·실행·동작 비교까지 6단계 워크플로우; Bun(Zig→Rust)·Python→TypeScript 실사례와 모델 역할 분담·비용-편익 판단.
 
+- [[31 하네스 엔지니어링]] — 모델과 의도 사이의 런타임 계층 자체를 다룬다. 하네스의 6가지 책임(session state·context budgeting·tool dispatch·provider abstraction·permissions·recovery), 컨텍스트 엔지니어링 실무(Manus의 KV-cache 친화 설계·tool logit masking·실패를 컨텍스트에 남기기, Chroma의 Context Rot 측정, 긴 컨텍스트 4가지 실패 모드), 멀티에이전트 찬반, 그리고 2026-08 실측한 생태계 성장축(evals·telemetry) 대비 이 vault의 자기진단표. 유일한 외부 큐레이션 기반 노트라 출처 귀속을 본문에 명시했다.
+
 ## vault 자기성찰 (구 `Meta/` 흡수, 2026-08-22)
 
 이 vault(LLM wiki) **자체**에 대한 메타 지식 — 아키텍처가 어떤 표준 계보에 속하는지, 무엇을 의도적으로 하고/안 하는지를 박제한다. 운영 규칙의 정본은 `.claude/rules/`이며, 이 노트는 그 규칙 뒤의 **근거와 비교 분석**을 보존한다.
