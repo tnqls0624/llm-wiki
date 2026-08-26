@@ -13,6 +13,44 @@
      - **제안**: <무엇을 어떻게 만들지/박제할지>
 -->
 
+## 2026-08-26
+
+### [pending] kb-ingest · claude-code v2.1.246 릴리스 노트
+- **source**: anthropics/claude-code releases
+- **url**: https://github.com/anthropics/claude-code/releases/tag/v2.1.246
+- **근거**: 서브커맨드 앞에 와일드카드가 오는 Bash allow rule에 대한 startup 경고, `/permissions` Auto mode 탭, 턴 완료 시간 표시 등 실사용에 영향 주는 변경 — `80 Tooling/`의 권한·설정 관련 노트와 직결.
+- **제안**: `80 Tooling/` 권한/설정 레퍼런스 노트(예: `30 설정 레퍼런스` 또는 관련 훅·권한 노트)에 반영 여부 검토. `/kb-sync`와 역할 겹침 주의 — 릴리스 노트 단위 변경이라 이 큐가 더 빠름.
+
+### [pending] kb-ingest · Your Claude Code Hooks Are Costing You Minutes a Day
+- **source**: dev.to #claudecode
+- **url**: https://dev.to/bokuwalily/your-claude-code-hooks-are-costing-you-minutes-a-day-heres-how-i-measured-it-4im4
+- **근거**: 우리 vault는 hook-heavy(session-context, kb-lint-check, stray-guard, Stop/SessionEnd auto-commit 등) — hook 누적 지연 측정 방법론은 직접 참고 가치가 있음.
+- **제안**: 원문 확인 후 `80 Tooling/31 하네스 엔지니어링`에 "hook 성능 측정" 절 추가할 가치가 있는지 판단. 실측 결과가 유의미하면 우리 hook들에도 같은 측정을 적용해볼 것.
+
+### [pending] kb-ingest · 52 Days, 2,340 Rows, Every Cost Logged as Zero: The Stop Hook Trap
+- **source**: dev.to #claudecode
+- **url**: https://dev.to/bokuwalily/52-days-2340-rows-every-cost-logged-as-zero-the-stop-hook-trap-3bn3
+- **근거**: 우리의 무인 auto-commit이 Stop hook에 의존한다(automation-safety-rules "Anything an unattended run leaves in the tree is auto-committed"). Stop hook의 조용한 실패 모드는 우리 파이프라인의 실제 리스크와 직결.
+- **제안**: 원문 확인 후 fail-silent 패턴이 우리 Stop/SessionEnd hook에도 있는지 점검. 재현되면 `test_mechanisms.py`에 계약 테스트 추가하거나 rule로 문서화.
+
+### [pending] kb-ingest · Four Traps in MCP Health Checking: What Broke My Overnight Batches
+- **source**: dev.to #claudecode
+- **url**: https://dev.to/bokuwalily/four-traps-in-mcp-health-checking-what-broke-my-overnight-batches-1187
+- **근거**: 다수 MCP 서버(claude.ai connectors 등)를 연결해 쓰는데 헬스체크 메커니즘이 없음 — 실패 패턴 지식이 갭을 메울 수 있음.
+- **제안**: 원문 확인 후 `80 Tooling/`에 MCP 운영 관련 노트가 있으면 보강, 없으면 신규 노트 검토.
+
+### [pending] kb-ingest · What I Learned Letting an AI Agent Security-Review 300 Pull Requests
+- **source**: dev.to #claudecode
+- **url**: https://dev.to/yureki_lab/what-i-learned-letting-an-ai-agent-security-review-300-pull-requests-1io1
+- **근거**: `security-review` skill을 이미 보유 — 대규모 실전 운용 경험(오탐률·놓친 케이스 등)은 우리 skill 튜닝에 참고 가치.
+- **제안**: 원문 확인 후 `80 Tooling/`에 보안 리뷰 운용 팁 노트로 반영할지, 혹은 `security-review` skill 자체 개선 아이디어로 review에서 논의.
+
+### [pending] rule · forge-harness — 커밋 전 AI 코드 게이트 하네스
+- **source**: GeekNews
+- **url**: https://news.hada.io/topic?id=32868
+- **근거**: "AI가 쓴 코드를 커밋 전에 막는" 오픈소스 게이트 하네스 — 우리도 이미 stray-guard.sh(무인 변경 원복)·kb-lint-check(PostToolUse) 같은 게이트를 갖고 있어 설계 비교 가치가 있음.
+- **제안**: review에서 원문 확인 후, 우리 게이트 메커니즘과 겹치지 않는 새 패턴(예: 커밋 전 최종 차단선)이 있으면 rule/hook으로 흡수. 이미 커버된 범위면 dismissed.
+
 ## 2026-08-24
 
 ### [pending] kb-sync · 00 LLM Wiki 아키텍처와 OKF 자기진단: 출처 구조 변경(https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — /kb-sync --deep

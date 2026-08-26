@@ -1,6 +1,6 @@
 {
  "_comment": "claude-radar dedup ledger — key→first-seen date. Managed by radar-collect.py; do not hand-edit.",
- "updated": "2026-08-23T16:52:20",
+ "updated": "2026-08-26T09:33:49",
  "seen": {
   "acl:April 8, 2026": "2026-06-08",
   "acl:May 11, 2026": "2026-06-08",
@@ -1491,6 +1491,34 @@
   "hn:49405405": "2026-08-23",
   "ghrel:v2.1.241": "2026-08-23",
   "gh:sandbaseai/cli": "2026-08-23",
-  "gn:https://news.hada.io/topic?id=32788": "2026-08-23"
+  "gn:https://news.hada.io/topic?id=32788": "2026-08-23",
+  "gh:yinnho/aginxbrowser": "2026-08-26",
+  "gh:maton-ai/api-gateway-skill": "2026-08-26",
+  "gh:ronle/clayrune": "2026-08-26",
+  "gh:PixelPaw-Labs/DovePaw": "2026-08-26",
+  "hn:49441363": "2026-08-26",
+  "hn:49440860": "2026-08-26",
+  "hn:49440751": "2026-08-26",
+  "hn:49439218": "2026-08-26",
+  "hn:49438805": "2026-08-26",
+  "hn:49436034": "2026-08-26",
+  "hn:49435870": "2026-08-26",
+  "hn:49434941": "2026-08-26",
+  "ghrel:v2.1.246": "2026-08-26",
+  "ghrel:v2.1.245": "2026-08-26",
+  "gn:https://news.hada.io/topic?id=32878": "2026-08-26",
+  "gn:https://news.hada.io/topic?id=32874": "2026-08-26",
+  "gn:https://news.hada.io/topic?id=32868": "2026-08-26",
+  "devto:4399817": "2026-08-26",
+  "ghrel:v2.1.243": "2026-08-26",
+  "devto:4476489": "2026-08-26",
+  "airel:vLLM:v0.28.0": "2026-08-26",
+  "devto:4399688": "2026-08-26",
+  "devto:4464186": "2026-08-26",
+  "devto:4462363": "2026-08-26",
+  "devto:4454807": "2026-08-26",
+  "devto:4399587": "2026-08-26",
+  "npm:@pid1lab/aquila": "2026-08-26",
+  "npm:claude-kimi-agent-skill": "2026-08-26"
  }
 }
