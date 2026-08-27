@@ -227,3 +227,4 @@ This 명령은 사용자 승인이 필요한 상태로 걸려 있습니다. 계�
 SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] failed: Hook cancelled
 === [2026-08-24 09:23:34] exit=0 ===
 === [2026-08-27 09:07:05] kb-sync run start ===
+프로세스가 계속 실행 중이라 반복 폴링은 의미가 없습니다. 완료되면 자동 알림이 올 것이니 그때 이어서 처리하겠습니다.
