@@ -22,8 +22,17 @@
     약해졌으며, 단일 클래스에서는 1.0이 되어 **완벽한 채점자도 영구 실패**했다.
   · grounding 앵커 — 노트 존재 필수, 본문 해시 필수, `claims_checked` 상한을 **본문 분량에서**
     계산한다. v2는 13자 노트에 100/100을 1.0으로 수락했다.
-  · 판정 불가의 분리 — 단일 클래스·라벨 소실·출처 전멸은 실패도 통과도 아닌 `undecidable`이다.
-    v2는 이것들을 조용한 통과(fail-open) 또는 영구 실패로 처리했다.
+  · 판정 불가의 분리 — **종료 코드 3원화**(0 통과 / 1 실패 / **2 판정 불가**). v2는 이것들을
+    조용한 통과(fail-open) 또는 영구 실패로 처리했고, v3 초판은 `undecidable`을 rc=0으로 내서
+    **전량 skipped 제출이 '통과'가 됐다**(자체 감사 2026-08-27 재현 — 정답 지식이 전혀 필요 없는,
+    체리피킹보다 나쁜 경로). 판정 못 한 것은 통과가 아니다.
+  · 커버리지 — 코호트에서 실제 채점된 비율이 MIN_COVERAGE 미만이면 판정 불가. 코호트 완결성은
+    개수가 아니라 채점된 비율로 본다.
+  · 소수 클래스 표본 — BA가 기준을 넘어도 클래스별 채점 수가 MIN_CLASS_CASES 미만이면 통과를
+    주장하지 않는다. 9q/1d에서 drop 하나만 맞히면 나머지 9개가 상수여도 BA=1.0이 된다(자체 감사
+    재현). 상수 전략은 BA<=0.5로 이미 잡히므로 여기서 보류해도 게이트가 약해지지 않는다.
+  · 시도한 축이 미판정이면 통과 없음 — grounding 통과를 이유로 rc=0을 내면 routing에 대해
+    아무것도 말할 수 없는 상태가 '다 괜찮다'로 읽힌다.
   · 게이트가 `verdict` 를 읽는다 — v2는 모순이 기록된 fail을 rc=0으로 통과시켜 규칙이 장식이었다.
 
 **강제하지 못한다(설계상 — 출력의 `enforcement_limits` 에도 함께 낸다):**
@@ -66,6 +75,8 @@ DROP_TOL = 0.15
 GROUNDING_FLOOR = 0.8
 MIN_CLAIMS = 3
 BALANCED_FLOOR = 0.5          # 상수 전략의 balanced accuracy 값. 초과를 요구한다.
+MIN_COVERAGE = 0.5            # 코호트에서 실제 채점된 비율의 하한. 미달이면 판정 불가.
+MIN_CLASS_CASES = 2           # 통과를 주장하려면 각 클래스에 최소 이만큼 채점돼야 한다.
 MAX_FINDINGS = 10
 MAX_FINDING_LEN = 300
 MAX_RESULT_BYTES = 2 << 20    # 결과 파일 상한 2MiB. v2는 524MB를 받아 1.27GB RSS를 썼다.
@@ -589,54 +600,103 @@ def regress(tol, reveal):
         return fail("--drop 은 0 초과 1 이하여야 한다(받은 값: %s)" % tol)
     rows = ledger_rows()
     if not rows:
-        print(json.dumps({"ok": True, "note": "원장이 비어 있다 — 판정할 이력 없음"}, ensure_ascii=False))
-        return 0
+        # 이력이 없는 것도 '판정 불가'다. rc=0 + ok=true 였던 동안, 한 번도 채점하지 않은 상태가
+        # '통과'로 읽혔다 — 전량 skipped와 같은 부류의 거짓 통과다.
+        print(json.dumps({"ok": None, "verdict": "undecidable", "exit_code": 2,
+                          "note": "원장이 비어 있다 — 채점 이력이 없다. 통과가 아니라 판정 불가다.",
+                          "attempted_axes": [], "decided_axes": [], "unresolved_axes": []},
+                         ensure_ascii=False))
+        return 2
 
     problems, undecidable, info = [], [], {}
+    decided = []          # 실제로 판정이 이뤄진 축
+    attempted = []        # 코호트가 존재하는 축(=채점을 시도한 축). 이 중 미판정이 있으면 rc=2.
+
+    def coverage_of(rws):
+        graded = [x for x in rws if x.get("score") is not None]
+        return graded, (len(graded) / len(rws) if rws else 0.0)
 
     grun, grows = latest_cohort(rows, "grounding")
     if grows:
+        attempted.append("grounding")
         info["grounding_run"] = grun
-        for r in grows:
-            cid = r["case"]
-            if cid not in cases or cases[cid].get("retired"):
-                continue
-            if r.get("score") is None:
-                undecidable.append({"case": cid, "why": r.get("skipped", "skipped")})
-                continue
-            # v2의 게이트는 verdict를 읽지 않아, 모순이 기록된 fail이 rc=0으로 통과했다.
-            if r.get("verdict") == "fail":
-                problems.append({"case": cid, "kind": "fail", "detail":
-                                 "verdict=fail (contradictions=%s score=%s)"
-                                 % (r.get("contradictions"), r["score"])})
-            # 이전 관측은 **다른 run**에서 찾는다. epoch 비교였을 때, 같은 초에 두 코호트가
-            # 기록되면(--force 재채점이 정확히 그렇다) 이전 행이 하나도 잡히지 않아 회귀 감지가
-            # 조용히 꺼졌다. 판정 단위가 코호트이므로 비교 단위도 코호트여야 한다.
-            hist = [x for x in rows if x["case"] == cid and x.get("score") is not None
-                    and x.get("run") != r.get("run")]
-            if hist:
-                prev = max(hist, key=lambda x: (x.get("epoch", 0), str(x.get("run", ""))))
-                if r.get("note_hash") and prev.get("note_hash") and r["note_hash"] != prev["note_hash"]:
-                    info.setdefault("rebaselined", []).append(cid)
-                elif prev["score"] - r["score"] >= tol:
-                    problems.append({"case": cid, "kind": "drop",
-                                     "detail": "%.3f -> %.3f" % (prev["score"], r["score"])})
+        g_graded, g_cov = coverage_of(grows)
+        info["grounding_coverage"] = {"graded": len(g_graded), "of": len(grows), "ratio": round(g_cov, 3)}
+        if g_cov < MIN_COVERAGE:
+            # 전량 skipped로 코호트를 '채우면' 아무것도 채점하지 않고 통과했다(v3 초판의 구멍,
+            # 자체 감사에서 재현). 코호트 완결성은 **개수**가 아니라 **채점된 비율**로 봐야 한다.
+            undecidable.append({"scope": "grounding", "why":
+                                "채점된 비율 %.0f%% < %.0f%% — 코호트를 skipped로 채운 것은 채점이 아니다"
+                                % (g_cov * 100, MIN_COVERAGE * 100)})
+            grows = []
+        else:
+            decided.append("grounding")
+    for r in grows:
+        cid = r["case"]
+        if cid not in cases or cases[cid].get("retired"):
+            continue
+        if r.get("score") is None:
+            undecidable.append({"case": cid, "why": r.get("skipped", "skipped")})
+            continue
+        # v2의 게이트는 verdict를 읽지 않아, 모순이 기록된 fail이 rc=0으로 통과했다.
+        if r.get("verdict") == "fail":
+            problems.append({"case": cid, "kind": "fail", "detail":
+                             "verdict=fail (contradictions=%s score=%s)"
+                             % (r.get("contradictions"), r["score"])})
+        # 이전 관측은 **다른 run**에서 찾는다. epoch 비교였을 때, 같은 초에 두 코호트가
+        # 기록되면(--force 재채점이 정확히 그렇다) 이전 행이 하나도 잡히지 않아 회귀 감지가
+        # 조용히 꺼졌다. 판정 단위가 코호트이므로 비교 단위도 코호트여야 한다.
+        hist = [x for x in rows if x["case"] == cid and x.get("score") is not None
+                and x.get("run") != r.get("run")]
+        if hist:
+            prev = max(hist, key=lambda x: (x.get("epoch", 0), str(x.get("run", ""))))
+            if r.get("note_hash") and prev.get("note_hash") and r["note_hash"] != prev["note_hash"]:
+                info.setdefault("rebaselined", []).append(cid)
+            elif prev["score"] - r["score"] >= tol:
+                problems.append({"case": cid, "kind": "drop",
+                                 "detail": "%.3f -> %.3f" % (prev["score"], r["score"])})
 
     rrun, rrows = latest_cohort(rows, "routing")
     if rrows:
+        attempted.append("routing")
         info["routing_run"] = rrun
+        r_graded, r_cov = coverage_of(rrows)
+        info["routing_coverage"] = {"graded": len(r_graded), "of": len(rrows), "ratio": round(r_cov, 3)}
         ba, recalls = balanced_accuracy(rrows)
         info["class_recalls"] = recalls
-        if ba is None:
+        per_class = {}
+        for x in r_graded:
+            if x.get("gold"):
+                per_class[x["gold"]] = per_class.get(x["gold"], 0) + 1
+        info["graded_per_class"] = per_class
+        if r_cov < MIN_COVERAGE:
+            undecidable.append({"scope": "routing", "why":
+                                "채점된 비율 %.0f%% < %.0f%% — skipped로 코호트를 채운 것은 채점이 아니다"
+                                % (r_cov * 100, MIN_COVERAGE * 100)})
+        elif ba is None:
             undecidable.append({"scope": "routing", "why":
                                 "정답이 한 클래스뿐 — balanced accuracy를 계산할 수 없다. "
                                 "실패가 아니라 판정 불가다."})
         else:
             info["balanced_accuracy"] = ba
             if ba <= BALANCED_FLOOR:
+                # 상수 전략은 표본 크기·불균형과 무관하게 정확히 이 값이다 → 확실한 실패.
                 problems.append({"kind": "balanced_accuracy", "detail":
                                  "%.3f <= %.2f — 한 클래스만 답해도 이 값이 나온다(상수 전략의 값). "
                                  "채점자가 판단했다는 증거가 없다." % (ba, BALANCED_FLOOR)})
+                decided.append("routing")
+            elif min(per_class.values(), default=0) < MIN_CLASS_CASES:
+                # BA > 0.5 이지만 **통과라고 말할 수는 없다**: 소수 클래스가 1건이면 그 1건의
+                # 답이 BA를 0.5↔1.0으로 흔든다. 표본 10개인데 실질 판정이 1건에 달리는 상태다
+                # (자체 감사에서 9q/1d로 재현). 상수 전략은 위에서 이미 잡히므로, 여기서 통과를
+                # 보류하는 것이 게이트를 약화시키지 않는다.
+                undecidable.append({"scope": "routing", "why":
+                                    "balanced accuracy %.3f 는 기준을 넘지만 클래스별 채점 수가 %s — "
+                                    "최소 %d건씩 필요하다. 소수 클래스가 1건이면 판정이 그 한 건에 "
+                                    "좌우된다. `/claude-radar review`의 [dismissed] 결정이 쌓여야 "
+                                    "이 축이 통과를 주장할 수 있다." % (ba, per_class, MIN_CLASS_CASES)})
+            else:
+                decided.append("routing")
     else:
         undecidable.append({"scope": "routing", "why": "채점 이력이 없다"})
 
@@ -646,16 +706,36 @@ def regress(tol, reveal):
                          "원장에 읽을 수 없는 줄이 %d개 있다 — 부분 이력으로 판정하지 않는다"
                          % ledger_rows.corrupt})
 
-    ok = not problems
+    # exit code 3원화. `undecidable`이 rc=0을 낳던 동안, 전량 skipped 코호트가 '통과'로 읽혔다 —
+    # 아무것도 채점하지 않고 게이트를 통과하는 경로였다(자체 감사에서 재현). 판정하지 못한 것은
+    # 통과가 아니다. 그렇다고 실패로 만들면 v2의 영구 실패 트랩이 돌아오므로 상태를 분리한다:
+    #   rc=0 통과(실제로 판정했고 문제 없음) · rc=1 실패 · rc=2 판정 불가
+    unresolved = [a for a in attempted if a not in decided]
+    if problems:
+        rc, verdict = 1, "fail"
+    elif unresolved or not decided:
+        # 채점을 **시도한** 축이 판정 불가로 남으면 통과라고 말하지 않는다. grounding이 통과했다는
+        # 이유로 rc=0을 내면, routing에 대해 아무것도 말할 수 없는 상태가 '다 괜찮다'로 읽힌다.
+        rc, verdict = 2, "undecidable"
+    else:
+        rc, verdict = 0, "pass"
     shown = problems if reveal else [{k: v for k, v in p.items() if k != "case"} for p in problems]
-    out = {"ok": ok, "problems": shown, "undecidable": undecidable, "info": info,
+    shown_und = undecidable if reveal else [{k: v for k, v in u.items() if k != "case"}
+                                           for u in undecidable]
+    out = {"ok": (True if rc == 0 else (False if rc == 1 else None)),
+           "verdict": verdict, "exit_code": rc,
+           "decided_axes": decided, "attempted_axes": attempted, "unresolved_axes": unresolved,
+           "problems": shown, "undecidable": shown_und, "info": info,
            "enforcement_limits": ["채점자가 radar-queue.md를 읽어 정답을 알 수 있다",
                                   "채점자가 원장·케이스 파일을 고칠 수 있다",
                                   "grounding 주장 수는 상한 안에서 채점자가 정한다"]}
-    if not reveal and problems:
+    if rc == 2:
+        out["hint"] = ("판정 불가는 통과가 아니다 — 위 undecidable 사유를 해소해야 이 게이트가 "
+                       "의미를 갖는다(커버리지·클래스 표본).")
+    elif not reveal and problems:
         out["hint"] = "케이스 id는 --reveal 로 본다(사람이 볼 때만)"
     print(json.dumps(out, ensure_ascii=False, indent=1))
-    return 0 if ok else 1
+    return rc
 
 
 def summary(reveal):

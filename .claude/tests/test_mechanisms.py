@@ -2041,8 +2041,10 @@ class TestKbEval(unittest.TestCase):
         _write(os.path.join(self.d, "80 Tooling", "03 짧음.md"),
                "---\nid: t3\nsource_urls: [slug-c]\n---\n\n한 줄.\n")
         self.queue = os.path.join(self.claude, "runtime", "radar-queue.md")
-        _write(self.queue, "".join("### [done] kb-ingest · 채택 %d\n\n" % i for i in range(1, 5))
-               + "### [dismissed] skill · 버림 1\n")
+        # 균형 큐(3 queue / 3 drop). 불균형이면 소수 클래스 표본 부족으로 게이트가 rc=2(판정 불가)를
+        # 내므로, 통과 경로를 검증할 수 없다 — 그 자체는 v3의 의도된 동작이고 아래에서 따로 본다.
+        _write(self.queue, "".join("### [done] kb-ingest · 채택 %d\n\n" % i for i in range(1, 4))
+               + "".join("### [dismissed] skill · 버림 %d\n\n" % i for i in range(1, 4)))
 
     # ── helpers ──
     def ev(self, *args):
@@ -2322,8 +2324,11 @@ class TestKbEval(unittest.TestCase):
         self.seed()
         self.submit(self.full_routing())
         r = self.ev("--regress")
-        self.assertEqual(r.returncode, 0, "판정 불가는 실패가 아니다")
-        self.assertTrue(any(u.get("scope") == "routing" for u in json.loads(r.stdout)["undecidable"]))
+        self.assertEqual(r.returncode, 2, "판정 불가는 실패도 통과도 아닌 rc=2다")
+        out = json.loads(r.stdout)
+        self.assertEqual(out["verdict"], "undecidable")
+        self.assertIsNone(out["ok"])
+        self.assertTrue(any(u.get("scope") == "routing" for u in out["undecidable"]))
 
     def test_gate_reads_verdict(self):
         """v2의 게이트는 verdict를 읽지 않아 모순이 기록된 fail이 rc=0으로 통과했다."""
@@ -2402,6 +2407,93 @@ class TestKbEval(unittest.TestCase):
         out = json.loads(self.ev("--summary").stdout)
         self.assertNotIn("cases", out.get("routing", {}))
         self.assertIn("cases", json.loads(self.ev("--summary", "--reveal").stdout)["routing"])
+
+    # ── 자체 감사(2026-08-27)가 v3 초판에서 찾은 구멍들 ────────────────────
+
+    def test_empty_ledger_is_undecidable_not_pass(self):
+        """한 번도 채점하지 않은 상태가 rc=0 + ok=true 였다 — 전량 skipped와 같은 부류의 거짓 통과."""
+        self.seed()
+        r = self.ev("--regress")
+        self.assertEqual(r.returncode, 2)
+        out = json.loads(r.stdout)
+        self.assertEqual(out["verdict"], "undecidable")
+        self.assertIsNone(out["ok"])
+
+    def test_all_skipped_cohort_is_not_a_pass(self):
+        """전량 skipped로 코호트를 '채우면' 아무것도 채점하지 않고 rc=0이 나왔다.
+
+        v2의 체리피킹보다 나쁘다 — 정답에 대한 지식이 전혀 필요 없다. 코호트 완결성은
+        **개수**가 아니라 **채점된 비율**로 봐야 한다."""
+        self.seed()
+        rows = ([{"case": c["id"], "skipped": "귀찮음"} for c in self.cases("routing")]
+                + [{"case": c["id"], "skipped": "귀찮음"} for c in self.cases("grounding")])
+        self.assertEqual(self.submit(rows).returncode, 0, "기록 자체는 가능해야(사유가 남는다)")
+        r = self.ev("--regress")
+        self.assertEqual(r.returncode, 2, "아무것도 채점하지 않고 통과했다")
+        out = json.loads(r.stdout)
+        self.assertEqual(out["verdict"], "undecidable")
+        self.assertIsNone(out["ok"], "ok=true 는 '판정했고 문제 없음'만을 뜻해야 한다")
+        self.assertEqual(sorted(out["unresolved_axes"]), ["grounding", "routing"])
+
+    def test_unresolved_axis_blocks_a_pass(self):
+        """시도한 축이 판정 불가로 남으면 다른 축이 통과해도 rc=0을 내지 않는다.
+
+        grounding이 통과했다는 이유로 rc=0을 내면, routing에 대해 아무것도 말할 수 없는 상태가
+        '다 괜찮다'로 읽힌다."""
+        self.seed()
+        rows = ([{"case": c["id"], "skipped": "큐 확인 불가"} for c in self.cases("routing")]
+                + self.full_grounding())
+        self.submit(rows)
+        r = self.ev("--regress")
+        self.assertEqual(r.returncode, 2)
+        out = json.loads(r.stdout)
+        self.assertIn("grounding", out["decided_axes"])
+        self.assertEqual(out["unresolved_axes"], ["routing"])
+
+    def test_minority_class_too_small_withholds_the_pass(self):
+        """소수 클래스가 1건이면 balanced accuracy가 그 한 건에 좌우된다 — 통과를 주장하지 않는다.
+
+        9 queue / 1 drop에서 drop 하나만 맞히면 나머지 9개가 상수여도 BA=1.0이 된다(자체 감사가
+        재현). 상수 전략은 BA<=0.5로 이미 잡히므로, 여기서 통과를 보류해도 게이트가 약해지지 않는다."""
+        _write(self.queue, "".join("### [done] kb-ingest · 채택 %d\n\n" % i for i in range(1, 10))
+               + "### [dismissed] skill · 버림 1\n")
+        self.seed()
+        self.submit(self.full_routing() + self.full_grounding())
+        r = self.ev("--regress")
+        self.assertEqual(r.returncode, 2, "표본이 1건인 클래스로 통과를 주장했다")
+        out = json.loads(r.stdout)
+        self.assertEqual(out["info"]["balanced_accuracy"], 1.0, "BA 자체는 계산돼 보고돼야")
+        self.assertEqual(out["info"]["graded_per_class"], {"queue": 9, "drop": 1})
+        self.assertEqual(out["unresolved_axes"], ["routing"])
+
+    def test_balanced_set_with_honest_judge_passes(self):
+        # positive control: 위 세 테스트가 '항상 rc!=0'으로 통과하면 안 된다.
+        self.seed()
+        self.submit(self.full_routing() + self.full_grounding())
+        r = self.ev("--regress")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        out = json.loads(r.stdout)
+        self.assertEqual((out["verdict"], out["ok"]), ("pass", True))
+        self.assertEqual(sorted(out["decided_axes"]), ["grounding", "routing"])
+        self.assertGreaterEqual(min(out["info"]["graded_per_class"].values()), 2)
+
+    def test_partial_skip_below_coverage_is_undecidable(self):
+        self.seed()
+        rt = self.cases("routing")
+        rows = [{"case": c["id"], "skipped": "확인 불가"} for c in rt[:len(rt) // 2 + 1]]
+        rows += [{"case": c["id"], "decision": ("drop" if "버림" in c["title"] else "queue")}
+                 for c in rt[len(rt) // 2 + 1:]]
+        self.submit(rows + self.full_grounding())
+        out = json.loads(self.ev("--regress").stdout)
+        self.assertIn("routing", out["unresolved_axes"])
+        self.assertLess(out["info"]["routing_coverage"]["ratio"], 0.5)
+
+    def test_exit_codes_are_tri_state(self):
+        self.seed()
+        self.submit(self.full_routing("constant") + self.full_grounding())
+        self.assertEqual(self.ev("--regress").returncode, 1, "0=pass 1=fail 2=undecidable")
+        self.submit(self.full_routing() + self.full_grounding(), force=True)
+        self.assertEqual(self.ev("--regress").returncode, 0)
 
     def test_command_doc_states_v3_contract(self):
         doc = _read(os.path.join(CLAUDE, "commands", "kb-eval.md"))
