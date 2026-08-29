@@ -17,7 +17,7 @@ rc 검증 + positive control(살아있음 증명)을 둔다.
 실행: bash .claude/tests/run-tests.sh  또는  python3 .claude/tests/test_mechanisms.py
 의존성: 표준 라이브러리만(unittest/subprocess/tempfile). git 필요(auto-commit 테스트).
 """
-import base64, datetime, glob, json, os, re, shutil, subprocess, tempfile, threading, unittest
+import base64, datetime, glob, json, os, re, shutil, subprocess, tempfile, threading, time, unittest
 import importlib.util as _ilu
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
@@ -978,6 +978,56 @@ class TestStrayGuard(unittest.TestCase):
         self._run(d, "kb")
         self.assertFalse(os.path.exists(new), "rename 결과물이 남았다")
         self.assertEqual(_read(old), "baseline skill\n", "rename 원본이 복원되지 않았다")
+
+    # ── baseline 보호 (2026-08-29 실제 사고) ─────────────────────────────
+    # 09:30 study-coach cron이 사람이 편집 중이던 미커밋 `.claude/kb-eval.py`를 STRAY로 판정해
+    # 되돌렸고, 작업이 통째로 사라졌다. 무인 런의 책임 범위는 **그 런이 만든 변경**이지, 우연히
+    # 같은 시각에 열려 있던 사람의 작업이 아니다.
+
+    def test_snapshot_mode_changes_nothing(self):
+        d = self._spaced_repo()
+        p = os.path.join(d, ".claude", "skills", "some skill", "SKILL.md")
+        _write(p, "사람이 편집 중\n")
+        r = self._run(d, "snapshot")
+        self.assertEqual(r.returncode, 0)
+        self.assertIn(".claude/skills/some skill/SKILL.md", r.stdout)
+        self.assertEqual(_read(p), "사람이 편집 중\n", "snapshot 은 아무것도 고치지 않는다")
+
+    def test_baseline_protects_in_flight_human_work(self):
+        d = self._spaced_repo()
+        human_tracked = os.path.join(d, ".claude", "skills", "some skill", "SKILL.md")
+        human_new = os.path.join(d, ".claude", "skills", "사람 작업.md")
+        _write(human_tracked, "사람이 쓰던 v4\n")
+        _write(human_new, "사람의 새 파일\n")
+        base = os.path.join(self.d if hasattr(self, "d") else d, "baseline.txt")
+        base = os.path.join(d, "..", "baseline.txt")
+        with open(base, "w", encoding="utf-8") as f:
+            f.write(self._run(d, "snapshot").stdout)
+        self.addCleanup(lambda: os.path.exists(base) and os.remove(base))
+        # 무인 런이 만든 stray
+        cron_stray = os.path.join(d, ".claude", "cron_stray.py")
+        _write(cron_stray, "cron이 만든 것\n")
+        r = subprocess.run(["bash", self.GUARD, "runtime", base], cwd=d,
+                           capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0)
+        self.assertEqual(_read(human_tracked), "사람이 쓰던 v4\n", "사람의 미커밋 작업이 파괴됐다")
+        self.assertTrue(os.path.exists(human_new), "사람이 만든 새 파일이 삭제됐다")
+        self.assertFalse(os.path.exists(cron_stray), "런이 만든 stray 는 여전히 제거돼야")
+
+    def test_without_baseline_human_work_is_destroyed(self):
+        # positive control: baseline 이 없으면 실제 사고가 재현된다 — 보호가 진짜 동작함을 증명한다.
+        d = self._spaced_repo()
+        human_tracked = os.path.join(d, ".claude", "skills", "some skill", "SKILL.md")
+        _write(human_tracked, "사람이 쓰던 v4\n")
+        self._run(d, "runtime")
+        self.assertEqual(_read(human_tracked), "baseline skill\n")
+
+    def test_wrappers_pass_a_baseline(self):
+        for w in ("kb-sync-cron.sh", "claude-radar-cron.sh", "study-coach-cron.sh"):
+            txt = _read(os.path.join(CLAUDE, w))
+            self.assertIn("stray-guard.sh\" snapshot", txt, f"{w}: baseline 스냅샷을 뜨지 않는다")
+            self.assertRegex(txt, r'stray-guard\.sh" (runtime|kb) "\$STRAY_BASELINE"',
+                             f"{w}: stray-guard 에 baseline 을 넘기지 않는다")
 
     def test_spaced_kb_note_and_runtime_survive_kb_mode(self):
         # positive control: 위 세 테스트가 '전부 지운다'로 통과하면 안 된다.
@@ -2015,11 +2065,13 @@ class TestUnattendedCompletionContracts(unittest.TestCase):
 
 
 class TestKbEval(unittest.TestCase):
-    """kb-eval v3 — 두 차례 독립 감사(각 12 에이전트)가 v1·v2를 뚫은 뒤의 계약.
+    """kb-eval v4 — **관측 도구**의 계약.
 
-    v1은 judge가 자기 점수를 매겨 앵커가 없었고, v2는 부분 제출·재굴림·정답 노출·majority
-    baseline 때문에 게으른 채점자가 통과했다. 아래는 감사가 **실제로 성공시킨 공격**들을 그대로
-    재현해 막혔는지 보는 테스트다. 통과 여부보다 '무엇을 막는지'가 이 클래스의 문서다."""
+    v1·v2·v3는 각각 12-에이전트 감사에서 뚫렸다. 매번 지표를 고쳤고 매번 다른 입력으로 우회로가
+    열렸다 — 게이트의 입력을 채점자가 전부 통제하기 때문이다. v4는 판정을 포기하고 리포트를
+    만든다. 그래서 이 테스트가 보는 것은 '나쁜 채점자를 막는가'가 아니라 두 가지다:
+      ① 자료 위생 — 원장에 말이 안 되는 관찰이 들어가지 않는가
+      ② 관측 정직성 — 우회 시도가 리포트에 **드러나는가**(막지는 않는다)"""
 
     LONG = " ".join("문장%d 내용이 충분히 길다" % i for i in range(60))
 
@@ -2034,24 +2086,19 @@ class TestKbEval(unittest.TestCase):
         os.makedirs(os.path.join(self.d, "80 Tooling"))
         self.note1 = os.path.join(self.d, "80 Tooling", "01 하나.md")
         _write(self.note1, "---\nid: t1\nupdated: 2026-01-01\nsource_urls: [slug-a]\n---\n\n%s\n" % self.LONG)
-        # 들여쓰기 0 블록 리스트(초판 파서가 놓쳤던 형태)
         _write(os.path.join(self.d, "80 Tooling", "02 둘.md"),
                "---\nid: t2\nsource_urls:\n- https://x.example/one\n---\n\n%s\n" % self.LONG)
-        # 본문이 너무 짧아 최소 주장 수를 담을 수 없는 노트 — 케이스가 되면 안 된다
         _write(os.path.join(self.d, "80 Tooling", "03 짧음.md"),
                "---\nid: t3\nsource_urls: [slug-c]\n---\n\n한 줄.\n")
         self.queue = os.path.join(self.claude, "runtime", "radar-queue.md")
-        # 균형 큐(3 queue / 3 drop). 불균형이면 소수 클래스 표본 부족으로 게이트가 rc=2(판정 불가)를
-        # 내므로, 통과 경로를 검증할 수 없다 — 그 자체는 v3의 의도된 동작이고 아래에서 따로 본다.
         _write(self.queue, "".join("### [done] kb-ingest · 채택 %d\n\n" % i for i in range(1, 4))
                + "".join("### [dismissed] skill · 버림 %d\n\n" % i for i in range(1, 4)))
 
-    # ── helpers ──
     def ev(self, *args):
         return subprocess.run(["python3", self.script, *args], capture_output=True, text=True)
 
-    def seed(self):
-        r = self.ev("--seed")
+    def seed(self, *extra):
+        r = self.ev("--seed", *extra)
         self.assertEqual(r.returncode, 0, r.stderr)
         return json.loads(r.stdout)
 
@@ -2061,18 +2108,16 @@ class TestKbEval(unittest.TestCase):
         return [c for c in rows if (not ctype or c["type"] == ctype)
                 and bool(c.get("retired")) == retired]
 
-    def submit(self, results, force=False, judge="t"):
+    def submit(self, results, judge="t"):
         f = os.path.join(self.d, "res.json")
         _write(f, json.dumps({"judge": judge, "results": results}))
-        return self.ev(*(["--record", f] + (["--force"] if force else [])))
+        return self.ev("--record", f)
 
     def full_routing(self, mode="honest"):
-        """routing 활성 케이스 전량. mode=constant면 전부 queue(상수 전략)."""
-        out = []
-        for c in self.cases("routing"):
-            dec = "queue" if mode == "constant" else ("drop" if "버림" in c["title"] else "queue")
-            out.append({"case": c["id"], "decision": dec})
-        return out
+        return [{"case": c["id"],
+                 "decision": "queue" if mode == "constant" else
+                             ("drop" if "버림" in c["title"] else "queue")}
+                for c in self.cases("routing")]
 
     def full_grounding(self, checked=10, grounded=10, contradictions=0):
         return [{"case": c["id"], "claims_checked": checked, "claims_grounded": grounded,
@@ -2082,424 +2127,227 @@ class TestKbEval(unittest.TestCase):
         p = os.path.join(self.claude, "runtime", "eval-ledger.jsonl")
         return [json.loads(l) for l in _read(p).splitlines() if l.strip()] if os.path.exists(p) else []
 
-    # ── seed ────────────────────────────────────────────────────────────
+    def rep(self, *extra):
+        r = self.ev("--report", *extra)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        return json.loads(r.stdout)
 
-    def test_seed_excludes_notes_too_short_to_grade(self):
-        # 상한이 MIN_CLAIMS와 같아지면 제출 가능한 값이 하나뿐이라 채점이 형식적 통과로 굳는다.
-        out = self.seed()
-        self.assertEqual(out["active"]["grounding"], 2)
-        self.assertNotIn("80 Tooling/03 짧음.md", [c["note"] for c in self.cases("grounding")])
+    # ── 관측 도구라는 계약 ───────────────────────────────────────────────
 
-    def test_seed_never_stores_gold(self):
-        self.seed()
-        for c in self.cases() + self.cases(retired=True):
-            self.assertNotIn("gold", c, "케이스 파일에 정답이 있으면 git 추적 파일로 배포된다")
+    def test_report_never_judges(self):
+        """어떤 채점 결과가 와도 리포트는 통과/실패를 선언하지 않는다.
 
-    def test_seed_strips_legacy_gold(self):
+        게이트를 자칭하면 채점자가 그것을 우회한다 — 세 라운드가 그것을 보여줬다."""
         self.seed()
-        cs = self.cases()
-        cs[0]["gold"] = "queue"
-        _write(os.path.join(self.claude, "evals", "cases.jsonl"),
-               "".join(json.dumps(c, ensure_ascii=False) + "\n" for c in cs))
-        self.assertEqual(self.seed()["gold_stripped"], 1)
+        for rows in (self.full_routing("constant"), self.full_routing()):
+            self.submit(rows)
+            r = self.ev("--report")
+            self.assertEqual(r.returncode, 0, "리포트는 판정하지 않는다 — exit code는 도구 상태다")
+            out = json.loads(r.stdout)
+            self.assertNotIn("verdict", out)
+            self.assertIn("disclaimer", out)
+            self.assertIn("limits", out)
 
-    def test_seed_preserves_ids_when_set_grows(self):
+    def test_constant_strategy_is_surfaced_not_blocked(self):
         self.seed()
-        before = {c["id"] for c in self.cases()}
-        _write(os.path.join(self.d, "80 Tooling", "04 넷.md"),
-               "---\nid: t4\nsource_urls: [slug-d]\n---\n\n%s\n" % self.LONG)
-        with open(self.queue, "a") as f:
-            f.write("\n### [dismissed] agent · 버림 2\n")
-        self.seed()
-        self.assertTrue(before <= {c["id"] for c in self.cases()} | {c["id"] for c in self.cases(retired=True)})
+        self.submit(self.full_routing("constant"))
+        rt = self.rep()["routing"]
+        self.assertEqual(rt["accuracy"], rt["constant_strategy_would_score"]["accuracy"],
+                         "상수 전략의 정확도가 참고선과 나란히 보여야")
+        self.assertTrue(any("상수 전략" in c for c in self.rep()["concerns"]))
 
-    def test_seed_retires_and_revives_with_same_id(self):
-        self.seed()
-        c = self.cases("grounding")[0]
-        body = _read(os.path.join(self.d, c["note"]))
-        os.remove(os.path.join(self.d, c["note"]))
-        self.assertEqual(self.seed()["retired_now"], 1)
-        self.assertIn(c["id"], [x["id"] for x in self.cases("grounding", retired=True)])
-        _write(os.path.join(self.d, c["note"]), body)
-        self.seed()
-        self.assertIn(c["id"], [x["id"] for x in self.cases("grounding")], "부활 시 id가 유지돼야")
+    def test_imbalanced_gold_shows_raw_accuracy(self):
+        """v3의 balanced accuracy는 불균형에서 27% 채점자를 통과시키고 82%를 실패시켰다.
 
-    def test_cap_applies_on_revive_too(self):
-        # v2는 add 경로만 검사해서, 은퇴 케이스가 되살아나면 활성 수가 상한을 영구히 넘었다.
+        v4는 정확도를 가공하지 않고 그대로 보여주고, 상수 전략 값을 옆에 둔다."""
+        _write(self.queue, "".join("### [done] kb-ingest · 채택 %d\n\n" % i for i in range(1, 10))
+               + "".join("### [dismissed] skill · 버림 %d\n\n" % i for i in range(1, 3)))
+        self.seed()
+        rt = self.cases("routing")
+        rows = [{"case": c["id"],
+                 "decision": "drop" if ("버림" in c["title"] or c is not rt[0]) else "queue"}
+                for c in rt]
+        self.submit(rows)
+        blk = self.rep()["routing"]
+        self.assertLess(blk["accuracy"], 0.5, "소수 클래스만 맞힌 채점자의 낮은 정확도가 그대로 보여야")
+        self.assertGreater(blk["constant_strategy_would_score"]["accuracy"], 0.5)
+
+    def test_all_skipped_is_visible_in_coverage(self):
+        """전량 skipped는 v3에서 '통과'였다. v4는 막지 않지만 coverage와 concerns가 드러낸다."""
+        self.seed()
+        self.submit([{"case": c["id"], "skipped": "확인 불가"}
+                     for c in self.cases("routing") + self.cases("grounding")])
+        out = self.rep()
+        self.assertEqual(out["routing"]["coverage"]["graded"], 0)
+        self.assertEqual(out["routing"]["coverage"]["skipped"], len(self.cases("routing")))
+        self.assertTrue(any("채점하지 않았다" in c for c in out["concerns"]))
+
+    def test_partial_cohort_is_visible(self):
+        self.seed()
+        rt = self.cases("routing")
+        self.submit([{"case": c["id"], "decision": "queue"} for c in rt[:2]])
+        blk = self.rep()["routing"]
+        self.assertEqual(blk["coverage"]["active_not_in_cohort"], len(rt) - 2)
+        self.assertTrue(any("코호트에 없다" in c for c in self.rep()["concerns"]))
+
+    def test_uncovered_notes_are_reported(self):
         for i in range(10):
             _write(os.path.join(self.d, "80 Tooling", "1%d 추가.md" % i),
                    "---\nid: x%d\nsource_urls: [s]\n---\n\n%s\n" % (i, self.LONG))
         self.seed()
-        self.assertLessEqual(len(self.cases("grounding")), 6)
-        # 전부 은퇴 → 부활 시퀀스를 강제
-        for c in self.cases("grounding"):
-            c["retired"] = True
-        allc = self.cases() + self.cases(retired=True)
-        _write(os.path.join(self.claude, "evals", "cases.jsonl"),
-               "".join(json.dumps(c, ensure_ascii=False) + "\n" for c in allc))
+        self.submit(self.full_grounding())
+        out = self.rep()
+        self.assertGreater(out["not_covered"]["notes_without_case"], 0)
+        self.assertTrue(any("표본에 없는 노트" in c for c in out["concerns"]))
+
+    def test_rotate_lets_new_notes_enter(self):
+        """상한에 도달하면 새로 쓴 노트가 영영 표본에 못 들어왔다 — 검증이 가장 필요한 콘텐츠다."""
+        for i in range(10):
+            _write(os.path.join(self.d, "80 Tooling", "1%d 추가.md" % i),
+                   "---\nid: x%d\nsource_urls: [s]\n---\n\n%s\n" % (i, self.LONG))
         self.seed()
-        self.assertLessEqual(len(self.cases("grounding")), 6, "부활 경로가 상한을 넘겼다")
+        before = {c["id"] for c in self.cases("grounding")}
+        out = self.seed("--rotate", "2")
+        self.assertEqual(len(out["rotated_out"]), 4, "타입별 2개씩 회전")
+        self.assertNotEqual(before, {c["id"] for c in self.cases("grounding")})
 
-    def test_conflicting_duplicate_titles_dropped_from_gold(self):
-        # 같은 제목에 상반된 결정이 있으면 정답이 임의가 된다 — v2는 마지막 항목이 조용히 이겼다.
-        with open(self.queue, "a") as f:
-            f.write("\n### [dismissed] kb-ingest · 채택 1\n")
-        out = self.seed()
-        self.assertIn("채택 1", out["duplicate_titles_dropped"])
-
-    def test_single_class_gold_warns_not_fails(self):
-        _write(self.queue, "### [done] kb-ingest · 채택 1\n\n### [done] kb-ingest · 채택 2\n")
-        out = self.seed()
-        self.assertEqual(out["gold_distribution"]["classes"], 1)
-        self.assertIn("undecidable", out.get("warning", ""))
-
-    def test_schema_violations_fail_loudly(self):
+    def test_stale_cohort_is_flagged(self):
         self.seed()
-        for line in ('{"id": "x", "type": "grounding"}',      # note 없음
-                     '{"type": "routing", "title": "t"}',      # id 없음
-                     '{broken'):
-            with open(os.path.join(self.claude, "evals", "cases.jsonl"), "a") as f:
-                f.write(line + "\n")
-            r = self.ev("--regress")
-            self.assertEqual(r.returncode, 1, "%s 가 통과했다" % line[:20])
-            self.assertIn("cases.jsonl", r.stderr)
-            cs = [l for l in _read(os.path.join(self.claude, "evals", "cases.jsonl")).splitlines()][:-1]
-            _write(os.path.join(self.claude, "evals", "cases.jsonl"), "\n".join(cs) + "\n")
+        self.submit(self.full_routing())
+        p = os.path.join(self.claude, "runtime", "eval-ledger.jsonl")
+        rows = [json.loads(l) for l in _read(p).splitlines() if l.strip()]
+        for r in rows:
+            r["epoch"] = int(time.time()) - 60 * 86400
+        _write(p, "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows))
+        self.assertTrue(any("낡았다" in c for c in self.rep()["concerns"]))
 
-    # ── list ────────────────────────────────────────────────────────────
-
-    def test_list_hides_floor_and_gives_claims_cap(self):
+    def test_routing_trend_is_tracked(self):
+        """routing에는 추이 검출이 아예 없었다(감사 지적) — 코호트별 정확도를 남긴다."""
         self.seed()
-        blob = json.loads(self.ev("--list").stdout)
-        self.assertIn("전량", blob["cohort_rule"])
-        for c in blob["cases"]:
-            self.assertNotIn("min_score", c)
-            self.assertNotIn("gold", c)
+        self.submit(self.full_routing())
+        self.submit(self.full_routing("constant"))
+        blk = self.rep()["routing"]
+        self.assertGreaterEqual(len(blk["accuracy_by_cohort"]), 2)
+        self.assertTrue(any("떨어졌다" in c for c in self.rep()["concerns"]))
+
+    # ── 자료 위생 ───────────────────────────────────────────────────────
+
+    def test_path_traversal_rejected(self):
+        self.seed()
+        cs = self.cases()
+        for c in cs:
             if c["type"] == "grounding":
-                self.assertGreater(c["max_claims"], 3, "상한을 알려주지 않으면 발명을 막을 수 없다")
-
-    # ── record: 코호트·재굴림·정답 미노출 ────────────────────────────────
-
-    def test_cherry_picking_rejected(self):
-        """감사가 성공시킨 1번 공격: 유리한 케이스만 골라 제출."""
-        self.seed()
-        partial = [r for r in self.full_routing("constant") if True][:-1]
-        r = self.submit(partial)
+                c["note"] = "../../../../etc/passwd"
+                break
+        _write(os.path.join(self.claude, "evals", "cases.jsonl"),
+               "".join(json.dumps(c, ensure_ascii=False) + "\n" for c in cs))
+        r = self.ev("--report")
         self.assertEqual(r.returncode, 1)
-        self.assertIn("코호트 불완전", json.loads(r.stderr)["error"])
+        self.assertIn("repo 밖", r.stderr)
 
-    def test_retired_case_in_cohort_rejected(self):
+    def test_nan_min_score_rejected(self):
         self.seed()
-        rows = self.full_routing()
-        target = rows[0]["case"]
-        path = os.path.join(self.claude, "evals", "cases.jsonl")
-        allc = [json.loads(l) for l in _read(path).splitlines() if l.strip()]
-        for x in allc:
-            if x["id"] == target:
-                x["retired"] = True
-        _write(path, "".join(json.dumps(x, ensure_ascii=False) + "\n" for x in allc))
-        r = self.submit(rows)
-        self.assertEqual(r.returncode, 1, "은퇴 케이스가 코호트에 섞여도 통과했다")
-        self.assertIn("은퇴", json.loads(r.stderr)["error"])
-
-    def test_same_day_reroll_rejected_without_force(self):
-        """감사가 성공시킨 5번 공격: 실패 후 재제출로 통과."""
-        self.seed()
-        self.assertEqual(self.submit(self.full_routing("constant")).returncode, 0)
-        r = self.submit(self.full_routing())
+        cs = self.cases()
+        for c in cs:
+            if c["type"] == "grounding":
+                c["min_score"] = float("nan")
+                break
+        _write(os.path.join(self.claude, "evals", "cases.jsonl"),
+               "".join(json.dumps(c, ensure_ascii=False) + "\n" for c in cs))
+        r = self.ev("--report")
         self.assertEqual(r.returncode, 1)
-        self.assertIn("오늘 이미 채점", json.loads(r.stderr)["error"])
-        self.assertEqual(self.submit(self.full_routing(), force=True).returncode, 0,
-                         "--force 는 사람이 의도한 재실행을 허용해야")
+        self.assertIn("min_score", r.stderr)
 
-    def test_record_output_does_not_reveal_which_cases_failed(self):
-        """감사가 지목한 최고 위험: --record 가 답을 알려줘 2회차 만점이 보장됐다."""
+    def test_note_without_sources_cannot_be_scored(self):
+        """grounding의 정의가 '출처 원문에 실재하는가'다 — 출처가 없으면 채점이 성립하지 않는다."""
         self.seed()
-        out = json.loads(self.submit(self.full_routing("constant")).stdout)
-        self.assertIn("failed_count", out)
-        blob = json.dumps(out, ensure_ascii=False)
-        for c in self.cases("routing"):
-            self.assertNotIn(c["id"], blob, "케이스 id가 노출되면 정답을 배운다")
+        t = _read(self.note1)
+        _write(self.note1, t.replace("source_urls: [slug-a]\n", ""))
+        r = self.submit(self.full_grounding())
+        self.assertEqual(r.returncode, 1)
+        self.assertIn("source_urls", r.stderr)
+
+    def test_skipped_must_be_a_real_string(self):
+        # sanitize 가 False/0 을 "False"/"0" 이라는 그럴듯한 '사유'로 바꿔놓던 경로.
+        self.seed()
+        gid = self.cases("grounding")[0]["id"]
+        for val in (False, 0, "", "   ", None, 123):
+            self.assertEqual(self.submit([{"case": gid, "skipped": val}]).returncode, 1,
+                             "skipped=%r 가 통과했다" % val)
+        self.assertEqual(self.submit([{"case": gid, "skipped": "출처가 전부 죽었다"}]).returncode, 0)
+
+    def test_skipped_cannot_coexist_with_a_grade(self):
+        self.seed()
+        c = self.cases("routing")[0]
+        self.assertEqual(self.submit([{"case": c["id"], "skipped": "사유",
+                                       "decision": "queue"}]).returncode, 1)
+
+    def test_counts_must_be_integers_and_consistent(self):
+        self.seed()
+        for bad in ({"claims_grounded": 4.9}, {"claims_grounded": "5"}, {"claims_grounded": True},
+                    {"claims_grounded": 99}, {"claims_checked": 2}, {"claims_checked": 10000}):
+            rows = self.full_grounding()
+            rows[0].update(bad)
+            self.assertEqual(self.submit(rows).returncode, 1, "%r 가 통과했다" % bad)
+
+    def test_contradictions_must_be_explicit(self):
+        # 생략하면 '찾아보지 않았다'와 '없었다'가 원장에서 구분되지 않는다.
+        self.seed()
+        rows = [{"case": c["id"], "claims_checked": 5, "claims_grounded": 5}
+                for c in self.cases("grounding")]
+        self.assertEqual(self.submit(rows).returncode, 1)
 
     def test_banned_and_unknown_keys_rejected(self):
         self.seed()
-        for key in ("score", "verdict", "Score", "my_score", "SCORE", "unexpected"):
+        for key in ("score", "verdict", "Score", "my_score", "unexpected"):
             rows = self.full_routing()
             rows[0][key] = 1.0
-            r = self.submit(rows, force=True)
-            self.assertEqual(r.returncode, 1, "%s 가 통과했다" % key)
+            self.assertEqual(self.submit(rows).returncode, 1, "%s 가 통과했다" % key)
 
-    def test_routing_scored_against_queue(self):
+    def test_malformed_payloads_rejected_without_traceback(self):
         self.seed()
-        r = self.submit(self.full_routing())
-        self.assertEqual(r.returncode, 0, r.stderr)
-        rows = [x for x in self.ledger() if x["type"] == "routing"]
-        self.assertTrue(all(x["score"] == 1.0 for x in rows))
-        self.assertTrue(all(x.get("gold") for x in rows), "gold를 원장에 남겨야 0.0을 귀속할 수 있다")
+        f = os.path.join(self.d, "bad.json")
+        for payload in ('{"judge":"x","results":["문자열"]}', '["배열"]', 'null', '{"results":[]}'):
+            _write(f, payload)
+            r = self.ev("--record", f)
+            self.assertEqual(r.returncode, 1)
+            self.assertNotIn("Traceback", r.stderr)
+            json.loads(r.stderr)          # JSON 에러 계약 유지
 
-    def test_grounding_arithmetic_and_caps(self):
-        self.seed()
-        r = self.submit(self.full_grounding(checked=8, grounded=6))
-        self.assertEqual(r.returncode, 0, r.stderr)
-        self.assertEqual(self.ledger()[0]["score"], 0.75)
-        # 감사가 성공시킨 4번 공격: 짧은 노트에 100/100
-        self.assertEqual(self.submit(self.full_grounding(checked=10000, grounded=10000),
-                                     force=True).returncode, 1)
-        self.assertEqual(self.submit(self.full_grounding(checked=2, grounded=2),
-                                     force=True).returncode, 1)
-        self.assertEqual(self.submit(self.full_grounding(checked=3, grounded=5),
-                                     force=True).returncode, 1)
-
-    def test_non_integer_counts_rejected(self):
-        self.seed()
-        for v in (4.9, "5", True, None):
-            rows = self.full_grounding()
-            rows[0]["claims_grounded"] = v
-            self.assertEqual(self.submit(rows, force=True).returncode, 1, "%r 가 통과했다" % v)
-
-    def test_deleted_note_requires_skipped(self):
-        self.seed()
-        c = self.cases("grounding")[0]
-        os.remove(os.path.join(self.d, c["note"]))
-        self.assertEqual(self.submit(self.full_grounding()).returncode, 1)
-        rows = self.full_grounding()
-        rows = [dict(r) if r["case"] != c["id"] else {"case": c["id"], "skipped": "노트 없음"}
-                for r in rows]
-        r = self.submit(rows, force=True)
-        self.assertEqual(r.returncode, 0, r.stderr)
-        self.assertEqual(json.loads(r.stdout)["skipped"], 1)
-
-    def test_note_hash_ignores_frontmatter(self):
-        self.seed()
-        self.submit(self.full_grounding())
-        h1 = self.ledger()[0]["note_hash"]
-        t = _read(self.note1)
-        _write(self.note1, t.replace("updated: 2026-01-01", "updated: 2026-08-26"))
-        self.submit(self.full_grounding(), force=True)
-        self.assertEqual(self.ledger()[-1]["note_hash"], h1,
-                         "frontmatter 범프가 해시를 바꾸면 회귀가 rebaseline으로 세탁된다")
-
-    def test_oversized_and_malformed_payloads_rejected(self):
-        self.seed()
-        f = os.path.join(self.d, "big.json")
-        _write(f, json.dumps({"judge": "x", "results": [{"case": "a", "findings": ["x" * 3_000_000]}]}))
-        self.assertEqual(self.ev("--record", f).returncode, 1)
-        _write(f, json.dumps({"judge": "x", "results": ["문자열"]}))
-        self.assertEqual(self.ev("--record", f).returncode, 1)
-        _write(f, json.dumps(["배열"]))
-        self.assertEqual(self.ev("--record", f).returncode, 1)
-
-    def test_sanitize_strips_invisibles(self):
-        self.seed()
-        rows = self.full_routing()
-        rows[0]["findings"] = ["a​b‮c⁠d­eㅤf", {"dict": "도"}]
-        self.assertEqual(self.submit(rows).returncode, 0)
-        f = self.ledger()[0]["findings"][0]
-        for ch in ("​", "‮", "⁠", "­", "ㅤ"):
-            self.assertNotIn(ch, f)
-
-    # ── regress: 게으른 채점자를 잡는가 ──────────────────────────────────
-
-    def test_constant_strategy_fails_via_balanced_accuracy(self):
-        """감사가 성공시킨 2번 공격의 정면. 상수 전략은 표본 크기·불균형과 무관하게 0.5다."""
-        self.seed()
-        self.submit(self.full_routing("constant"))
-        r = self.ev("--regress")
-        self.assertEqual(r.returncode, 1, "게으른 상수 채점자가 통과했다")
-        out = json.loads(r.stdout)
-        self.assertEqual(out["info"]["balanced_accuracy"], 0.5)
-        self.assertIn("balanced_accuracy", [p["kind"] for p in out["problems"]])
-
-    def test_discriminating_judge_passes(self):
-        # positive control: 위 테스트가 '전부 실패'로 통과하면 안 된다.
-        self.seed()
-        self.submit(self.full_routing())
-        r = self.ev("--regress")
-        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-        self.assertGreater(json.loads(r.stdout)["info"]["balanced_accuracy"], 0.5)
-
-    def test_single_class_is_undecidable_not_permanent_fail(self):
-        """v2는 여기서 baseline 1.0을 만들어 완벽한 채점자도 영구 실패시켰다."""
-        _write(self.queue, "### [done] kb-ingest · 채택 1\n\n### [done] kb-ingest · 채택 2\n")
-        self.seed()
-        self.submit(self.full_routing())
-        r = self.ev("--regress")
-        self.assertEqual(r.returncode, 2, "판정 불가는 실패도 통과도 아닌 rc=2다")
-        out = json.loads(r.stdout)
-        self.assertEqual(out["verdict"], "undecidable")
-        self.assertIsNone(out["ok"])
-        self.assertTrue(any(u.get("scope") == "routing" for u in out["undecidable"]))
-
-    def test_gate_reads_verdict(self):
-        """v2의 게이트는 verdict를 읽지 않아 모순이 기록된 fail이 rc=0으로 통과했다."""
-        self.seed()
-        self.submit(self.full_grounding(checked=10, grounded=10, contradictions=1))
-        r = self.ev("--regress", "--reveal")
-        self.assertEqual(r.returncode, 1)
-        self.assertIn("fail", [p["kind"] for p in json.loads(r.stdout)["problems"]])
-
-    def test_frontmatter_bump_does_not_launder_regression(self):
-        self.seed()
-        self.submit(self.full_grounding(grounded=10))
-        t = _read(self.note1)
-        _write(self.note1, t.replace("updated: 2026-01-01", "updated: 2026-08-26"))
-        self.submit(self.full_grounding(grounded=7), force=True)
-        out = json.loads(self.ev("--regress", "--reveal").stdout)
-        self.assertIn("drop", [p["kind"] for p in out["problems"]])
-
-    def test_body_rewrite_rebaselines(self):
-        self.seed()
-        self.submit(self.full_grounding(grounded=10))
-        _write(self.note1, "---\nid: t1\nsource_urls: [slug-a]\n---\n\n%s\n"
-               % " ".join("새 문장%d 이다" % i for i in range(60)))
-        self.submit(self.full_grounding(grounded=9), force=True)
-        out = json.loads(self.ev("--regress", "--reveal").stdout)
-        self.assertTrue(out["info"].get("rebaselined"), "다른 텍스트끼리 비교해선 안 된다")
-
-    def test_cohort_is_the_unit_not_latest_per_case(self):
-        """v2는 케이스별 최신 행을 봐서, 실패한 케이스만 다시 내면 통과했다."""
-        self.seed()
-        self.submit(self.full_routing("constant"))
-        self.assertEqual(self.ev("--regress").returncode, 1)
-        # 코호트 전량을 정직하게 다시 내면(사람이 --force로) 통과 — 부분 재제출은 애초에 거부된다
-        self.submit(self.full_routing(), force=True)
-        self.assertEqual(self.ev("--regress").returncode, 0)
-        self.assertEqual(json.loads(self.ev("--regress").stdout)["info"]["class_recalls"],
-                         {"queue": 1.0, "drop": 1.0})
-
-    def test_drop_tolerance_validated(self):
-        self.seed()
-        self.submit(self.full_grounding())
-        for bad in ("0", "-1", "2"):
-            self.assertEqual(self.ev("--regress", "--drop", bad).returncode, 1)
-
-    def test_corrupt_ledger_is_a_problem_not_silence(self):
+    def test_corrupt_ledger_is_counted_and_reported(self):
         self.seed()
         self.submit(self.full_routing())
         with open(os.path.join(self.claude, "runtime", "eval-ledger.jsonl"), "a") as f:
             f.write("{broken\n")
-        r = self.ev("--regress")
-        self.assertEqual(r.returncode, 1, "부분 이력으로 판정하면 게이트가 거짓말을 한다")
-        self.assertIn("ledger", [p["kind"] for p in json.loads(r.stdout)["problems"]])
+            f.write(json.dumps({"case": "x", "type": "routing", "epoch": "문자열", "run": "r"}) + "\n")
+        out = self.rep()
+        self.assertEqual(out["corrupt_ledger_lines"], 2, "타입 오염도 corrupt 로 세야")
+        self.assertTrue(any("읽을 수 없는 줄" in c for c in out["concerns"]))
 
-    def test_orphan_rows_do_not_pin_the_gate(self):
+    def test_seed_hygiene_contracts(self):
+        out = self.seed()
+        self.assertEqual(out["active"]["grounding"], 2, "짧은 노트는 표본에서 제외")
+        for c in self.cases():
+            self.assertNotIn("gold", c, "정답은 케이스 파일에 저장하지 않는다")
+        before = {c["id"] for c in self.cases()}
         self.seed()
-        self.submit(self.full_routing())
-        with open(os.path.join(self.claude, "runtime", "eval-ledger.jsonl"), "a") as f:
-            f.write(json.dumps({"epoch": 1, "date": "2020-01-01", "run": "old", "case": "g-orphan",
-                                "type": "grounding", "score": 0.0, "verdict": "fail"}) + "\n")
-        self.assertEqual(self.ev("--regress").returncode, 0)
+        self.assertEqual(before, {c["id"] for c in self.cases()}, "재실행이 id를 흔들면 추이가 끊긴다")
 
-    def test_reveal_gates_case_identity(self):
+    def test_list_hides_floor_and_marks_ungradeable(self):
         self.seed()
-        self.submit(self.full_grounding(grounded=1))
-        plain = self.ev("--regress").stdout
-        revealed = self.ev("--regress", "--reveal").stdout
-        cid = self.cases("grounding")[0]["id"]
-        self.assertNotIn(cid, plain, "--reveal 없이 케이스 id가 나오면 정답을 배운다")
-        self.assertIn(cid, revealed)
-        self.assertIn("enforcement_limits", json.loads(plain),
-                      "막지 못하는 것을 출력에 함께 내야 결과를 과신하지 않는다")
+        t = _read(self.note1)
+        _write(self.note1, t.replace("source_urls: [slug-a]\n", ""))
+        blob = json.loads(self.ev("--list").stdout)
+        for c in blob["cases"]:
+            self.assertNotIn("min_score", c)
+        g = [c for c in blob["cases"] if c["type"] == "grounding"]
+        self.assertTrue(any("unavailable" in c for c in g), "출처 없는 노트는 채점 불가로 표시")
 
-    def test_summary_hides_scores_without_reveal(self):
-        self.seed()
-        self.submit(self.full_routing())
-        out = json.loads(self.ev("--summary").stdout)
-        self.assertNotIn("cases", out.get("routing", {}))
-        self.assertIn("cases", json.loads(self.ev("--summary", "--reveal").stdout)["routing"])
-
-    # ── 자체 감사(2026-08-27)가 v3 초판에서 찾은 구멍들 ────────────────────
-
-    def test_empty_ledger_is_undecidable_not_pass(self):
-        """한 번도 채점하지 않은 상태가 rc=0 + ok=true 였다 — 전량 skipped와 같은 부류의 거짓 통과."""
-        self.seed()
-        r = self.ev("--regress")
-        self.assertEqual(r.returncode, 2)
-        out = json.loads(r.stdout)
-        self.assertEqual(out["verdict"], "undecidable")
-        self.assertIsNone(out["ok"])
-
-    def test_all_skipped_cohort_is_not_a_pass(self):
-        """전량 skipped로 코호트를 '채우면' 아무것도 채점하지 않고 rc=0이 나왔다.
-
-        v2의 체리피킹보다 나쁘다 — 정답에 대한 지식이 전혀 필요 없다. 코호트 완결성은
-        **개수**가 아니라 **채점된 비율**로 봐야 한다."""
-        self.seed()
-        rows = ([{"case": c["id"], "skipped": "귀찮음"} for c in self.cases("routing")]
-                + [{"case": c["id"], "skipped": "귀찮음"} for c in self.cases("grounding")])
-        self.assertEqual(self.submit(rows).returncode, 0, "기록 자체는 가능해야(사유가 남는다)")
-        r = self.ev("--regress")
-        self.assertEqual(r.returncode, 2, "아무것도 채점하지 않고 통과했다")
-        out = json.loads(r.stdout)
-        self.assertEqual(out["verdict"], "undecidable")
-        self.assertIsNone(out["ok"], "ok=true 는 '판정했고 문제 없음'만을 뜻해야 한다")
-        self.assertEqual(sorted(out["unresolved_axes"]), ["grounding", "routing"])
-
-    def test_unresolved_axis_blocks_a_pass(self):
-        """시도한 축이 판정 불가로 남으면 다른 축이 통과해도 rc=0을 내지 않는다.
-
-        grounding이 통과했다는 이유로 rc=0을 내면, routing에 대해 아무것도 말할 수 없는 상태가
-        '다 괜찮다'로 읽힌다."""
-        self.seed()
-        rows = ([{"case": c["id"], "skipped": "큐 확인 불가"} for c in self.cases("routing")]
-                + self.full_grounding())
-        self.submit(rows)
-        r = self.ev("--regress")
-        self.assertEqual(r.returncode, 2)
-        out = json.loads(r.stdout)
-        self.assertIn("grounding", out["decided_axes"])
-        self.assertEqual(out["unresolved_axes"], ["routing"])
-
-    def test_minority_class_too_small_withholds_the_pass(self):
-        """소수 클래스가 1건이면 balanced accuracy가 그 한 건에 좌우된다 — 통과를 주장하지 않는다.
-
-        9 queue / 1 drop에서 drop 하나만 맞히면 나머지 9개가 상수여도 BA=1.0이 된다(자체 감사가
-        재현). 상수 전략은 BA<=0.5로 이미 잡히므로, 여기서 통과를 보류해도 게이트가 약해지지 않는다."""
-        _write(self.queue, "".join("### [done] kb-ingest · 채택 %d\n\n" % i for i in range(1, 10))
-               + "### [dismissed] skill · 버림 1\n")
-        self.seed()
-        self.submit(self.full_routing() + self.full_grounding())
-        r = self.ev("--regress")
-        self.assertEqual(r.returncode, 2, "표본이 1건인 클래스로 통과를 주장했다")
-        out = json.loads(r.stdout)
-        self.assertEqual(out["info"]["balanced_accuracy"], 1.0, "BA 자체는 계산돼 보고돼야")
-        self.assertEqual(out["info"]["graded_per_class"], {"queue": 9, "drop": 1})
-        self.assertEqual(out["unresolved_axes"], ["routing"])
-
-    def test_balanced_set_with_honest_judge_passes(self):
-        # positive control: 위 세 테스트가 '항상 rc!=0'으로 통과하면 안 된다.
-        self.seed()
-        self.submit(self.full_routing() + self.full_grounding())
-        r = self.ev("--regress")
-        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-        out = json.loads(r.stdout)
-        self.assertEqual((out["verdict"], out["ok"]), ("pass", True))
-        self.assertEqual(sorted(out["decided_axes"]), ["grounding", "routing"])
-        self.assertGreaterEqual(min(out["info"]["graded_per_class"].values()), 2)
-
-    def test_partial_skip_below_coverage_is_undecidable(self):
-        self.seed()
-        rt = self.cases("routing")
-        rows = [{"case": c["id"], "skipped": "확인 불가"} for c in rt[:len(rt) // 2 + 1]]
-        rows += [{"case": c["id"], "decision": ("drop" if "버림" in c["title"] else "queue")}
-                 for c in rt[len(rt) // 2 + 1:]]
-        self.submit(rows + self.full_grounding())
-        out = json.loads(self.ev("--regress").stdout)
-        self.assertIn("routing", out["unresolved_axes"])
-        self.assertLess(out["info"]["routing_coverage"]["ratio"], 0.5)
-
-    def test_exit_codes_are_tri_state(self):
-        self.seed()
-        self.submit(self.full_routing("constant") + self.full_grounding())
-        self.assertEqual(self.ev("--regress").returncode, 1, "0=pass 1=fail 2=undecidable")
-        self.submit(self.full_routing() + self.full_grounding(), force=True)
-        self.assertEqual(self.ev("--regress").returncode, 0)
-
-    def test_command_doc_states_v3_contract(self):
+    def test_command_doc_matches_v4(self):
         doc = _read(os.path.join(CLAUDE, "commands", "kb-eval.md"))
-        for token in ("코호트", "balanced accuracy", "claims_checked", "--force", "--reveal",
-                      "강제하지 못한다", "cron"):
+        for token in ("판정하지 않는다", "--report", "coverage", "concerns", "cron"):
             self.assertIn(token, doc, "문서에 %s 계약이 없다" % token)
+        self.assertNotIn("--regress", doc, "v3의 게이트 명령이 문서에 남아 있다")
 
 
 class TestSpanLedger(unittest.TestCase):

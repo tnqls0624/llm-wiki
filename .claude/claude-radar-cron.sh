@@ -75,6 +75,14 @@ trap 'rm -f "$LOCK"' EXIT
 
 cd "$VAULT" || exit 0
 
+# 무인 런 **시작 시점의 dirty 목록**을 남긴다(2026-08-29). 이 목록에 있던 경로는 사람이 하던
+# 작업이므로 stray-guard가 건드리지 않는다. 없던 동안 실제 사고가 났다: 09:30 study-coach cron이
+# 편집 중이던 미커밋 `.claude/kb-eval.py`를 STRAY로 되돌려 작업이 통째로 사라졌다.
+# 무인 런의 책임 범위는 그 런이 만든 변경이지, 같은 시각에 열려 있던 사람의 작업이 아니다.
+STRAY_BASELINE="$VAULT/.claude/runtime/.stray-baseline.$$"
+bash "$VAULT/.claude/stray-guard.sh" snapshot > "$STRAY_BASELINE" 2>/dev/null || true
+trap 'rm -f "$LOCK" "$STRAY_BASELINE"' EXIT
+
 # 실패 서명 측정용 기준선(2026-08-23 추가). collect의 유일한 산출물은 radar-queue.md 인데,
 # harness가 이 경로를 'sensitive file'로 분류해 무인 런의 Edit/Write를 거부하면서도
 # seen 원장(allowlist된 radar-collect.py가 직접 씀)은 계속 자라 26일간 exit=0으로 침묵했다.
@@ -105,7 +113,7 @@ SPAN="$(python3 "$VAULT/.claude/span.py" start claude-radar 2>/dev/null || true)
   # 프롬프트 오판으로 큐 밖(skill/agent/KB 등)을 건드렸으면 auto-commit/push 전에 되돌린다 —
   # 동의 없는 생성물이 조용히 커밋·push되지 않게. (1차 방어선은 command §A + allowlist)
   # 가드 로직은 stray-guard.sh로 추출(kb-sync와 공유 + 계약 테스트 대상). runtime 모드 = .claude/runtime/만 허용.
-  bash "$VAULT/.claude/stray-guard.sh" runtime
+  bash "$VAULT/.claude/stray-guard.sh" runtime "$STRAY_BASELINE"
 
   # 산출물 가드 v2 (2026-08-23): 완주 영수증 계약.
   # v1(seen 증가 + 큐 무변경 = 실패)은 첫 실전에서 "신규 전부 정당 드롭" 정상 케이스를

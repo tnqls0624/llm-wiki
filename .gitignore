@@ -68,6 +68,8 @@ Tags/
 # 이유다: 두 Mac이 각자 append하는 파일을 추적하면 동기화마다 충돌한다. 관측은 기기별로 본다.
 # 반대로 평가 점수 추이(eval-ledger.jsonl)와 골든셋(evals/cases.jsonl)은 **공유 지식**이므로
 # 계속 추적한다 — study-state.md를 추적하는 것과 같은 판단(충돌 위험을 감수할 값이 있다).
+# 무인 런 시작 시점의 dirty 스냅샷(stray-guard baseline). 런 종료 시 삭제되는 임시 파일.
+.claude/runtime/.stray-baseline.*
 .claude/runtime/spans.jsonl
 .claude/runtime/hot-last-append.json
 .claude/runtime/eval-last-run.json

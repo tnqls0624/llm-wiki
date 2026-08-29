@@ -3,14 +3,21 @@
 # automation-safety의 'guard before the commit boundary' 불변식을 기계적으로 강제하는 2차 방어선.
 # (1차는 커맨드 프롬프트 + allowlist.) 프롬프트 지시는 enforcement가 아니다 — 이 가드가 그 보강이다.
 #
-# 사용: bash stray-guard.sh <mode>    (반드시 git repo의 작업트리에서, cd 된 상태로 호출)
-#   mode=runtime : radar collect — .claude/runtime/ 만 허용, 그 밖 전부 STRAY (durable 생성 0)
-#   mode=kb      : kb-sync — KB 노트(토픽 디렉터리)·.claude/runtime/ 은 허용,
-#                  .claude/ 의 **메커니즘**(skills/agents/commands/rules/hooks/scripts/tests 등 runtime 외)만 STRAY
+# 사용: bash stray-guard.sh <mode> [baseline-file]   (git repo 작업트리에서 cd 된 상태로 호출)
+#   mode=runtime  : radar/study — .claude/runtime/ 만 허용, 그 밖 전부 STRAY (durable 생성 0)
+#   mode=kb       : kb-sync — KB 노트(토픽 디렉터리)·.claude/runtime/ 은 허용,
+#                   .claude/ 의 **메커니즘**(runtime 외)만 STRAY
+#   mode=snapshot : 지금 dirty한 경로 목록을 stdout에 출력하고 종료(baseline 생성용, 아무것도 안 고침)
 #
-# STRAY 처리: 추적 파일은 `git checkout`으로 원복, 미추적 신규 파일은 `rm`으로 삭제.
+# **baseline-file**: 무인 런이 시작되기 *전부터* dirty했던 경로 목록(= 사람이 하던 작업).
+# 그 경로들은 STRAY에서 제외한다. 없던 동안 실제 사고가 났다(2026-08-29): 09:30 study-coach cron이
+# 사람이 편집 중이던 미커밋 `.claude/kb-eval.py`를 STRAY로 판정해 되돌렸고, 작업이 통째로 사라졌다.
+# 무인 런의 책임 범위는 **그 런이 만든 변경**이지, 우연히 같은 시각에 열려 있던 사람의 작업이 아니다.
+#
+# STRAY 처리: 추적 파일은 `git checkout HEAD`로 원복, 미추적 신규 파일은 `rm`으로 삭제.
 # 되돌린 경로 목록을 stdout에 출력(없으면 무출력). 항상 exit 0(정보성, 세션 흐름 비차단).
 MODE="${1:-runtime}"
+BASELINE="${2:-}"
 
 # 경로 추출을 python에 맡긴다(2026-08-25 수정). 이전 판은 `--porcelain` 텍스트를 `sed 's/^...//'`
 # 로 잘랐는데, git은 **공백·특수문자가 있는 경로를 따옴표로 감싼다** — `core.quotepath=false`는
@@ -42,10 +49,20 @@ for p in out:
 '
 }
 
+if [ "$MODE" = "snapshot" ]; then
+  _stray_paths
+  exit 0
+fi
+
 if [ "$MODE" = "kb" ]; then
   STRAY=$(_stray_paths | grep -E '^\.claude/' | grep -vE '^\.claude/runtime/' || true)
 else
   STRAY=$(_stray_paths | grep -vE '^\.claude/runtime/' || true)
+fi
+
+# 런 시작 전부터 dirty했던 경로(=사람의 작업)를 제외한다. 정확 일치로만 뺀다.
+if [ -n "$STRAY" ] && [ -n "$BASELINE" ] && [ -f "$BASELINE" ]; then
+  STRAY=$(printf '%s\n' "$STRAY" | grep -vxF -f "$BASELINE" || true)
 fi
 
 [ -z "$STRAY" ] && exit 0

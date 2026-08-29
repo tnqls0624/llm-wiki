@@ -72,6 +72,14 @@ trap 'rm -f "$LOCK"' EXIT
 
 cd "$VAULT" || exit 0
 
+# 무인 런 **시작 시점의 dirty 목록**을 남긴다(2026-08-29). 이 목록에 있던 경로는 사람이 하던
+# 작업이므로 stray-guard가 건드리지 않는다. 없던 동안 실제 사고가 났다: 09:30 study-coach cron이
+# 편집 중이던 미커밋 `.claude/kb-eval.py`를 STRAY로 되돌려 작업이 통째로 사라졌다.
+# 무인 런의 책임 범위는 그 런이 만든 변경이지, 같은 시각에 열려 있던 사람의 작업이 아니다.
+STRAY_BASELINE="$VAULT/.claude/runtime/.stray-baseline.$$"
+bash "$VAULT/.claude/stray-guard.sh" snapshot > "$STRAY_BASELINE" 2>/dev/null || true
+trap 'rm -f "$LOCK" "$STRAY_BASELINE"' EXIT
+
 # 영수증 신선도 기준선(2026-08-25). 낡은 영수증을 이번 실행 것으로 오인하면 가드가 무의미해진다.
 RUN_START_EPOCH="$(date +%s)"
 
@@ -97,7 +105,7 @@ SPAN="$(python3 "$VAULT/.claude/span.py" start kb-sync 2>/dev/null || true)"
   # hooks/scripts/tests 등 runtime 외)을 자기수정하는 것은 범위 밖 — 프롬프트 오판으로 훅/룰을 고쳐
   # auto-commit/push로 다른 머신에 전파되지 않게, 커밋 경계 이전에 되돌린다. KB 쓰기는 허용하므로
   # radar처럼 전부 되돌리지 않고 '.claude/ 메커니즘 경로'만 STRAY 처리한다(kb 모드 = 블랙리스트).
-  bash "$VAULT/.claude/stray-guard.sh" kb
+  bash "$VAULT/.claude/stray-guard.sh" kb "$STRAY_BASELINE"
 
   # 산출물 가드: 갱신 의무 ③(hot.md 한 줄) 완주 영수증 (2026-08-25).
   # 근거(실측): 08-24 무인 런은 §6b 처리를 끝내고도 hot.md Edit이 sensitive-file로 두 번 거부돼

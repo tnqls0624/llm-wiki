@@ -2,7 +2,7 @@
 
 Obsidian vault 하나에 **두 가지**가 들어 있다:
 
-1. **토픽 디렉토리 — 지식 베이스(콘텐츠)**: §11 번호 폴더 체계(2026-08-22 채택). 각 폴더는 한국어 노트 + `<폴더>/<폴더>.md` MOC 허브(파일명이 디렉토리명과 같아야 MOC로 인식). `80 Tooling/`(Claude Code 공식문서 29 + vault 자기진단 1) · `30 AI Infrastructure/`(8) · `20 Architecture/`(10). 나머지 §11 슬롯은 아직 비어 있다. 노트 frontmatter는 §12 11필드 — 정본은 `.claude/kb-required-fields.txt`, `type` 허용값은 `.claude/kb-allowed-types.txt`.
+1. **토픽 디렉토리 — 지식 베이스(콘텐츠)**: §11 번호 폴더 체계(2026-08-22 채택). 각 폴더는 한국어 노트 + `<폴더>/<폴더>.md` MOC 허브(파일명이 디렉토리명과 같아야 MOC로 인식). `80 Tooling/`(Claude Code 공식문서 30 + vault 자기진단 1 + 하네스 엔지니어링 1) · `30 AI Infrastructure/`(8) · `20 Architecture/`(10). 나머지 §11 슬롯은 아직 비어 있다. 노트 frontmatter는 §12 11필드 — 정본은 `.claude/kb-required-fields.txt`, `type` 허용값은 `.claude/kb-allowed-types.txt`.
 2. **`.claude/` — 포터블 프레임워크 패키지(메커니즘)**: KB를 묻고·갱신·점검·박제하고, Claude 생태계를 매일 자동 수집하는 커스텀 커맨드·에이전트·스킬·룰·훅·cron. 다른 vault로 그대로 복사 가능.
 
 > 이 README는 **Claude Code 기본 기능이 아닌, 이 프로젝트가 추가한 것**의 사용법만 정리한다. 기본 CLI 사용법은 `80 Tooling/` KB를 참고한다.
@@ -22,21 +22,21 @@ obsidian_sync/
 ├── 30 AI Infrastructure/        # 콘텐츠: 백엔드→AI인프라 학습 KB (8 노트 + MOC)
 │   ├── 00 로드맵.md · 01 LLM 서빙 · 02 K8s GPU · 03 MLOps · 04 RAG · 10 핸즈온 · 11 캡스톤 · 99 리소스
 │   └── 30 AI Infrastructure.md  # MOC 허브
-├── 80 Tooling/                  # 콘텐츠: Claude Code 공식문서 KB 29 + vault 자기진단 1 (+ MOC)
+├── 80 Tooling/                  # 콘텐츠: 공식문서 KB 30 + vault 자기진단 1 + 하네스 엔지니어링 1 (+ MOC)
 │   ├── 00 LLM Wiki 아키텍처와 OKF 자기진단.md   # 구 Meta/ 에서 흡수 (2026-08-22)
-│   ├── 01 시작하기.md … 29 자체 호스팅 환경.md
+│   ├── 01 시작하기.md … 30 설정 레퍼런스.md · 31 하네스 엔지니어링.md
 │   └── 80 Tooling.md            # MOC 허브 (학습 경로 + 전체 지도 + vault 자기성찰)
 ├── Templates/                   # §13 영구 노트 템플릿 (kb-lint 제외)
 ├── blog/                        # 블로그 초안 + 수집 이미지 (blog-collect.py, git 추적, kb-lint 제외)
 │   └── <slug>/                  # `N. 이름.png` + `<slug>.md` + SOURCES.md
 ├── .claude/                     # 메커니즘: 포터블 프레임워크
-│   ├── commands/                # 슬래시 커맨드 8개
+│   ├── commands/                # 슬래시 커맨드 9개
 │   ├── agents/                  # 서브에이전트 3개
 │   ├── skills/                  # 스킬 (kb-assistant · soobeen-check · soobeen-grill · blog-publish)
 │   ├── rules/                   # 자동 로드 룰 3개
 │   ├── hooks/                   # 이벤트 훅 4개
 │   ├── evals/                   # kb-eval 골든셋 (cases.jsonl — 정답은 저장하지 않는다)
-│   ├── tests/                   # 계약 테스트 (299 케이스 — 정확한 수는 run-tests.sh 출력을 본다)
+│   ├── tests/                   # 계약 테스트 (수는 run-tests.sh 출력이 정본 — 여기 적지 않는다)
 │   ├── runtime/                 # 휘발성 상태 (hot.md, 큐, ledger, 로그)
 │   ├── kb-required-fields.txt · kb-allowed-types.txt   # frontmatter 스키마 정본
 │   ├── *.py / *.sh              # 스크립트 + cron 래퍼/설치기 + stray-guard.sh
@@ -47,9 +47,9 @@ obsidian_sync/
 
 ---
 
-## ⌨️ 슬래시 커맨드 (8개)
+## ⌨️ 슬래시 커맨드 (9개)
 
-세션에서 `/<이름>`으로 호출한다. KB 관련 5개 + 자동화·점검 3개.
+세션에서 `/<이름>`으로 호출한다. KB 관련 5개 + 자동화·점검 3개 + 품질 관측 1개.
 
 | 커맨드 | 인자 | 용도 |
 |---|---|---|
@@ -61,7 +61,7 @@ obsidian_sync/
 | `/claude-radar` | `[collect\|review]` | Claude 생태계 정보 수집·추천(collect) / 큐 검토·동의 후 생성(review) |
 | `/study-coach` | `[review\|brief\|plan]` | AI Infra 학습 코치 — 어제 산출물(별도 `ai-infra-lab` repo)을 LLM이 검토·채점하고(review) 오늘 할 것을 브리핑(brief). 진도는 `runtime/study-state.md`(git 공유) |
 | `/skill-audit` | `[--global] [--plugins]` | 설치된 skill의 description 토큰 풋프린트(매 세션 상시 비용) 점검 |
-| `/kb-eval` | `[--type grounding\|routing]` | **LLM 산출물 품질**을 골든셋으로 채점하고 회귀를 잡는다 — 계약 테스트가 못 보는 축(메커니즘이 아니라 내용). 대화형 전용, cron 금지 |
+| `/kb-eval` | `[--type grounding\|routing] [--rotate N] [--reveal]` | **KB 산출물 품질 관측** — 골든셋으로 채점하고 사람이 읽는 리포트를 만든다. **판정하지 않는다**(세 차례 감사가 게이트 불가를 입증). 대화형 전용, cron 금지 |
 
 ### 자주 쓰는 흐름
 ```bash
@@ -114,7 +114,7 @@ obsidian_sync/
 
 ---
 
-## 🧠 스킬 (3개)
+## 🧠 스킬 (4개)
 
 | 스킬 | 용도 |
 |---|---|
@@ -162,7 +162,7 @@ obsidian_sync/
 | `radar-collect.py` | claude-radar 수집 엔진(0-LLM, 결정론적). 10개 채널 → dedup → JSON |
 | `hot-append.py` | **무인 런의 `hot.md` 쓰기 경로**(0-LLM, 결정론적, 2026-08-25). 하네스가 `runtime/hot.md`를 sensitive로 분류해 무인 Edit/Write를 거부하므로 갱신 의무 ③이 구조적으로 불가능했다(08-24 kb-sync 실측: 두 번 거부 + exit=0). `--line`이 `## Recent sessions` 맨 위에 삽입하고 같은 날 2회차는 `(n)` 카운터, 헤더·제어문자 주입 거부, `INJECT` 블록 불변 검증, 롤링 상한 25개(`--prune`), 영수증(`hot-last-append.json`) 기록 — 이 영수증이 kb-sync 래퍼의 duty-③ 완주 판정 근거다 |
 | `study-brief.py` | study-coach 아침 브리핑 엔진(0-LLM, 결정론적). `study-state.md` 읽어 요일별 다음 미완료 항목 **+ 항목 하위 학습 가이드(개념·자료·완료기준·막히면)** → `study-today.md`. 날짜 멱등(`--check`/`--dry-run`/`--force`/`--brief-only`). `--brief-only`는 브리핑만 쓰고 `last_brief_date`는 안 건드림 — cron의 LLM 리뷰 실패 시 fallback |
-| `kb-eval.py` | **산출물 품질 평가 엔진**(0-LLM, 결정론적, **v3** 2026-08-26). 계약 테스트는 메커니즘만 보므로 "LLM이 쓴 내용이 맞는가"는 검증 주체가 없었다. 케이스 2종 — `grounding`(노트의 사실 주장이 `source_urls` 원문에 실재하나)과 `routing`(radar 적재/드롭 판단). v1·v2는 각각 독립 감사(12 에이전트)에서 뚫렸고, v3는 그 **경계를 인정하고** 설계됐다. **강제**: ① `--record`는 그 타입의 활성 케이스 **전량**(코호트) — v2는 유리한 9건만 골라 제출하면 통과했다 ② 같은 날 재채점은 `--force` 없이 거부 — v2는 무제한 재제출을 허용하면서 틀린 케이스를 알려줘 2회차 만점이 보장됐다 ③ 출력은 `failed_count`만 — 어느 케이스가 틀렸는지 알려주지 않는다 ④ routing 판정은 **balanced accuracy**(클래스별 recall 평균) > 0.5 — **상수 전략은 표본 크기·불균형과 무관하게 정확히 0.5**다. v2의 majority baseline은 상수 전략이 결정론적으로 달성하는 값이라 동률에서만 걸리고, 균형 표본이 커지면 약해지고, 단일 클래스에선 1.0이 되어 완벽한 채점자도 영구 실패했다 ⑤ grounding 앵커 — 노트 존재·본문 해시(frontmatter 제외, `updated:` 범프로 세탁 불가)·`claims_checked` 상한을 **본문 분량에서** 계산(v2는 13자 노트에 100/100을 1.0으로 수락) ⑥ **종료 코드 3원화**(0 통과 / 1 실패 / **2 판정 불가**) — v3 초판이 `undecidable`을 rc=0으로 내던 동안 **전량을 `skipped`로 제출하면 아무것도 채점하지 않고 통과**했다(자체 감사 재현. 정답 지식이 전혀 필요 없어 체리피킹보다 나쁘다. 빈 원장도 같은 부류로 통과했다). 코호트 완결성은 개수가 아니라 **채점된 비율**(50% 하한)로 보고, **시도한 축이 미판정**이거나 **클래스별 채점 수가 2건 미만**이면 통과를 주장하지 않는다 — 9 queue/1 drop에서 그 한 건의 `drop`만 맞히면 나머지 9개가 상수여도 BA=1.0이 되어 판정이 1건에 달렸다 ⑦ 게이트가 `verdict`를 읽는다. **정답은 케이스 파일에 저장하지 않고** `--record` 시점에 `radar-queue.md`에서 도출한다. **강제하지 못하는 것**(출력의 `enforcement_limits`에 매번 함께 낸다): 채점자가 큐를 읽어 정답을 아는 것 · 원장·케이스 파일을 고치는 것 · 상한 안에서 주장 수를 발명하는 것 — 즉 **성실한 채점자의 회귀를 잡는 장치이고, 부정직한 채점자를 막는 장치가 아니다** |
+| `kb-eval.py` | **산출물 품질 관측 도구**(0-LLM, 결정론적, **v4** 2026-08-29). 계약 테스트는 메커니즘만 보므로 "LLM이 쓴 내용이 맞는가"는 검증 주체가 없었다. **v1·v2·v3는 각각 독립 감사(12 에이전트 × 3회)에서 뚫렸다** — 매번 지표를 고쳤고 매번 다른 입력으로 우회로가 열렸다. 공통 구조: **게이트의 입력을 채점자가 전부 통제한다**(원장·케이스 파일·큐·노트·플래그가 모두 같은 에이전트의 쓰기 범위). 그래서 v4는 **판정을 포기했다** — exit code는 도구 상태(`0` 리포트 생성 / `1` 도구 실패)이지 통과·실패가 아니다. 대신 신호를 나란히 낸다: `coverage`(채점/skipped/코호트 밖 케이스), **`accuracy`를 가공 없이 `constant_strategy_would_score`와 병치**(v3의 balanced accuracy는 불균형에서 27% 채점자를 통과시키고 82%를 실패시켰다), `class_recalls`, `accuracy_by_cohort`(추이), `age_days`, `not_covered`, `concerns`, 그리고 매번 함께 나오는 `limits`. 여전히 강제하는 것은 **자료 위생**뿐 — 정수 검증·셈 정합·`claims_checked` 상한(본문 분량)·노트 존재·**출처 존재**(출처 없으면 grounding이 성립하지 않는다)·**경로 봉인**(repo 밖 `note` 거부)·`min_score` 유한성(NaN이 floor를 조용히 끄던 경로)·`skipped` 사유 문자열 필수. `--rotate N`은 사람이 명시할 때만 표본을 회전한다(상한에 갇혀 새로 쓴 노트가 영영 검증되지 않던 문제) |
 | `span.py` | **무인 루프 실행 원장**(0-LLM, 결정론적, 2026-08-25). cron 로그의 자유 텍스트 + `exit=N`으로는 "어느 단계에서 죽었나·언제부터 느려졌나·성공률이 얼마나"를 답할 수 없었다(radar 26일 침묵이 그 대가). `earendil-works/pi`의 `pi-telemetry` 계약을 우리 규모로 축약 — span(작업 1건)·attrs(명명된 사실, 숫자는 숫자로)·status(ok\|error)만, 익스포터·백엔드·전역 current-span 없이 JSONL 한 파일. `start`가 id를 stdout에 내고 `end`가 duration을 계산, 짝 없는 `end`는 **계측 버그로 경고**(orphan 플래그). `summary`는 루프별 성공률·중간 지속시간, `check`는 마지막 **성공**이 오래되면 exit 1(산출물 날짜를 보는 기존 데드맨과 상보적 — '정상 무소음'과 '사망'을 가른다). 세 cron 래퍼가 계측되며 span end는 **가드가 rc를 확정한 뒤** 닫힌다 |
 | `blog-collect.py` | 블로그 초안의 웹 참조 이미지 수집·저장(0-LLM, 결정론적). 본문 `[사진 N]` ↔ 이미지 계획(`IMG:` 줄) **1:1 대응 검증**(어긋나면 exit 4) → `web`+URL 항목을 다운로드해 `blog/<slug>/N. 이름.png` 저장(**content-type image/* + 10MB cap + SSRF 가드**: http/https·공인 호스트만) → `SOURCES.md`에 출처·라이선스 기록(저작권 판단 근거) → 빌드 섹션 뗀 발행 본문 출력. `shot`·URL없음은 대기로 보고. 어떤 URL이 맞는지 **검색은 메인 세션 몫**, 스크립트는 다운로드·검증·정리만. **메인 세션 실행**(agent·cron 아님). `--check`/`--outdir`/`--in-place`/`--allow-local-hosts`(테스트) |
 | `stray-guard.sh` | 무인 cron 런이 허용 범위 밖 파일을 건드리면 커밋 경계 이전에 되돌림(radar/study=`runtime` 모드 / kb-sync=`kb` 모드). 안전 2차 방어선 |

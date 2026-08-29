@@ -68,6 +68,14 @@ trap 'rm -f "$LOCK"' EXIT
 
 cd "$VAULT" || exit 0
 
+# 무인 런 **시작 시점의 dirty 목록**을 남긴다(2026-08-29). 이 목록에 있던 경로는 사람이 하던
+# 작업이므로 stray-guard가 건드리지 않는다. 없던 동안 실제 사고가 났다: 09:30 study-coach cron이
+# 편집 중이던 미커밋 `.claude/kb-eval.py`를 STRAY로 되돌려 작업이 통째로 사라졌다.
+# 무인 런의 책임 범위는 그 런이 만든 변경이지, 같은 시각에 열려 있던 사람의 작업이 아니다.
+STRAY_BASELINE="$VAULT/.claude/runtime/.stray-baseline.$$"
+bash "$VAULT/.claude/stray-guard.sh" snapshot > "$STRAY_BASELINE" 2>/dev/null || true
+trap 'rm -f "$LOCK" "$STRAY_BASELINE"' EXIT
+
 # 구조화 실행 원장(2026-08-25). 이 루프는 게이트로 스킵되는 날이 정상이라 로그만으로는
 # '침묵'과 '사망'을 못 가른다 — span의 gate attr이 그 둘을 기계 판독 가능하게 만든다.
 SPAN="$(python3 "$VAULT/.claude/span.py" start study-coach 2>/dev/null || true)"
@@ -138,7 +146,7 @@ SPAN="$(python3 "$VAULT/.claude/span.py" start study-coach 2>/dev/null || true)"
 
   # 2차 방어선: review는 .claude/runtime/ 만 변경해야 한다. 프롬프트 오판으로 KB/메커니즘을 건드렸으면
   # auto-commit/push 전에 되돌린다(동의 없는 생성물 차단). ai-infra-lab은 별도 repo라 vault git status에 안 잡힘.
-  bash "$VAULT/.claude/stray-guard.sh" runtime
+  bash "$VAULT/.claude/stray-guard.sh" runtime "$STRAY_BASELINE"
 
   # 완주 영수증 (2026-08-25): 채점이 실제로 돌았다면(게이트 통과) study-state.md에 오늘 날짜
   # 리뷰 로그가 남아야 한다 — 그게 이 루프의 유일한 durable 산출물이다.
