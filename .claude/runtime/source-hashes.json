@@ -4,24 +4,24 @@
     "skel": "7102406d0a1e9e72200e0550561348530b3502d64a44bedcb559cf719c4ff8ba"
   },
   "admin-setup": {
-    "full": "1a7c146e390774bdb6aadbca2e02fb246b4005c34a9fe28bd0573ea8171e939d",
-    "skel": "3a5a7892b072af5be7bb4f26b3f1b02af132ba61f7a4e7193cadc353de35412f"
+    "full": "fd9931ca8127de750dd27bac4f5b23159c654055462d9e42e498e67b10f5555b",
+    "skel": "76cd78f6bdcf3d239a78c650db2f6a562b463ec62068247a4f9f7d7feef1f28e"
   },
   "advisor": {
-    "full": "ee6675cb291298c47d754058c66fd27416a295dbdf74bd6945d16efe001c44f3",
+    "full": "efd3395a03a66a3e11444e1d5749c64dc68a5d09d63873682ae7ec9245a418cc",
     "skel": "86ca5084cd62d46faeeba8ba2e792b73395ef5e5928000b7cc960d48b1b6be04"
   },
   "agent-sdk/agent-loop": {
-    "full": "6709f9077d36a01a828fa2095ea6f229f1c82095fc5c3f02ba3bebaa53563891",
+    "full": "8f2cb730b137adf68ac5b9070faf39a60ef9664d1cc394dcace03a0fccafb3c0",
     "skel": "001e119359810e2ee950a437374e52ed42146359920854af0d7a85697d5c934a"
   },
   "agent-sdk/claude-code-features": {
-    "full": "3c0a065fd495722953cb64804f4fa444da1d8332ee782c94886e7fc3ebf8d499",
-    "skel": "ed93a97ca73bce405e8fda5db42ff3749a7fe431de5c7b5c79818658a71d216b"
+    "full": "651d36b3a2a9adb30b9ea58524a2e5b7744bdbd700d99642721807cbcf5cfbf7",
+    "skel": "fd86158ee7e59da93740af90786a7fc6518898427f58912698887b3962362b77"
   },
   "agent-sdk/cost-tracking": {
-    "full": "d3d6e3e907d9315cc21b96fab176341dcbe6d32978cd5c19860a1be048539e32",
-    "skel": "b07c4da35aa500cbdb1d183113e2c273a831d439da6033101697007a9102ddd3"
+    "full": "53b62d03543df5389b9e092abd489c63c1a8ba5457403754a508781b06a5a9db",
+    "skel": "74662c1e771178df5375e9ae43849fb1edbef6a5394e67173c2b6e898db88c97"
   },
   "agent-sdk/custom-tools": {
     "full": "d4a931e10220963502f100c09d9a7cb6a7108a75aec3d443b41bb6cdbc593341",
@@ -32,35 +32,35 @@
     "skel": "d8fb05698480e8739f693083a8ed12b77e5b8547ce2950e14786704f6fd1b8a0"
   },
   "agent-sdk/file-checkpointing": {
-    "full": "a13c717ee34e1377ac64f5f2ae295b72d95e583a9a5d4e8992a37510e86bb245",
+    "full": "550722eaa3163a65a19b80883583a8abcca552474da36edb8533932be3f77716",
     "skel": "0e3d0ba93a42a61ed15a9827ec8a73035cc25e702eea11313f67620fc0c024df"
   },
   "agent-sdk/hooks": {
-    "full": "5e9449c499940841c09b9d0fdd2cf41433ea1cbb13e6820aa3213a04155c29e8",
-    "skel": "583c96b31870aab0bc460c4dc57596141081cfd084be59451ca8bd1481769c57"
+    "full": "65359c89d3bc92bc528010b1f3ce6184ef7585aa86040b4378b6086bb11b8a8e",
+    "skel": "8ea4fea7670f4d01d10b2bdb329c99f86f43839f204dd30d94c87f9f50d439eb"
   },
   "agent-sdk/hosting": {
-    "full": "1da2fe6aee376119c3175db525e9293919bd4f1a7d3ad40d2bc86b6162b0066e",
-    "skel": "0e3c79d6cce2c7cedf5c80fa682afe3e0788b90bfcf1962175a7e12c0988b7e6"
+    "full": "949abada98d5a7023187a991c6fb49367ca62d493aa67ad18532e233171a1564",
+    "skel": "1bca3ce438a42dde56557a68b52f897cbe802cabe54ea6341f95b4e4ce32d0a5"
   },
   "agent-sdk/mcp": {
-    "full": "b197bd01d02ce7801997bf2ba0d0b699a2cb77c17c18928aec0423afa38a6a25",
-    "skel": "4d0e728ce8d3f704e78348b7a34df3c4f394b8510c11bf87495c74b82c3de934"
+    "full": "59462afa71fd93c7bfafe8aeea59e2109f0bb552be3a4c8082f40297a4b31c81",
+    "skel": "22e04a13a358d67c2dffd5505d10886fc1c9d91ac018c4bda85973efd12374b4"
   },
   "agent-sdk/migration-guide": {
-    "full": "3dd004c9084cd0dbc4abd8db3fa899a0538d319be848fd63db7ae960c3754795",
+    "full": "5c55aecef4913f5a9bed665f7f5907cb933b579e7f4c584086b1b3fa721ebdd4",
     "skel": "b8bf0b888be9207a484a48e5e3e1adda98c0617d5f3bde46442ea35434099061"
   },
   "agent-sdk/modifying-system-prompts": {
-    "full": "d684f911bcd6fbdd32a28d26762a01e120421763811fef5cb0c587762afa157a",
-    "skel": "5ec2db41b171716cb6d5e815fbb5b81d54d9d28b138257eff847e183fac286de"
+    "full": "634ca134a49ec7eef589d525e4ea57198f06b735d9d2ec7f5c12d88689047d17",
+    "skel": "b54a930d71a991cd82781e3dbc00de943cd17c7092e93b6bf71223432d4818b7"
   },
   "agent-sdk/observability": {
-    "full": "4ca096e3bc18ac0d62f6470e0a0d2e6d1f4ea76eeb1164edb650c4265747bd78",
+    "full": "5b93d939d6bc6534560d0f61e8a57553a1dbdf08023a64a006d8e406d39337ed",
     "skel": "c9b3cc9faf157cf478cae3e5a27536b3b63aa3d5a7fd78cb1c70e85c6cf8bb63"
   },
   "agent-sdk/overview": {
-    "full": "584a1641997bce448e6675b614c418d73b97087234419ab5227693b3dc89f9ff",
+    "full": "cb761e1199180106ce3dfc97ff1bb937bce28fa4194c721839983ba7a8ef79ed",
     "skel": "f2773fb86e38534a74f209a19b8a5a1b9a0f8daa12fabf5fb074eeef5e79ba46"
   },
   "agent-sdk/permissions": {
@@ -72,15 +72,15 @@
     "skel": "b45ffd5b5db46da2a6183815615f4e92ac5bb0aee584506f7a51c2689e3c0395"
   },
   "agent-sdk/python": {
-    "full": "0051d214ba466235779824724e3820183e868e5a2f7f27b25918909d04597b15",
-    "skel": "22806d64b09c211e64f524182e9dde27f11915824769872d44c2c66747451097"
+    "full": "fbc9a83ccde7bae3ea32201cdcad9cdffa3feb6197b49fc3ad1cab5e02abcd07",
+    "skel": "c3e079da164858ce7385c77e1b9d73e138af055c61417710aec3b53723fdfb2c"
   },
   "agent-sdk/quickstart": {
-    "full": "56fda91b98e018dec0e4a0ee128f8e9ea0f6201238e25dcaf9f622f15ae24969",
+    "full": "3a97c3e7c68c3b97928642007842a2eaba424585d4a4f60c175dda54d8ee28cc",
     "skel": "94776a910670944f3785ea04256efd6c6380a461aa08f56ea3e805c721e1f798"
   },
   "agent-sdk/secure-deployment": {
-    "full": "aa1300cfbe6574bb13e2dde964aea1320974013faabc6e92a43bfcfb01450722",
+    "full": "28dfc5d54cb6af1c5db00ab8206c5d62e41d2fceb765cea093a9fd25b450c75c",
     "skel": "c7876ec4e2dc9c1142a1109460eb7b7a39fac13189b4fbcd8125b04e01d1181d"
   },
   "agent-sdk/session-storage": {
@@ -92,11 +92,11 @@
     "skel": "09dea5961c0afdcb92b2b10418eaa02465a0b94acdaeda450695414419a4f4d1"
   },
   "agent-sdk/skills": {
-    "full": "afd81fe8632f84dc6b594556d85640067c5d69562969c78724febe329eb6e785",
+    "full": "4aaac25c8c12822fa55aecbfcd49261e5e57008877c61489e7e816996652fe24",
     "skel": "921c20e4507e36302eaf036c3f98bd1e29a92e205f32219cd7a7957ef9f29a27"
   },
   "agent-sdk/slash-commands": {
-    "full": "afd81fe8632f84dc6b594556d85640067c5d69562969c78724febe329eb6e785",
+    "full": "4aaac25c8c12822fa55aecbfcd49261e5e57008877c61489e7e816996652fe24",
     "skel": "921c20e4507e36302eaf036c3f98bd1e29a92e205f32219cd7a7957ef9f29a27"
   },
   "agent-sdk/streaming-output": {
@@ -104,112 +104,112 @@
     "skel": "b4e42b86d6ff4fda247c74df165ac6fadfacb464ef537f871848955dc92ea2a2"
   },
   "agent-sdk/streaming-vs-single-mode": {
-    "full": "2069707484bdaf2f6b5cdf3d665fce355474b92481d903970b9e9d66a708fbff",
-    "skel": "e0829a363f4c4dc228ef7ab9b292ef029b490eb47fc0552135b37e4cf1440320"
+    "full": "2f93a33306a429379f467bb73a7cc45e3adce502fb03fe65d3f74c6980863530",
+    "skel": "4572f6550b21947b632614c7b08694de01e3b6bd64c9a4209f00206ef5a114e3"
   },
   "agent-sdk/structured-outputs": {
-    "full": "a3f916716cf737c89a04d13860922f86fde11310437fe87e8de1262334e6a08d",
+    "full": "e7e708a14472f4f6ef64941ab543658ad7bb353ef00a3a6a147557c41868ea23",
     "skel": "c2a13d08529e9dae4ed54b2c317583ca986d772df6bdad4b9d899c97c35e30ed"
   },
   "agent-sdk/subagents": {
-    "full": "40f1fd38287bccc811ce075c6120e5a19753d3b183c75730b9f348a837edf121",
+    "full": "ceaa3641cabe8e5542e172bdcd091dc35a42c6834c3c64ddc3403852ed1ac217",
     "skel": "4dcf540bb74fca0acbfdf13018b541b3ba7e9e5d9e298e056c58c4d84d074c36"
   },
   "agent-sdk/todo-tracking": {
-    "full": "b49170b98c64a3859977c92f0209895c02b1a7846dc253e2e08e8cbc72c6cb38",
+    "full": "5a5d74dfa973a6a823a7100097afdec6614076778c16da428bb30bd8c46f982e",
     "skel": "f8d4a808165b9c92eafacf681a22dde1a23bf55f341ebdbae46d61759ab16a1e"
   },
   "agent-sdk/tool-search": {
-    "full": "55abae7636fd8b012b5fc32c0f75526380e5ca15d1d4b30530edb23d43fd699f",
+    "full": "7d57d9540d5b058e63981f5fc6046439e32dd6dbaf9a03472f32182dd3b9aef3",
     "skel": "0c7e551b3a072f1fc4be123dfeb005682505fa3611068e076e20ce14a50ea0a1"
   },
   "agent-sdk/troubleshooting": {
-    "full": "de9891c420cf5849740c9eac1dac8ca6d5ea5b09244ee721dcfb3e85528e8043",
-    "skel": "b588b4ffa030636fa48ef449887bee3b660b4ace6f8efcf1098e59709277a2e0"
+    "full": "a77c4084b9fc7f3e709585fa4cc0296756ee54a3bb9483c97c0c5cdac1c102fd",
+    "skel": "0b78ccbe95f0f1f99e5aaf7f20d0644ce5f0e70d6aa38b3c6445a524c87a5260"
   },
   "agent-sdk/typescript": {
-    "full": "12dec7e6f142fe03776a530c6ec5ee651992eadf85cd9d6157a7107b78bce55d",
-    "skel": "f0d9980066f1ef943e56894cbe39c0b72f521115cabd1e37bf751b31e3a8254b"
+    "full": "b6b180ad1ba5f671f41b9ebb278313556223b749316eff468bd0ce8ba0f3465d",
+    "skel": "3b3ece8ca4139a15c9011f43768353a57f9b7026d308bdf6b84ca30578472017"
   },
   "agent-sdk/typescript-v2-preview": {
     "full": "d59d67e7bc6f7f27a75fbae3837acc1396216aad619d5bc8161185aed1121ba5",
     "skel": "aac7b7eaf64c4241d2b8cf9a47f5cb1b2c06d952e941811463133d5ae4a1af9e"
   },
   "agent-sdk/user-input": {
-    "full": "0b4415055db8b141b18f4cc04716d4402df5adfa9d260c1350dc9c12ebdac8c9",
+    "full": "8134ebc71fff4698e6b52303fa61551ea603ef302d2a0124fdf20744e706ea11",
     "skel": "b1a1d1134f108acaa2b22de257c3ab7e93cb7cd1c985ababd2dbbc67bc82642e"
   },
   "agent-teams": {
-    "full": "eebb36e834d622dcc1ac314da10606423e4e9373154dc48071a283f28c763b55",
-    "skel": "2dc313816602cfee36baae9dc92e96e8316bda3aa5c612402cf3ff0350aca2b6"
+    "full": "cdd15b1b8a8ea37ca2903b29078965192053bc232012adf8d71b403db621ab23",
+    "skel": "af02612522c7e828183f7faef61bb62c52fe148d162e9abe552478230f69d1a2"
   },
   "agent-view": {
-    "full": "f8474573ceb6f1a0b0a99e12bc548b24c18ee0fc556316a7c6bbeb468887a12b",
-    "skel": "0f56b02c22a644b617208ce36a2c601d372c131f13e63df88c59468e37b8cedf"
+    "full": "e01a04261f03d6177cb48cf12bd5eabea22385cee0fdc02d08d9fdcdf7d8230c",
+    "skel": "672250389f0553f20a408940d949ab7d9efcde94c1198f7da3d59f120d0605bb"
   },
   "agents": {
-    "full": "2d470eb82b5bc217bbd423db193677c49690ad0b4c4f73a0a9e97530caef6ca0",
+    "full": "9c04817ac2da54facb24635398c28bafe77c222dc6f23946284fbdf98cf09f74",
     "skel": "0d547439291c74c277f5178722f3561df01d7d2d6c2e8c8c71e7db37b6cbd9f2"
   },
   "amazon-bedrock": {
-    "full": "15713a66dd7a74d9c4dcb7cded59ea3feda49a37f25106077fb5a248ee703de0",
-    "skel": "ccb396e7d032863d1eda46ccc39a2a92cd4defcd5bacf30f9dfc175b884a9d5a"
+    "full": "9c387a5d2d545b3bb0b92b5602871dad55a1b4589e193f662c916962ef8db375",
+    "skel": "8f695c1ccf9bdb794d02403586078e1ad1a0d648cbedf82368566aa98a34faac"
   },
   "analytics": {
     "full": "6e1a46fbf128d24c0a252cd28d1c7377b3c050b24cc9827caf6e7e537e31fa97",
     "skel": "ee484ff12d4af2dad3d0c89956cff72daed1e59b616848ec0d03a7239b0193b5"
   },
   "artifacts": {
-    "full": "a58656a5d4d6ab2df654272fa681b125e3454d17bcd7126a604806f83f44b5ac",
-    "skel": "dea9b26519130c1b2d2a5c3af32552c52c2bf8feaf1048310fd983f18c465d8b"
+    "full": "6e476eb059c935bdf41081558de98417563eb6fe5658062898a54a54e96c5720",
+    "skel": "cb2c50d8ace8079e7e29f6624b3b9c2341bf3c6a6dff43a13cbfd6304a7e215b"
   },
   "authentication": {
     "full": "9bebf8122c2084254be0b88bbd0d19d13964f17f43685e5a006a7c67730de24f",
     "skel": "221e9d137076889b269e3fa0d59dc47ec79a1dc15d53bf3dc0dfd1119b6707fc"
   },
   "auto-mode-config": {
-    "full": "5f82ee19fbd49fd4ad63ab047002f9ade4a629f3b5f9963eeaec7d7fedee9c79",
-    "skel": "da32dc85219f27a136108d508e9b7f46636943cb0f5f347cf8a8d278b0093a3b"
+    "full": "09cd04f193b26ac391f256d848ef7ae963c30daf9e348aeff70ecc8cc1f5e9f1",
+    "skel": "ab8ab2f9c654f8543dc6ef00352c406f0d9c1d5026ccc7fd703aa0016f47e36d"
   },
   "best-practices": {
-    "full": "defa65b9be8f0c7ed96824822644bdb9334a6b6b71f13684ddd6f6995eccf56c",
+    "full": "43682a0568aae99707d7ff5bc29e9fba6bb5e1bd62168e17b7bcc53fd2f361e4",
     "skel": "abad49570e7b6536addfeb81ec50f6c28a583f72ce933900c1608dc080181d0e"
   },
   "champion-kit": {
-    "full": "5ca0f6d751352107724d381e6fbe3f2f15945a2e30367a747ebcdc7f359360ed",
+    "full": "1bb275f0f68295151d238827b3bd2a38ce4d4093b3858cc0d48c0457278203c2",
     "skel": "6e96699658aa23e591c8cb5309653d41770db645363292e60f29526dbd97dc6b"
   },
   "changelog": {
-    "full": "29f1a880760b883bbaa7fc752e97516c022eeb7111618b83f12955ef50c58422",
-    "skel": "917efe0e4b64375e0e01c21566843d36b69684c387cf939901743a235a77b5e1"
+    "full": "7549a8acac053397bb8b221dc851ff8a76831a7663046f1c8f84f4a210e509ea",
+    "skel": "424cc981ef0bdcf935b3013aa4a2f60fca63e5458a6e76eb489e5b32883db497"
   },
   "channels": {
     "full": "294a7e533dfaae5eb2b82f4e5db0faafb6c79e779129fa3315cdf647578a3ce9",
     "skel": "e6026578c2ac0855cc8ba8a0f3076b6de30221948c65df50223b52e3ac9fbe97"
   },
   "channels-reference": {
-    "full": "b3fd0b5f24287dd4e5d49f5acc0a224d9224aa20f6c97273505b9cf50e12b046",
-    "skel": "4247b17debc226279160f9d4d5e8f335532899413c264002fbba77a810e41919"
+    "full": "3db15890de6d90a2d5628bbc239276a2348c975e1abd889ba4ec8df9ee200113",
+    "skel": "6cda4c2036122d55f14f25f33c2752a26712bf476efdf13c04fc63db272733bd"
   },
   "checkpointing": {
     "full": "52246fb2b8661534d935b5bf884de95bf93a11738d28e8bb56655a3f39136481",
     "skel": "4b88176e6f69b70054a58b2b8de50aaee05f2bc6d99d99507ceaa866fa7658a5"
   },
   "chrome": {
-    "full": "273c968b59edfa09693a244cc05df619bb3a58bf6036c91862cd5dc4e41e0efb",
-    "skel": "24508015e9f00c11cfa3c400dee6cf8d257d5fa64a87bb9012178a85f22d3e18"
+    "full": "2214b06f38da822b3b628bf472c1571085201cd07a3827fa7d978477a945c39d",
+    "skel": "ffd66c27684de6a3945f8dbdcf758a25656ec07d97957c147855c45963ff89f2"
   },
   "claude-apps-gateway": {
-    "full": "8663f94ba8c9f7245afbdad845269fdb640d346f25fe48802d1157f96979eba4",
-    "skel": "df8088b58466e268adfbf1005b9013f274ff47c449c884fe793a168ff7788649"
+    "full": "53f3e0e21e2a77f0c284e87450fcc9bcd25b107e75c763a256cb02004ffe10e6",
+    "skel": "52bc2b069524822a5e7aadc458f02c2e464875ac00e9f40ef920e2e395355d31"
   },
   "claude-apps-gateway-config": {
-    "full": "fc4f482ebb837b7a0df8ad41ccbdce6f5a52c8028a34c1f2b7d875fb8e2004e0",
-    "skel": "901095ad6a299e42770bf31b066049bb3d74d1978ccf6bc025ab47e46a770063"
+    "full": "b187959a12d95a2d39ee2414981a09ec5acc91a8e409d81309fee7c8d8d5526b",
+    "skel": "071c156fa54daaed0b3f517eaa862f069bf83997223efed0dd54847d6f1428e9"
   },
   "claude-apps-gateway-deploy": {
-    "full": "63a948e0be67b493c65e165a8969f3b8044bba37ded16f07ff1ef0b9992b1161",
-    "skel": "9e0c65abb1723f0941d6d7d682c16c6f07deaa891efed7e92986e2ea74b21941"
+    "full": "f21526b7e01bcdc6e6ea7d27093aed3e56f7f6a5f4c3a5b478140a9942a9b7df",
+    "skel": "50bb7ee3f04a06b4baf1a44eef49fcab7ac3eb7f46997879470efbf7c9d6f71c"
   },
   "claude-apps-gateway-on-aws": {
     "full": "039b3519cf692bdd7ac27a4d85d2e8c960fab31a84560570fb7152237236a60d",
@@ -220,44 +220,44 @@
     "skel": "43a971636925a3b624c7ebf6b672d6fb95e2ec5410e52f360bf251d910827069"
   },
   "claude-apps-gateway-spend-limits": {
-    "full": "3a189ddd47d90f289a1847bc2ebacda1cd86b139d6e107b5ec29c4aa2e1cd913",
-    "skel": "1fa5b63272d453f0e9410bd3a3acc1a61748d369ad08bb9356b496d9285ec090"
+    "full": "3676d3409fb9fbf79f5eaa20c08f00c4c8888aa201edbfc621d0c6cb08308b49",
+    "skel": "6b6b0fdd60968f974807b717908c8f8fbec82820145275b6e4c80ef0a362c5c4"
   },
   "claude-code-on-the-web": {
-    "full": "485cf406c80a907f139b5009e55247422cfe13bce7f852acb83109f18e7d2121",
-    "skel": "a185f133ee04df988ac06ed4846c2f366e435bcb5c5d28b5715973539c2cccd7"
+    "full": "f6a53f0617b8872a25c47b03e34a8eeef6b0158d825a58e51316c0621ead3114",
+    "skel": "3c3aa6d07c633e9938cecd0aee4369e69db80296c96b3809f394e533aafdbc5b"
   },
   "claude-directory": {
-    "full": "09b4038db64703d58fcac356f02acf4e1f20a7ebc5aeb4be696fb0f8f3005265",
-    "skel": "9b79c222f4874cab22b0898653bc96aa8c53f4432f5c32ebab6a0b2c6eeeede5"
+    "full": "c3ebaaabdf1a57137c83c1fa15ec1f1625c5c6027fce1488849a01fbbef52d9a",
+    "skel": "ffa2836bab46cd31111453d67b1d21b093648ee9ddc91106f71f435fd8452404"
   },
   "claude-platform-on-aws": {
-    "full": "37615ca54cb479d1a5bd54053b836c0aeccb4b6b57ffcf9ab63c35c4afab7a4a",
+    "full": "8b8b259956c3abb62366823f071d1c3f429b7947ec2fbb34a4907342afc0dbe1",
     "skel": "a697ac709ab5dfe927b18d0de5892efb29b6a42dcfae91d34f4d87989dc729a2"
   },
   "claude-security": {
-    "full": "688671bb149bfc5b0892adbdf535c459ced5799f457a7b5abb1064b803b75b6d",
-    "skel": "a4c552bf5e8fcf14c7de602b342d91ef4e62a9407cd63e654cef32195d30a5ca"
+    "full": "fa35ea2bc3e0ac2b2ba5f9e183c9cc71526017850ceeed48cfcd0136a18565ab",
+    "skel": "13e60432be0e592e743ae38ab3c933dcfcda67eb886ea77ed958ff8cdabdbaac"
   },
   "claude-tag": {
     "full": "71a0a4e6c77545d48c76a50df303a62f20d933d79939fd42e4af178f3ff241fd",
     "skel": "18711249f910b2328bc266e050c45973a63f6ae9662dacf5f019ea9785839a54"
   },
   "cli-reference": {
-    "full": "e4a827f85dcbde8fc9395d87fad9ebe1815896972e82222753ec14655f610eda",
+    "full": "b5b4585ce917230d12e0d9f95600868e0b182e09ce659e7d2848638e06dc4a9d",
     "skel": "99fde51110b97c1feac4672e10e5c4345ea3135bcd7a371667a12dfb907f4251"
   },
   "cloud-environments": {
-    "full": "c5f6a4d2b6095b81d232e8d636e5d8a84e66d4b7f81f6b52715efdd767ed1da9",
-    "skel": "25751fe37707fd1c4f8509ef41a781b035584389cae20d0dba07e20029024475"
+    "full": "4f60cae2896e2963b1c978b62050965fd592743b731b42c585415393db50e7b8",
+    "skel": "c7a39c68ffe14a256e5e66224cb437ba359e1164d57db750a25864f6967c1725"
   },
   "code-review": {
-    "full": "50426c7b6ef8a73e4c42ae6cc2cecca772f58200a09052eb4c65e37dc23f3c97",
-    "skel": "1d15aa8860fa099ea611b3850ee68226ded54ce5c4fea08a0ae71e3aa1049a41"
+    "full": "9f0700ee4a3a23330fb049e4f009d1a11222284c361fba21cdd809fb1776883d",
+    "skel": "8c61cb1e7e9e8a455fc2fbf807708aeaaa3f03e5e219faefbe1b62b2d1674e25"
   },
   "commands": {
-    "full": "5cf68aec82af1ad7d3833fa8c97c41d0b9a24b01f9605f64fd1722e508cf4b1d",
-    "skel": "53bdc144ad0252ffd2175e48484dde16718f17a044649969bfbf92d70af90e0e"
+    "full": "6bbc0ba8e5183e113a018fa896b182fcdb04f96dce8d3d792439821a43b1c6e9",
+    "skel": "3de3ea7ad49b950c2aec71d55dc999c2cb4081ba067fc0b77f7798f99ab64476"
   },
   "common-workflows": {
     "full": "b1af423b31aa38de0b6dfb817dff13042dd1d5ba99b0067f61279065de034995",
@@ -268,84 +268,84 @@
     "skel": "27e87963b48eefc89ce9ebc4f31c3dea82bfb42602a4a7e25ebcd4a21f1f809b"
   },
   "computer-use": {
-    "full": "d90e96e21ce9d96ecb7981424801172db338d8f49cdc827c4de00a8409c9d2f1",
+    "full": "ca890ccf3f7241255a576174d50be10e5ddf01a6660700c64b0f6f9ae3e16b7f",
     "skel": "d1234076edc6965599bf29a2fda1909c9cfed127c524284dbee21bdaa85eb386"
   },
   "context-window": {
-    "full": "a0e41a7e1224983db24e752c6826726d5f0e74a889585b7619476b54dab27e4d",
-    "skel": "22165f9076543870e1d556f4783ea524cdea075a3e726380465eec6423cff491"
+    "full": "923207d0127294f1123edc3953bd908dfe0276b42820ccda37ada61fd3728018",
+    "skel": "cfbead6228ec8f9a9ee61dcc9c82102b43b8e582ac2ac7fd934ad71ab6f45c63"
   },
   "corporate-launcher": {
-    "full": "d58f92c7ff70349955988cce837efc002e63ecf06c17ea6bf797dd6da66f0b15",
+    "full": "aa63abe5707ddc28d7cdcf5331d40face45a17457a7daaec6f294e07cc04b320",
     "skel": "ce5b79290b9d6228eee2661a072dace8cc27e545f14df631e39955cfc50c5d2d"
   },
   "costs": {
-    "full": "8f7eb52a3047f0150155c5843731558ae10338c9119d25ff6b0d748457d3404c",
-    "skel": "2387daa9da9cef892b0989fdde1e7ebc4f5c28ae1b9f6f00ad2f29a345b482c1"
+    "full": "f47398512d1cdd2e4b63c85f487c077981a0359fb6310f461bbcc32d5ba7643d",
+    "skel": "75208ee8c2841c1a32af166f96856ff1a5bf15d2cc13b9b9fe5adc86bb2d2b61"
   },
   "cross-session-messaging": {
-    "full": "d2bb37193ec2f7d35376cf2455077cd91c3f1c7b7625720d87e016f65331a493",
-    "skel": "e5404e82f673e52379ed8468b9ac19c34cb1cd589b7a8bf17e6abd00df736e86"
+    "full": "c98400cc04eb02d1c9ffbfe3965f3c3f512958906a3d8d186c78aa9c7e2e3719",
+    "skel": "cf7955b0eb2c526dafe58b42261fafb04056506a24db096402c9b7f628d8e84b"
   },
   "data-usage": {
-    "full": "25ed5e6074dbcae2e7dab15c6567f80cbbb146dd3bfda1ac169974c51cf9b62a",
+    "full": "7e49068be87bb5081cd803900a6712b27fe361dbd38b14672f8fcc3c1b4f1720",
     "skel": "5cb6dddda07ad39ba0822674a80a2a955823fe95689c28b827a9dc76c222f5d9"
   },
   "debug-your-config": {
-    "full": "955a45a905fa236f717b246c64468ab803260e8e1c054d522108b87867f0b5de",
+    "full": "440b0d006a880c05f6862330f05881638e73fe590fdb5606e3538bc5b1e48b7a",
     "skel": "7cc5081922482389a294962031f840262f2b1359160d7c7a1f94ce24ff41cde7"
   },
   "deep-links": {
-    "full": "b2ae72421804bb771a722a88a711ea7fc742dd630cb85e67effa547f626b8299",
-    "skel": "3294edf3f29cac674857ab10d434fb08d24500aba231b3b7a4c12720ce03c34f"
+    "full": "d20562bb5b5d199e84e3dbf6adad50addd8baa8a4ae13d2bb17fc348e8bc51a5",
+    "skel": "bc3d38f512c5fad2b0b955a2df28853a06f98d40fa2baf8c442f46d398c68743"
   },
   "desktop": {
-    "full": "278e73ae05b0f38306f00af94ad0aed44ed984c1ed672ee0dd9297fc04ee9462",
-    "skel": "ecddebca3135d3233e5513bc962418cb80d396a2b645c241456f8345bb6b592b"
+    "full": "1f25660fad15364d2b2b8dc395e787807d15ad8feaf369d47b381c192cb8d0fc",
+    "skel": "368db45acc39f9ef3139d29301506d52b04b980a0864f5379d10faa36e299885"
   },
   "desktop-ios-simulator": {
     "full": "0d5c48a0ba3ad4772457abc46c471493da913f1bb6cba9b5dc3da08f596e3afc",
     "skel": "0ef553f33dea4bfa2e779aae0c48a1fc18983f8176a4aaba8d8d45f9f3335aed"
   },
   "desktop-linux": {
-    "full": "3fb2b62a80c0c054626fccc30d840ba0ec476bde5d59c3704a757b4a8d02685d",
-    "skel": "a7a25d315fd49f5c9133b63d8463f4d187c11a2d371acde2bf09c77035e0a5c6"
+    "full": "12d9a33f896c68a5827969b4ef5c27838d0be37e0672a95f0835d664d386b66a",
+    "skel": "b7ec028d7eb6731c4b74e7a31eceff6075deefe5ac0594871f3e65ed1cb28400"
   },
   "desktop-quickstart": {
     "full": "4d7f8765d4533c66dd69f7c852d08dcbf668caa51f1fd5afe5d189244a901ded",
     "skel": "744d5adc1eb3a85621e6c2e4c802302f1946121c0c02bf1617c37f33c609ec87"
   },
   "desktop-scheduled-tasks": {
-    "full": "02dae68b604e1323731cb298d98712f97c669ebbab8390ab9896396132d4db2f",
-    "skel": "b3a378f08ff65c46f3a1a68d5dc29940c67a738f76f400a5185cf39f80bac2fc"
+    "full": "569fa744e39dd53195446d2abc24dae6be1d702c3c70bf87bd058912ce66caf9",
+    "skel": "1ee615efacdf98acba57e7a8a438ae052c010d01ef227746b1664217ca371812"
   },
   "desktop-wsl": {
     "full": "acbb2a4fa359dc84d507d8b7cea5b4153e194fe45b993d10837452b2fabe8ffc",
     "skel": "d5e7439b16b44bc19342708550d52e402d83fb1b51d50d813bbd77cbb8a0ed86"
   },
   "devcontainer": {
-    "full": "9a3dfa1544959a000e6a934263851a377fa98a53ab0295cb56f25bc3aa5069ca",
+    "full": "6ab6c842a9f979f21eef0da2f8547b33e2f0fef2944cfe0bedbbca1454a050e7",
     "skel": "97b4ca461bed89836ea62cd2e58820d615dd709a817286431ef4600df2615004"
   },
   "discover-plugins": {
-    "full": "71249e65b992cdf41b1c925fb85e6d54d01eab26fdaf0ac9e6d29a120415bf56",
-    "skel": "6362b48301663f3fab67037c2d08b3dc953dc6c23356358596ba6b89bb0b910b"
+    "full": "c7ea4bd3d8cea143f8cb533e1c9ee0c9c4c99194c79c63e4b651343c586fddf5",
+    "skel": "3b1e2da6d3a0965a3710d846331a153a491054b8bf78b8bad772332feec68a12"
   },
   "env-vars": {
-    "full": "a0355c4d410e46dfd5757bdce0966d99578d71d605ce7ef9804d7c103e865c28",
-    "skel": "a1538c27bc79a5210a6e2177455ab6f156776f09175455515fdfbf6a683bffd3"
+    "full": "3f2ff571e2084fbceef263718aa38189f87f9aa78b091b49d59390247d42d58d",
+    "skel": "4f064945f0cceed453af0c8edf6b7f485d7c8616c4186c8f2830046d25f71ab5"
   },
   "errors": {
-    "full": "5e24a7ac66783f2098e3d0e9571ac764ad7f9580dd3063af28c1b84fd27c70d8",
-    "skel": "2353f914e36653579b8d2f03a99f258ca1cdd382b2bfb718d801f7ef069088e7"
+    "full": "391e61f8d0681ed04615412743c18fa230d3ead8dcf9c6c6cdc2e2324aec8f07",
+    "skel": "140b2bcf08a55700a4a9b0e75165585b38c2f9274576b4c152e198f2453d1eeb"
   },
   "fast-mode": {
-    "full": "54f0b65983afd4ce109f3110ff778779981485d15273f1ab697b83c052f16c5e",
-    "skel": "177f64894907dc7bbcf5b9dbbdf36b8e899119b57ac26bded12d8b35154dc1a2"
+    "full": "a30584e70457c10a77ef5cc026e831f4a8efa6ac67e3bdb3499441ac1fe1c460",
+    "skel": "979f25dc6832ceb39f3e3680efb21a11259ef6241c48193489231d6d4d019ab1"
   },
   "feature-availability": {
-    "full": "9a4d9321e29c6112a08c86010fd3f83decde4c0b4c728e416ecbf823bf5cdbe0",
-    "skel": "54ec96f1f25e86414380f7126f2123a02221ccbe2ba5ddb556d22f79e62bc8d4"
+    "full": "0712f7d6cdf5d516d35d284dd75dc26575bb5fff3b5343d25f2fd102eef73e48",
+    "skel": "08bee8bf90169fca420dfc24b26442520226f35045e5df5868f5cbcf18414b61"
   },
   "features-overview": {
     "full": "ad88831830057e06f4c3ea5c39e47818abb0efc2df9469e34bee06caa472a62c",
@@ -356,7 +356,7 @@
     "skel": "734f349077d49a8e054c6e0291b996ebd15b3cf1519360d46bf196dc7052df9e"
   },
   "gateways": {
-    "full": "ed073a424c553aaa67ab8d4df24f47c92bcf73d3924e5b50264b2035028a249c",
+    "full": "1cc6872a4a08f92b062fdd346c34a091b789801cb68985c035e0d25ffd5ca201",
     "skel": "b312d6a57e43b70ccc63105d4ca055ab55b32b5272e10d3147c180650b51af83"
   },
   "github-actions": {
@@ -368,43 +368,43 @@
     "skel": "6294b69467c3c7f24a08d36f4380af6fcc03150d42171b1352cfe25334646f70"
   },
   "github-enterprise-server": {
-    "full": "b77fdc32ac232e070ddbd4361c7dd6d0385f77e18e7b1e6d87ca70b01f4daf49",
+    "full": "a9817d4511f753e3aee0771587f1f591cab66a6584715845eb856fe33770a6b1",
     "skel": "dc2bee2220d6ada05746bf8212e1ae3263ea854f68362c83b91644556b10f83a"
   },
   "gitlab-ci-cd": {
-    "full": "4f3ed7996e52c5519f7d890d9c87cc8985932f01c23f7206e0ca2ab01a88da3e",
+    "full": "c0786bbeeb973c89bce40e46742e35aeea084fcda0340368c19e63d915b85e83",
     "skel": "32ae1066843fb4cc4f4baec4fe9c5e098e0935308138b86339a2885de3570ae7"
   },
   "glossary": {
-    "full": "8fc70bde63878b28e2ec198e653b0a50c57dd637c8aed382c519d7eac9e9f315",
-    "skel": "c4ebd5cf9cf784ebea332a09623f95e6ade61b83d30d96905015fd22134d9620"
+    "full": "2c4238cf030559377af7c2e612f37bceb8bce2b6a32d302e81286173cf8137ca",
+    "skel": "00ac599e9af2c71703a2b92cbd6b688f432f4a9a8e83dc65ee32b145c42d4ea0"
   },
   "goal": {
-    "full": "e1b85023df2cc1e02c3d37b241b8c2618930421aa8e42278fd74ecff1b35ffd6",
+    "full": "1a0bcf9a40c2228a9aa4e4a1571ba14b606b027b2f9ef404eb3deef31a8871b2",
     "skel": "7e2d46813145be79ea662d16018183c3bd176205bc65ee6f80f5ef5ac7770547"
   },
   "google-vertex-ai": {
-    "full": "ff5ae43089c7261ebbf0487a17020a57d6374902002e64276f24b47c3c0f5d53",
+    "full": "d8a8c30e6919d6159446387f6f0512eb035c8f59fa0d299daec56fdaa37657ed",
     "skel": "c7492a602977020c79a8a42b08dabdc03d52f87098c28d3b482a7a9acb7e718e"
   },
   "headless": {
-    "full": "02f132525d009deae88590647bcac872eb2e5d6cca39c4ba3008a0f810db8314",
+    "full": "8c0bd278afb8f8d93f445fa0ba450cbf57d63ac908526624f284f829e615d174",
     "skel": "10122e04bf988b41629bc5970c0d275008de835d385f4e67a195422786a6affc"
   },
   "hooks": {
-    "full": "e4756ca746899ebd35c712f725d62734cdfa84d710a79e55139a24228df3e530",
-    "skel": "9c00eb9c6b5b8ef21d4f0616681860df3bc6a30e28b6a8d3ccef8b02faa92d69"
+    "full": "70e0b0e2e1cb2b2866580e8417467cc74c732dd3b21f1a519464ba190489578e",
+    "skel": "c1af96d45a3e172fb7405f4b4d29e2e6bdea98ff38617ad6cebdfd2047777a97"
   },
   "hooks-guide": {
-    "full": "3ed85190e03cf9787fd5d1abacfd2f39119d67437e6929504672c050d8d89759",
-    "skel": "258e6c8a19328c79d0d5623c329fdd941100120e002a36454a98846c7f62a262"
+    "full": "2c17b318c624031fdeea7ad0cfbd882f7cdbfe7385e9c445802573703ca9411e",
+    "skel": "c5e53c51cbea05442ece30425193b5f5bba5c20b31298d533134a174aee5957d"
   },
   "how-claude-code-works": {
     "full": "30758f2ce7d306277e3587329033d17656993b4643ae83f69308d02ace197dde",
     "skel": "a3ffccbb907e7316a1104f91fd5aa99d4f0c1f211aa5c99240b9014dee50e6e9"
   },
   "https://agents.md/": {
-    "full": "28926abbc7295d499c59fbdf65f305ba78600a8368d920229246a839db4cb55d",
+    "full": "bfcc54fa270ca813d8af7b876368a880e3ac767943591cb276cfda82bdbd3580",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://arxiv.org/abs/2309.06180": {
@@ -412,11 +412,11 @@
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://aws.amazon.com/certification/certified-machine-learning-engineer-associate/": {
-    "full": "6ddd47b71ba881bcafb31bbc31fa08b0da039a4e3c269aad95d500c2dc41a170",
+    "full": "25d071490d5c0a1f09e66f818eb11969ad40c1fda0a102f813e56d68c546a8de",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://aws.amazon.com/ec2/spot/": {
-    "full": "79c5045eb525980ee6092678bfa0fcf9952cbf2b929ef2ac5737512392159cb9",
+    "full": "d13f08776f44f7aefc37192088b1eaef9ebec1123c073bb6f34d6300a6cacc08",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://awslabs.github.io/ai-on-eks/": {
@@ -424,11 +424,11 @@
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://claude.com/blog/ai-code-migration": {
-    "full": "08960250de19a0bee877c480a7cce023f66f18716fd43abdba6b59027a0f6767",
+    "full": "8cd128b06594d4d54bd8bda711b83f80c76efbb3764338cb23f9e67f3db3be55",
     "skel": "98955d306a1ec7f40b0409eb5767fae7dd7eeca26cc235bed7fef58953890d96"
   },
   "https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing/": {
-    "full": "a29c0207651c79c6fe2ffa59aa07a0fda4491d3469d29bb56ffdc221307b054f",
+    "full": "28f26541cf44caff3f2667b030ee0b4867a9b6666a6c0817aeecd7bcb0dfadc9",
     "skel": "226563ac8d09a4256134dabed439869f10877596ce5396cfcc47a630e0b3ae3f"
   },
   "https://docs.aws.amazon.com/eks/latest/best-practices/karpenter.html": {
@@ -436,75 +436,91 @@
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://docs.docker.com/engine/storage/drivers/overlayfs-driver/": {
-    "full": "7982d91c500f9de99815839f8dd9db46fc21468b785b25e21d2588fce12eb730",
+    "full": "8f34b28419ff7b6f91bdb8d6940e83bcde3d486eb837a219fd29e4687964b563",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://docs.flyte.org/": {
-    "full": "eb2c362a01e5f35116f2c4088e3da0e01bb3328dbfddcb1f6c5ec315c4622dc8",
+    "full": "695629341a831509b6731b4eb03dbabe72b6c58f35a4ab1e7ca2f8975b09045d",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://docs.kernel.org/admin-guide/cgroup-v2.html": {
-    "full": "2d716cb798eacf8fbcf431b52697fbb8c5ed8ea9f58ac15b2b55351247c0bf34",
+    "full": "20010935baddba9dab482942783e6803c206846096885a16755466df124e9593",
     "skel": "aedcf367eb04434710ed99606ab27bd9005eba346bb30bf8ab6d42ca46b91a28"
   },
   "https://docs.kernel.org/admin-guide/mm/index.html": {
-    "full": "5b1e6833c0f3bb1a30493daa42f15eea10839170e4b064c43902b47094c667b4",
+    "full": "d06d4fc416e446fdc6b3ca68549744b80b89c05521a70ac7ed0fa3e6c08ac3c5",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://docs.kernel.org/admin-guide/sysctl/index.html": {
-    "full": "8059e85d87b2ebaf8b65ec8809e237920b5999d5afb4a5f073db3471aace4626",
+    "full": "249f6c6473e15fb430b86ce4b6b4310a2bc4744f1f733d7011046590fd3d5e9f",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://docs.kernel.org/block/index.html": {
-    "full": "c41912049a55904cbfa8efa925c89d06bedc11662b11ef92e3a8d8a71a550179",
+    "full": "01d91a7156fdc54c92457c1b50090779a68b6b57925c4efa9be0eb67f179252f",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://docs.kernel.org/filesystems/vfs.html": {
-    "full": "28a8dc1cf4d77f7c960ee18778fe90f42f8cba65bbe13bc90b0140f8c82881c8",
+    "full": "37a338eac581cffede8e9b208f8279c47bcd61429c6ed0be0be8f14216c62ef0",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://docs.kernel.org/networking/index.html": {
-    "full": "d5c36392f32c1b8edfbabfc1837cea64314b9141329ceff9038fa38f7125bf0f",
+    "full": "63ef2e05f0ce2a6dfa8c0b9b105e87ef3f683f4a9a6f80fd9ad2ee47f0b43829",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://docs.kernel.org/scheduler/index.html": {
-    "full": "1fc72f9b668bbd61e83548bd55b1c696c93b99fbaf4e7b23f699bd6084e15c2e",
+    "full": "62b5d09bc6b0b7f47d933aecd389b15ec90465a0ecf1829fec2095819030045c",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://docs.runpod.io/serverless/vllm/overview": {
-    "full": "cbf76848d2f4b1e964edb94fc643efbed247c69429bc39c1c1c4dd3b62666953",
+    "full": "e63b9fff7dd86791429794be609f2e01c06be465259bbb402701c448500c834b",
     "skel": "691973e320fbf967e343596169f00b0f67ad2518c421f400bc33b70874a60dc3"
   },
   "https://docs.sglang.ai/": {
-    "full": "9353a1a54501bf6b6f946e5b29cc79b27da280501f3aeea26f45b79e5ced9091",
-    "skel": "bd34f5b37c7c1735644b91223159895c892e83daf874c2b169d6aea143be7d39"
+    "full": "773f63a11aa3d8aae7b6936af983fb2694dd265c7c8b92d54fbe2afbd2b18fe3",
+    "skel": "0b822751d527cbe94bf0202e2ab42495a984f78e734b9b37560c22e8d1cd8286"
   },
   "https://docs.vllm.ai/en/stable/": {
-    "full": "641c3f586ca0073f23448db97c13bab82c5a32a668a1cef4a0317156291df9dd",
+    "full": "fe92ce981917c2aad95f3686902cd6736827fe9806cefc6e36d7aaef7f332d39",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://ebpf.io/what-is-ebpf/": {
-    "full": "b6f344f75987fba516c5556aeafa173aaf9e397026eefe6295a933e9b7a63335",
+    "full": "4e07c3bba7fad843529a8bf238dd4a61798ae223c5cac0b06065476760de1af5",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f": {
-    "full": "cf0c8fd01bf2e2c4e76b4e0788426a791338063dc863eede99aa02fcabf694f5",
-    "skel": "7e1dafb52d636f7a2f2818108772bf727714486b20cdb42f294e626089132b72"
+    "full": "0830e94f53a6fe92ad0daf8c535f3ef7606cd9ef8f73230934d82ea1218f41b9",
+    "skel": "4b52bf0e0030a6cb9a78a0c373487f5d407a888a836cf5f26c1211da029d7cfc"
   },
   "https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md": {
-    "full": "c7553bf0476428a44425b0c1f5e194a46e127a5a0bc5c768b3bf09b18c1d14f6",
+    "full": "1e63952c8af820a6770d0275e6aeafe77ea30d8d61ad3571ed326b9cf6a42fe0",
     "skel": "3f0df9b5b56ce8ab7a4b0430ffd8bdb96bf196189f2ee625984b61921cef4555"
   },
+  "https://github.com/Vendredi218/awesome-ai-harness": {
+    "full": "2c89e30bb416143ade3cb07f9f824360cde959a9f84567c662e2c9d8b8d2f76e",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://github.com/earendil-works/pi": {
+    "full": "e2dd685f278327d70a011f2d5b87b05d4809bc8b1b8f8360a04283d6e43d5270",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
   "https://github.com/evidentlyai/evidently": {
-    "full": "85e6fc534958152594f5df5173eab014f4458e1454fc9019d8563d21beb68167",
+    "full": "fea2d7a3d92dd64021f029f55b28e57cdeb96a8289cf101764526b49a51de4b7",
     "skel": "015f2723cdd824f33b4cf64fb2696e3192913100cdfdb2463f1075e3b50c18d6"
   },
   "https://github.com/iovisor/bcc": {
-    "full": "237fb73f09d3aed67d54eb7ee1968cee8b98ef10edfff4400c846e579f7b4812",
+    "full": "4878c176f276277eb438cdddfcb4fd0cee4edf082c19f7fde9b69895fd8a90d7",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://github.com/mattpocock/skills": {
+    "full": "d0f2b65d357133cfb5c356f2b02bc74b3d32468efd52d5efd25d25d135564346",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://github.com/opencontainers/runtime-spec": {
-    "full": "c105cb7c06b2e909800b1ae8a69c8120d400fdecd6a8c01719270345842b1540",
+    "full": "433b428f53d2cad925c825cc2f887274a18521b06ee80103793cb5c9ef936f0f",
+    "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
+  },
+  "https://github.com/raindrop-ai/workshop": {
+    "full": "26e20cd05c509fd4c90a120c5ffdd7b291367a6836275506ff367a65a2fd684c",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://jvns.ca/": {
@@ -516,11 +532,11 @@
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://kserve.github.io/website/": {
-    "full": "1abe0a8e6cd1d70e9b1a613469d16483a34096af255a86669b450f03b023203c",
+    "full": "23ff3f9ae5f94202ea08ccadc2411b6acbf9b5d22651cb0566bd0179896198df",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://kserve.github.io/website/docs/model-serving/generative-inference/autoscaling": {
-    "full": "639223a26de9a2fd97accfe9fd0dda0787264f35d01d66e1fd0c17d4ac6e28c8",
+    "full": "3deae810b3a1e71a3581673baf780b098ffa74a46b19bc063c0d723113cd78f4",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://kueue.sigs.k8s.io/": {
@@ -528,15 +544,15 @@
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://llmstxt.org/": {
-    "full": "947aa9f5225294ffbb49dd79070d58e6cca8b614c9a13033d76739978d6a2c56",
+    "full": "d54db9828ca79e0aa40a4696a4d0d48043c37466e866eef98e7ce585847c914d",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://lwn.net/": {
-    "full": "98103d64aff0b1c4bbc5373f3b366c142f84ba9f5bfd417437cdf60f69a1c460",
+    "full": "ce3d7a59d282d2b9df9a9c59312af3ae07471a2a160aa6c83330b57f4f7f797b",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://madewithml.com/": {
-    "full": "2264ccb9b550c576e22cd5f5e5e80654220af4354c97510944711f9fe71f17b0",
+    "full": "bff57278f49f25b66c507f27d39234c075b7c3631ae1d75215cf61c27896213a",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://man7.org/linux/man-pages/": {
@@ -588,15 +604,15 @@
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://mlflow.org/docs/latest/": {
-    "full": "476c1504e5df3e27176093ddd2ddc3fe747aa8bf6af4a24e71eba606a02c064c",
+    "full": "57078c463ffb9a7f5df5197b6ad72d6fc48190374d3a506a7fac101728e629dc",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://mlops.community/": {
-    "full": "8724db4738b30a7bac8ddcfbf5876fdd323c090ba6b9bd74160809d65451998c",
+    "full": "8eb0f4a13ac5b5660138fe160d66c4fcb79e6be5f840482bbb077256baee6945",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://neo4j.com/blog/genai/what-is-graphrag/": {
-    "full": "895b646db45897fb43645cce7f614a481cd4e2d2c85fa70ee7fb12bba2afcc75",
+    "full": "476e9eb86820d228e8e6552232d27d3499cfd29ba9b47a5347f1c67b6be51f9e",
     "skel": "85ae9b83d2d164cb2e9ff6e6c5ebac90cfadd92e7a0286a42f9be3fbe73a7f2a"
   },
   "https://netflixtechblog.com/linux-performance-analysis-in-60-000-milliseconds-accc10403c55": {
@@ -604,7 +620,7 @@
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://opentelemetry.io/blog/2026/genai-observability/": {
-    "full": "5e34ca5c7b0af9800211ab17e0f76de586c973b79ea1ddcb29742fbd995b5ad4",
+    "full": "fa9997023480f39eb7844db81c8f8fd24a641cb7b15ceb6614cb9c73cac7b02c",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://pages.cs.wisc.edu/~remzi/OSTEP/": {
@@ -612,7 +628,7 @@
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://tldr.sh/": {
-    "full": "825b7b14cfc17c31b8667edb2d0bab792f5ce279174f20fbd741c53e2a405ce0",
+    "full": "5a9442c4e1946d883cd3a63f4b56df1735bfbcb2e11d5c86182081817091e2a4",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://www.brendangregg.com/linuxperf.html": {
@@ -629,7 +645,7 @@
   },
   "https://www.cerebras.ai/blog/how-we-built-our-knowledge-base": "",
   "https://www.cncf.io/training/certification/cka/": {
-    "full": "f664755be85f4e54f538433e4464cf7a0d3d026079325a8d3091667a172f1ba2",
+    "full": "ded44ac8332465d2b67e8f3db1ec3b4806bc5779be648dde42d92750eb7c03c1",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://www.gnu.org/software/coreutils/manual/": {
@@ -641,19 +657,19 @@
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://www.latent.space/": {
-    "full": "ed976cf47206d7c19dad02de30422565defe00b09a815ceb499210f22bfb174c",
+    "full": "cd1f83791f4ff7e1ec2e234291f8d819f336f6367100fcafc7a8cabfbd11b443",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://www.rfc-editor.org/rfc/rfc9293": {
-    "full": "4648e7db165d801ecb1215456e9422d3798057526a9595ec2099a9ca06d11d2e",
+    "full": "5ec75a740b8d6de4b0d099f4bc80747002aee60696990cba67d3aff84aa40ccf",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://www.spheron.network/blog/vllm-vs-tensorrt-llm-vs-sglang-benchmarks/": {
-    "full": "169bc9a237f9ee48e3b77a24790f020f26a5dece4b6cfbe9f0c9245541883652",
+    "full": "ffb73ef317117354afcf5e8e52572920517bd1968dbcd3d6d007b7ebb0a0e5c1",
     "skel": "910eb55bf5bd7f09ce7d250b869300101bf15964c9289c7e6461ed4df7f91ada"
   },
   "https://x.com/cerebras/status/2077822555159945507": {
-    "full": "b3088801ed33652123dfc9ca8c283bb6dc3bcb121ce13436d7cdc51be1e82dbf",
+    "full": "c5319199f7fffc0851901966cd4a8846a180e760165f5d73938f03a3d3865534",
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "https://zettelkasten.de/atomicity/guide/": {
@@ -661,19 +677,19 @@
     "skel": "0e7d07ee6ebef2a84399f1e308a9f4ab5afa93a21400c792ac85fba53456b145"
   },
   "interactive-mode": {
-    "full": "351b326be3bcbcaa91229cb6438cb847c8e2bac5e4d87282697f4957def5aa26",
-    "skel": "af17acb71922ccabe0f7f3ca5cb2aadc87655be1b4581e612e4464bba9455c88"
+    "full": "3fd6c73e07c4a639e1383021f741a4d33b7f2d5a915f489d49d9f64799ddfb3e",
+    "skel": "329141093a7171ee24078adc0881ebfc11d4fb972c25d1cd0899064cd807662e"
   },
   "jetbrains": {
-    "full": "432e64e2ab0f0d77d7600f0a137fd5cfdc774e6cecf5ccf1e10616e73ed49556",
+    "full": "9c962c071eefc435d9adb90636ecbf7c8a5878b7d9e64246e377a0a1fbfca305",
     "skel": "90b903845c0bc47445fe6ecfe98c8177597280af3edd446031e95583345f60a3"
   },
   "keybindings": {
-    "full": "a28bbcdde51c14b2e6a8b0525251169c180917014debf3b7dfe11ce644d5ba3b",
-    "skel": "355e0180919d633ff0bb5429b20f855991d4f4099cbab703c03d3ccec3ee2ed8"
+    "full": "fbf91da7e08c87145c300e1ee1d2c1f3bd7bbafc3f65b14d4ae58fad1367ffb4",
+    "skel": "d1f6d47e8920bf93ef10fa140edf89df9066e1ce168348e56c3fb4ed10f05eba"
   },
   "large-codebases": {
-    "full": "71245b0af49d859a170920892012e5989fd1d38548c05e9fad588aeb5b5d56dd",
+    "full": "5ed38d7ce8bcba9653bc3ffbb487fa348d480f7581ed5279c4ffc5c412149a11",
     "skel": "36663bffaf391d21be2dee17bfe111ae5ce3011315d4459358f23cf43046f3ed"
   },
   "legal-and-compliance": {
@@ -685,39 +701,39 @@
     "skel": "163c7695b53b88fc9e10bc769dde6d106c5afa64a199d77a33a3d74c60d39520"
   },
   "llm-gateway-connect": {
-    "full": "4f7c4eb00c711100bf3426230edd8ccc124978b2ec32d0f2e484ba6af3ac2d0c",
-    "skel": "a75fd9f89f63de3fab4eff6738df216508e2b64810ece3e29c62a766c0f0b57f"
+    "full": "bebeb983bc979812fc6bf99a866fe6826dce4cdc1e96ebae1c1c444314aa387a",
+    "skel": "8c853735f50f37d6361ab911a8ad35c784e3f0a5820b01dbad15020a3e1cc4a4"
   },
   "llm-gateway-protocol": {
-    "full": "cd636413e9aaa35671b7b563bc82e25c762500f524b7537c5f99d9833ea0f838",
-    "skel": "31ae0cdc1e0828b139d316ddcb1828d03b38590da5e7d68a2fcb2be2cec19860"
+    "full": "e8784bed96a6d17c91e3e4e836fcae20b9a9c1757c2382db51f4c67b3abcb58d",
+    "skel": "5193ea96fbc255d53dd986afeec6b15e9f4a2c9ef37a6c5c5a35e68b33c6a739"
   },
   "llm-gateway-rollout": {
     "full": "56ed27f0da735b347ac4ead8db31992321b0b74869634210c4e057ad26cd6589",
     "skel": "271eafcec725c4124136307c2b8347f3919300c0c1a3c3ed7901ccbe3ab3da13"
   },
   "managed-mcp": {
-    "full": "d40699b94baafed3e5406cb812d852f1418ebb9ece1a7fe8bdf79d74f289c11a",
-    "skel": "b186823acc25b88ca174c20e82cbdf3c7a3282f44701b1feab7566fc7b453a08"
+    "full": "6c2e03441287feb80fc955b9ff315ddeeb9e279de399cfce5aae4ff3f446c693",
+    "skel": "57a2e45c41b529da1979cb80fb7d4d2a14bd9aec685264b0a1dbc6c6b51c206d"
   },
   "managed-settings": {
-    "full": "cfe614209fa6b44086a2a02ab6b4763f66cdd1ad1a17d2ead066bde70681b2cb",
-    "skel": "8dc746b5cc51f88d34dbec788a50ced3d0911ab21bdfcfe1bc98dd8990d41519"
+    "full": "a0efee2271228ce4aa2bb12f781dae8a70b97c20a1afd1b59d55ed92b7dfffd4",
+    "skel": "4a90973a6c851b8fd6afed9d2c59cf48ad87b60f2aa4701a1fd182d3a1da7625"
   },
   "mcp": {
-    "full": "9ea29d271dd355b4baf8d3ab06df92ddc7d05203de2d837716ac01044b3c4c34",
-    "skel": "0a5309a1884d69870ff6b76a43b27aa87c8a3eaf783de3e2354b08045dbb35f8"
+    "full": "be0624af48b735a4bd2085cbd2d6e227aca3a8c5b3ebf7a40d201c796dad3590",
+    "skel": "c5fc242c72a40ce2543c0d2591ee917cfbfb72abf562e6726a22825721360ddf"
   },
   "mcp-quickstart": {
-    "full": "d11aae0e0d5868076fd2c8af56f4a6ccae598b3c4c962c6d6718b6aa7f9f24a4",
-    "skel": "925cfb3320519f3e35f358caa8b5b273df156a70c700a103df73da6e5b78662c"
+    "full": "28772a8c727884cd7c2b5bd1d06c77a39b01b3c97a65fb43e89048c79b615723",
+    "skel": "eb2c3a56201f54a438f24b0fdc428e51a4256ad77f86386e9fa75a3c791b63fd"
   },
   "memory": {
     "full": "8499a90d02435f460c729f3dc789072dc9224d3efac7cffdd507dafe76f20303",
     "skel": "5641640c3686cb1d9a74401f51c83fbdbff50da0d7bef6b69711ab18ac7d5461"
   },
   "microsoft-foundry": {
-    "full": "29f3e08b5adc3143f136139dd3d3e6196feb79c9032994be6fce3490b14dc7aa",
+    "full": "2b5f9e4235f1dda584b53ee1d2d96bef8b4ca13dde339afb3572d9194cfdc7f7",
     "skel": "8d4f291a26ba70f2008e6604b0db93e31e55f000519a9c14c532045f79c2e1db"
   },
   "mobile": {
@@ -725,79 +741,79 @@
     "skel": "c2a8acab7d1391e14815758718fba0ebdee2ab00cadf48d3f381022ab0d49753"
   },
   "model-config": {
-    "full": "b6526d30c0b5e06b4f2af40c66548bef25fbce3cf83573b0a90725021bdbeef0",
-    "skel": "852a5669e5e2ec0a7833688e6fa9cdb6b571fa9cba254fa3147bafbfcd706bff"
+    "full": "11331c888dbbd07acb345a1902c87d896f09e1bdf4dc70fe2d73ed6db7c35dbd",
+    "skel": "15ceb4dd519382504d1c93a97d7a282a2f0912a94504e28ce722f2cbe9aeba02"
   },
   "monitoring-usage": {
-    "full": "60a535943bc480869d4231360e4699729fda3185c261938f1e0703e6dfc36d06",
-    "skel": "42147f0d0197f6820a2e4e40870fafd124ab461a3484219bbd5a7385d45d855c"
+    "full": "778577645d6a294b3d96e242b677444a8e73c82d04c619baad391f245661d360",
+    "skel": "43099a4f509cd7f2cb269e91e1a45535168e7e9333627d7c2782592b558ebd34"
   },
   "network-config": {
-    "full": "8a0b597819950c88cb673bd9a450f45b88d138100c37a927b20b125b59ae0a70",
-    "skel": "7432dfaccfd4644e9e5804f66a37f999c3780cd3d9f73c4de834dd1b70685d21"
+    "full": "cf5f693537712b9807a08c3b11ceb2e785639a60f7c5d15d7eec72a4a6f0f8fb",
+    "skel": "750e370c85f3326798ebeb1ecbb67a198bca2349dc3280ddb697569b536cd3ba"
   },
   "output-styles": {
-    "full": "283cfd6d06680d859ea856ffc9498ccfaa9e8fd1e04f96d6adcee7d720eddee9",
+    "full": "66a954379aa8fb861200a3822c7a996d9cb6450978b0157a09dc40f4eb431185",
     "skel": "17fd6bf079e6914bcb8cffffa50f5eefa4f39d967d9e0286c6024cfb286b711d"
   },
   "overview": {
-    "full": "90cbed4c0ccdaefe35e85a86692343170a90a3def932ae3398970cc1dd2ef7b2",
+    "full": "295c5a56b733060475aaaf3fc8bfa0d39d97684f04892cac38747be5aa849290",
     "skel": "a70957962d7c6b904db34a61caab4f3ad6f26c2913be3370416d2d5280af339d"
   },
   "permission-modes": {
-    "full": "934f1da099db38eea39fa1091523503af19e0ad829049683d529fbb67fc840c3",
+    "full": "02b1a8c3efa1f434ee1b1bb127f7368d1765cf2e9bb2331494f15368f42d2148",
     "skel": "bbccb7667b748a2ca55c7a2f3137c2e15ef27345cea96f7bf145244d2a5c33f9"
   },
   "permissions": {
-    "full": "851b92c394be10228ace118771f19e77342be34db3874c9826dae0c6c8bed021",
-    "skel": "82de31ecfc8f8e5e8e57e670c9c0d0a85b88fe560b728c2c7f47db31528b3691"
+    "full": "eedde59d5c8f8d9be430323c46e0ee85338ba51c35d4ac841aeec1dc14fcc28c",
+    "skel": "f035f1793e46114f5454e7296b91b599303b2635828b87ac9743572bc0dd3ec6"
   },
   "platforms": {
     "full": "2d9e36e37fd82e2771084ac7c8d8189de6918a4149c683be62e2ba0d97db9a9c",
     "skel": "b2ae6dc6b167c066190b17f7405e6c70d4fb8bb06f965632b3609bf9a18a0620"
   },
   "plugin-dependencies": {
-    "full": "b14be1930464992027b58ff897760ec49399123575de93b5a2294ea9e324323d",
-    "skel": "15086e65c50044a6dc36e532a9f265761e0ad25d22fa4f7fc3a4bd39867b5859"
+    "full": "cc3f69f1e2868e4a242c75a9ad76a26854ae71ac5616e017906e08e6b8e0f975",
+    "skel": "df057ff8d23bf0415a9d331cae986d46b1a3193453b079be7388f16507c3337e"
   },
   "plugin-hints": {
     "full": "cba6d1e4cb50ace8a02ed15cddc3f37f8098eadc01cae61a0f732b526b5b1232",
     "skel": "53149096edb1088c6c10f1b9d29a65e4597b56d0be1776627ec7b00a824545f8"
   },
   "plugin-marketplaces": {
-    "full": "b9eebf6c5ea2e2ae5b3f7e43827a050d03db0cef61fb81c3d935c0682e036c19",
-    "skel": "f94609e899606d3a394b46b2c58d39c0aaf53d8ce640d620672e73333d76bbb7"
+    "full": "ed1d6ff6bd440957c09f3a2ba937ff6901b83e9cdfee9cfc8b73e5573ad2665e",
+    "skel": "ffccd49aca462eb0f49340dcdfdc67286db13f679ae6ea4a54a0ec1eb8025a8f"
   },
   "plugin-relevance": {
-    "full": "e0ad4269e108a36538be65b279a2508d2452426e26c83b801844548d3836397f",
-    "skel": "1a41a47acfd9ce07c341769bd30e5e217a91fd98fdf0c2177850b5e6e7f3a570"
+    "full": "e2516adee5893448fcebcdb58373052c2c881cbe995521d4782fe5253d066d54",
+    "skel": "fcb0039634fede97f886d558ff8bb4ed06d31e0babd78affbefa5fcc8906dcec"
   },
   "plugins": {
-    "full": "d353344e65fed118a88565ab463770a99d88ca073419b4d868ab4eb4dd54103a",
+    "full": "d64f8d772d4cf3780a4af8aa0042e7f65b6dc8a5ceeb1ba70ea440946514fc48",
     "skel": "eb90b97d8b7e865eee728751062dadef41c07ac91f3f3458a3f2e6a454fb3d1b"
   },
   "plugins-reference": {
-    "full": "2997c815eebad8c8eccc5d0dbc10992d194b06de3eff855f497c7bcd6d81d0f1",
-    "skel": "e882d8c73dcaf44fc2cf448bac7092690ec14df5aaa1021c509cc0f176e1ee0e"
+    "full": "a0bc8cc75ce7b6a02446f7c1abb805a63fb72b0386471a44c476957bebdb5253",
+    "skel": "a323934179580b62b574c58db360d62193aae3865ce3bfba0f6459659236870b"
   },
   "prompt-caching": {
-    "full": "dce7038229293bc966bd1e9bad3b58f0e508dbbbefab2fab4652a68e965e1872",
-    "skel": "528a2b4b4c3b32a08dd2ab162295378a8d1f88e23eb6e81bc3494030307b773f"
+    "full": "6878c219c80aff12586c175426d2ca5e4450ecec66e78609d361493ee0102a02",
+    "skel": "56d860fe006c2b149f16885d2dab6d8e5496ac3f0dd496c73f06669a0d2e7eb6"
   },
   "prompt-library": {
     "full": "985ba3bd07863a741e2e5f137e14bc8fb173fa547242ad52de426929d3e9ecba",
     "skel": "22a9173af72648a9952993298d096bbb6b1bb5f45a57b1387648abc1a78b62cf"
   },
   "quickstart": {
-    "full": "6a7a0a38ced1235db962c3cd321c05a4370dc68732c9b41780d47ee489b33e0e",
+    "full": "9aa7657373a3eb4ad8271408ab0c1a5c8e04f745f56e2afae04efeef14c2a38d",
     "skel": "8443ed8736c8f34b1899dff812a718c1a6c5a81c3caec82b3e89a9892492cba5"
   },
   "remote-control": {
-    "full": "d74839903571b022bb670696288c8fe7e441fbc9f1a1fc27bedb8ad7fb771008",
-    "skel": "a7c8c9e11100f843c3787451d3f5f032da39a2e3ca8708fbd7ca13e323deda62"
+    "full": "69beb8269868317c6a4a9411b1641db277ec62d2fdbf612fa23af42166bda745",
+    "skel": "59bd82aedc5c8cd779a7022a1b15d1526d8c6520ed5189474803610262909f94"
   },
   "routines": {
-    "full": "59ba25268a873f92008ef3fd3f8177609533205fe92bbea3181fa995b6185a73",
+    "full": "143dedf97e8920521aedfec9b27348dd071ac21346d341819b9940e3660ed5a7",
     "skel": "9d5071e5b2aaef52da209d10869c109aab499b7184709d407cbc5feb70717f87"
   },
   "sandbox-environments": {
@@ -805,11 +821,11 @@
     "skel": "e482a121bf1daf3051b30b6a813372d0a2bfd2d9031fb1c4cdad795515b2e780"
   },
   "sandboxing": {
-    "full": "0a81c62d2c194b8b58c27b78b2b189bdaa13c3b40065599f4bcb3f6aa78d6917",
-    "skel": "bc01145fb6599dae4a2a656e028d452738cc08ae892b5141acbb440a38d00e2c"
+    "full": "9ff6838dcc6c00c805abbad6a810f4d80027efea7e0ced0d251a4b8b4380c600",
+    "skel": "bbc5ebdc2f91b4fed607134b64bafe8ff65b57fe7ff9f4e1c0532b5d2b9b2b0a"
   },
   "scheduled-tasks": {
-    "full": "6e804be52523ac46f8699add63edd352177cc2681d7ea914102fbf82d10dea1f",
+    "full": "d53b7df219de27767f0f1acd5040eafa2e154c5c9998b0e56e1a07295669f6e3",
     "skel": "7f8bb4ea5b47237d57c992c127f62046f619fe072a5694a9766550a82e8dcfc4"
   },
   "security": {
@@ -817,92 +833,92 @@
     "skel": "f2efdde6dff6ed24939cd672adf74fbf1a1c1dd4c5887d3d401b5e2af978b57a"
   },
   "security-guidance": {
-    "full": "9f9a3f9899edbe67f5d53b95ada52aac8b4a719f9a5e47e1d123e3471777f6af",
+    "full": "5805edbe465de5277faa6e5972eaaf486ff9fc65695ad06d5e649f6f71105a00",
     "skel": "dfb9c5fbcb3af3b99af2830a6168f32cabd86d21d4c06dfd715cb2785b70fd8d"
   },
   "self-hosted-environments": {
-    "full": "5ec67bc9053be6ff1e28e56539eafc1954b7e47e00f820a8007bc591167197bc",
+    "full": "5898f4265c7f77f2a4c0212d1eb2f8d9c7db8182879be2b100839f307555e9ce",
     "skel": "11836a9b1ea5b7c7bbb08aebb0728e387a3791c1ceabc82b0836958e8374e6a0"
   },
   "self-hosted-environments-configuration": {
-    "full": "9348ee5656270467218eda9f26d7e9c2723efe3ef8c23099b47f8b6da93b4b29",
-    "skel": "345ef7426cce69d0aa1afd093301acaa76d4ef4017267b6852e00dcd125be8ba"
+    "full": "a705d3b823401e9c5d26c4b5ac6eff28c84a7747f2be12c1c287a3f1022a2bb3",
+    "skel": "0ae18a8f0b33cd4f9358012a2f53a89a62e9ae91b99e59f2cafdaf57b00be92e"
   },
   "self-hosted-environments-deploy": {
-    "full": "9a8bdcf66cf7630ceae9facd66c3c521a6f47684405d884e3e316a7ff6e11ac8",
-    "skel": "9f86321330f9869b9f70c5ecc513dc8dd16d1bd53bccbacbddb559d7f97194d1"
+    "full": "e79472e914cc2e550db10536526c9cd713d71952f711ca4f177ea0dcf9fbdcf8",
+    "skel": "267363616808a1291dec562a9420e71191f1b94e37bc5a82d41c2cb765fc6c6e"
   },
   "self-hosted-environments-identity": {
-    "full": "fe61549d6814f47bba3a3e24133fe3a04d80aa32879955234a8ec644151bf182",
+    "full": "04787fc3c8280d8a5e80d75283aa00e1a788cea90ce17924ff07738e488c2d03",
     "skel": "a143c3c9470091faf779d84eff866a7f4f0f6bfa8d63fc9a985a45141dedaa8b"
   },
   "self-hosted-environments-quickstart": {
-    "full": "6f123b3df996fb8c400340be2b93d11a45d44240e4a420387c58694684e9122a",
+    "full": "e6e70c877cc20278dced5c63fc014f033650c51e0de6cccf1d8165bdd72e0d8b",
     "skel": "4c75b5ae78dffa7f7a7e1b97b14f854be446a459d2daf7f072af8f9d84cc3db7"
   },
   "self-hosted-environments-reference": {
-    "full": "f42e07bf0a8c0abae7700e26b26d8ebd11cab5465f7010e4fc9ba7eee4e50ffd",
-    "skel": "6697f63764883efc910e3b8a199b2266d42154ec2a64131f8182a2ff9fac893d"
+    "full": "76a30d86f22b16d82b1419873ea03d48565573b5b87cce362c21255dab8f923f",
+    "skel": "728b35df4e2693bcf577e97bac2663170ca7e84da73341085c6377ded6643d71"
   },
   "self-hosted-environments-testing": {
-    "full": "261a915bc37d22eb647df4075b693b91d4291f3517620a17988e36ef44df8c43",
+    "full": "c05fe79fbcf9e2325e3a16bdb8518a7b082f2f823c7b3741487aeab5ca72d36c",
     "skel": "7022758c49d1b3194bc219e22c4e57844c322bc1e6e898a5edc34ec880e508f7"
   },
   "server-managed-settings": {
-    "full": "159c69cd0c831b4ed1e029865d6656abed2d352a0f2a6c465a17b03631bf930e",
-    "skel": "7d0579e31c82a2a67e17e6364d037f61705692010d8dd16f2142d60cdc9922ca"
+    "full": "a8f5d8e6911ded58681ac8f69dc8bb95872945c574e608356e3c37b19d6e72ea",
+    "skel": "cf150b8c70d47f5aaab903a4cb1fb4416203a4628e5d41297534150c58e115cb"
   },
   "sessions": {
-    "full": "7e613c6f2f26063eb3284c7928996ff7a5327d0cb25079d632e6717a917583d4",
-    "skel": "0bcfe3d2f5efbf01416f183523633b92aade2b53f2c4d00e9476143a20bde2db"
+    "full": "ced11b40a9dc6f77f207d66f93ee13f2066c8f689a318813d97968228436a607",
+    "skel": "8cfe8b4cd3316b2dfc0aa8120e80dde6d01ab97f111cd35feee8141267045296"
   },
   "settings": {
-    "full": "f3a7cab92b17f3d96e1d1db349a5ad4f60bd774a59b2cd11163bd71496a1e09c",
-    "skel": "85265d7b340060c22e17a13452cefafdb65206e319f7a1c4ba165038bea21a81"
+    "full": "a6f10afd9d41fffa2b14e1f113ef641ea6fbe9b319c114bb986efc3e186de009",
+    "skel": "cf351097bb3fe6dab192647e93e6053d58c7a0c7b6f43ef2ddc0019baa3fd87e"
   },
   "settings-example": {
     "full": "ffa1249c2fdab2f432dd80d4f996f22bc5337a496fc6227a342795693f9c640c",
     "skel": "ae08cb42cc39ec1100a26d37aa38304bcf4861c262abc8a1780d4042735bbbe0"
   },
   "settings-reference": {
-    "full": "b8838a8f9fbfb7ce503a6ff2b391328b12014ac04b635ef75a1155b30e5e14a7",
-    "skel": "88befe49575c23f02ef37d05463607847b7a1da01471d5d4750a60ca3efd0df1"
+    "full": "68df655c381eafa98f4671f601999065ee99851ad9942a01747803f8113eca7c",
+    "skel": "38fd456251bc9c6402f522198ffb39410be3e5d50d71e593de3cef140e094c26"
   },
   "setup": {
     "full": "519f37d769814f3bb872b982a7718d2d9fc47eea934be4aa8b384c31cfb38083",
     "skel": "df9c3f7a5b126013eeb7d3e969b937f935eeac2eb3ad395b054dfbc44a71ab97"
   },
   "skills": {
-    "full": "8635e0597dc1a135bbdadcf0389cc00d807376d8dd801a0220a4d42f39a3e57e",
-    "skel": "8e1a7176273b7ce81625f7152f4e9d85afdeb60b3b9667bd84f7db74cacb1c9a"
+    "full": "79fcd0c50f8fff8319754b57b379183ef60512ac06c383ff354f4241e6210bbd",
+    "skel": "58ad2f821aec75f83a4435b87400c3115e1935b6f77070006b064e1770e9d17e"
   },
   "slack": {
-    "full": "33a34b273312ef21f34c75e8b024e85db8e2316ff553b724451d0640f6c1e4a3",
+    "full": "b47ea831ba59427cdccc99002e750ff9d6c2f7ec7c6d3b203eebcd5aad5f0407",
     "skel": "59d04c95ea378ce367afb4822707e9d79c6f8f065e521c10e8ec4666542cc139"
   },
   "statusline": {
-    "full": "b0811428721bd7c30df85fa7bb8f604c69bd4ee7c4b549a7c8ea88fbe1be9723",
-    "skel": "4b8699a7cf67d366178c81054ccc2012a944f9997447a75d6b2ed624e0c70c86"
+    "full": "bb8d2c7fa1dd48372ca1c382f3d02ded9f7220530c979e8be65c9bf1ce79c4f4",
+    "skel": "666fb3b281d9fac7ec93da4270668625ec57f2e555d930f1c108569565c617a7"
   },
   "sub-agents": {
-    "full": "03b4927c518db3632b9c0c0c6e2655c985ea0c1bb374af4563b24ceb225dbcc2",
-    "skel": "ae39d1c677754671fb32e4b4188e55f7339ac66e5bdce03fc32eda22018ee21e"
+    "full": "6c469d1f8cd67757942444b5c8ab54fb7f74ebfd7cbf2cfb07e187fbb37067e5",
+    "skel": "2aeb2587346126c522658b4a54bf7a11ac3e609f5dd10fe2ec2541db65060159"
   },
   "terminal-config": {
-    "full": "b0de0429756ae86344b84fa8983cb4ec2a6fff9253baf27a50a53da915a47459",
-    "skel": "944febf98b929f36b3c214c04520aa24e606110e11dcdc6331646e8500748b9c"
+    "full": "2881cd463d2b152ff23c638b576d2614c87ec8819604a1780e4b6c4af7c181b3",
+    "skel": "1c3d3befb25393c14de0cccddfcc454620397bbead9a38480dacb7594b8ef5be"
   },
   "third-party-integrations": {
-    "full": "b1a52b2f4b525d27ae2cb3aa083f47dd1f5a6432eef5551d74d7822a31de484f",
-    "skel": "f3d6a44feaed5e79a7cde3ed350042fb2272f878b5ec9fe3b82d69d67a41d013"
+    "full": "a1f1fe72368dbceb42f655d043334968806a012ba9c294b990b2c427dad7d4f2",
+    "skel": "70a335667d20a66f5de5b88ce5029ce9fe88f86b2a9fd7e95fef837bb42a3cca"
   },
   "tools-reference": {
-    "full": "7c3d4fe1196a44485ffdc6322a58755d956e5372bd507b11582ed3b5105c0b87",
-    "skel": "bff6c0b9d045f58e9629caa558796f3139a51413774c8c022eeb0a0ee2d4724c"
+    "full": "21045fa1ae08db958afa473a2664bc36ed0fff116c917a66de2456b937e5a48a",
+    "skel": "3b581c519f160f2c8748a84b7e130e0253a4b3b37e5c0dc4a5e34c59d10c1bc3"
   },
   "troubleshoot-install": {
-    "full": "00ee610707c923d4014190aa678b73475c3cd442322d39d39d36843bbc63a84e",
-    "skel": "7ffec3abb686803215fe200e9a5d11372dcf8dbe23ab7b01baae28723fc0faa0"
+    "full": "1776718e5d4c21654278ba638d5457e3f0da238b338f3ba4276fb36cd4b068cc",
+    "skel": "2b7836153cc41125427a7ae17d38c1d253b7b184bcc15323967e25fd1589c14a"
   },
   "troubleshooting": {
     "full": "f1426c4b36894db28ef285f7dc2c7654d7d33c1f89e77f93caeb5f13a41b681b",
@@ -913,20 +929,20 @@
     "skel": "a707340f65ddca92f1121aab1a07f18fd253be3d2561479a1680199114793fcb"
   },
   "ultrareview": {
-    "full": "dac0e94064bfd048327a7abd9b3c63ea7194629056924347ce01187ec0ef8dc0",
+    "full": "999af5b81be39bfec4fcfa7cf3041eafff86c7cfb30737e1ec0e642eae441e2c",
     "skel": "2d12a8cedec024720d4e45c45208a70be317cf6266313fd56fc3fc1d4cd07899"
   },
   "voice-dictation": {
-    "full": "35364a1aebd0263f97a623cf2415536681b50f30ae800e61565265b838ea6702",
-    "skel": "0695ddc49a33779cd7e6a78aa9fb2ed9b23d2a1df361dd18a67f42ddc50721b7"
+    "full": "a42612da5ed0b984d817f12b3328902c646e073ae299a8ee40c1cee58c64beb2",
+    "skel": "de2d7c5d26690e7b8e0ac46c2b375381dbc717e32dd7fca4fc9f147c952838bb"
   },
   "vs-code": {
-    "full": "1fbc967a6dfddf3ded7aeab05655f86fb464692288825a1e469c3cfa09c30bb1",
-    "skel": "10e274aef22dfc042be618efcf59b7689c0be4db8e551b52c01171987e7c2bd6"
+    "full": "35c1dd589d3b3468410d9b5fa2c128c6c5f2383f6c1b6098bafb29a92f8bfd38",
+    "skel": "1e1fa57694d195a18eeddd0c615b161c9f18fdec975cfed820b365e57c75104c"
   },
   "web-quickstart": {
-    "full": "501f7c7d800e9150167a17386e6cfcbd48e81fc8c700d9b5e6bda50614794035",
-    "skel": "1e0ff23e64e9f1de57ab2f6bdeefa2b8bcfc6b4443f84693bdb5813bb2b69ba9"
+    "full": "54fca3b95788fb68bcb5692798c9b347415b513919d1c4513d64baf804178fe7",
+    "skel": "cf22a8703b76b3e1793be966ed1af622000ed34fdb32c886de9a8508208e6592"
   },
   "whats-new/2026-w13": {
     "full": "1f6b33d30fc2ba37f181750f871a769ba973868bd4c3b649f7c0b41856a91bc5",
@@ -1017,15 +1033,15 @@
     "skel": "d796d3ad0345c949675c404331bfde58d1a9af6b24fd5c2e4afefdf43867e346"
   },
   "workflows": {
-    "full": "75130efe0d2514784e027fae2f1bf98d33f16863ea6c670e01c231a677fbf0d8",
-    "skel": "6e5fcea984260228bcd40c788159f17be30fc88d157831dccb9da7ecf4572300"
+    "full": "ba36960244015e6f104653edd3b6a790075b39f0234bcf30a4586e857c5211a4",
+    "skel": "e937a11de4181f5bb3153fef595e271c8c5c2d6e82a02e9b2bd30632fdb92042"
   },
   "worktrees": {
-    "full": "9becc26c155c210155d1e1797991a93a536bc47ccfeaa6b20f51d6f68f8d3f26",
-    "skel": "e8186c995f6f128730ceaeeb13d01903853fbaa27b8f1ee11c6efe960b915083"
+    "full": "70ee9e037f68b6b8e953acee7605a39e38895fb8f65f404bb8ee42768e67ce33",
+    "skel": "50ada1105d9b2f6d624482107888c0fb047f1be4fc1de8e17553cb727a1db886"
   },
   "zero-data-retention": {
-    "full": "218ed0e3c97a0f8f6f17679d701f1d1e77d844b65ebd54aef0e1f7eb929aaf95",
+    "full": "8d25777cb26c94442d949bd7d0d0c5dcb53b7523548fabcd3c905ae9edf4f81e",
     "skel": "ec7a0abe2daeb6a6eb931fa45371794f803d8c9d2b9e26f9fe1495373e22b2bd"
   }
 }

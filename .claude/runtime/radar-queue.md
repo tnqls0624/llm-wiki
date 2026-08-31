@@ -13,6 +13,68 @@
      - **제안**: <무엇을 어떻게 만들지/박제할지>
 -->
 
+## 2026-08-31
+
+### [pending] kb-sync · 02 CLI 레퍼런스: 출처 구조 변경(interactive-mode, keybindings, terminal-config, voice-dictation) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
+### [pending] kb-sync · 03 메모리와 컨텍스트: 출처 구조 변경(claude-directory, context-window, sessions) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
+### [pending] kb-sync · 05 권한: 출처 구조 변경(permissions) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
+### [pending] kb-sync · 07 스킬: 출처 구조 변경(skills) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
+### [pending] kb-sync · 08 서브에이전트와 에이전트 팀: 출처 구조 변경(agent-teams, agent-view, settings-reference, sub-agents, workflows) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
+### [pending] kb-sync · 09 훅: 출처 구조 변경(hooks, hooks-guide) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
+### [pending] kb-sync · 10 MCP: 출처 구조 변경(managed-mcp, mcp, mcp-quickstart) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
+### [pending] kb-sync · 12 출력 스타일과 상태줄: 출처 구조 변경(statusline) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
+### [pending] kb-sync · 13 자동화와 스케줄링: 출처 구조 변경(channels-reference, cross-session-messaging, deep-links, desktop-scheduled-tasks, remote-control) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
+### [pending] kb-sync · 15 웹과 모바일: 출처 구조 변경(artifacts, claude-code-on-the-web, cloud-environments, web-quickstart) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
+### [pending] kb-sync · 16 CI-CD와 팀 통합: 출처 구조 변경(code-review) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
+### [pending] kb-sync · 17 클라우드 프로바이더: 출처 구조 변경(amazon-bedrock, feature-availability, network-config, third-party-integrations) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
+### [pending] kb-sync · 18 보안과 샌드박스: 출처 구조 변경(claude-security, sandboxing) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
+### [pending] kb-sync · 19 비용과 성능: 출처 구조 변경(costs, fast-mode, monitoring-usage, prompt-caching) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
+### [pending] kb-sync · 20 베스트 프랙티스와 워크플로우: 출처 구조 변경(worktrees) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
+### [pending] kb-sync · 21 브라우저와 컴퓨터 사용: 출처 구조 변경(chrome) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
+### [pending] kb-sync · 22 Agent SDK — 시작: 출처 구조 변경(agent-sdk/claude-code-features) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
+### [pending] kb-sync · 23 Agent SDK — 핵심 기능: 출처 구조 변경(agent-sdk/hooks, agent-sdk/mcp) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
+### [pending] kb-sync · 24 Agent SDK — 고급과 레퍼런스: 출처 구조 변경(agent-sdk/cost-tracking, agent-sdk/hosting, agent-sdk/modifying-system-prompts, agent-sdk/python, agent-sdk/streaming-vs-single-mode, agent-sdk/troubleshooting, agent-sdk/typescript) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
+### [pending] kb-sync · 30 설정 레퍼런스: 출처 구조 변경(managed-settings, settings-reference) — /kb-sync --deep
+- **근거**: 2026-08-31 kb-sync §6b 2층 검출(구조 84/프로즈 ~65 중 구조분). 베이스라인 08-24→08-31 skel diff.
+
 ## 2026-08-26
 
 ### [pending] kb-ingest · claude-code v2.1.246 릴리스 노트
