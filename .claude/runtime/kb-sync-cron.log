@@ -231,3 +231,27 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] failed: Hook cancelled
 === [2026-08-27 09:13:06] exit=0 ===
 === [2026-08-31 09:07:00] kb-sync run start ===
+## KB Sync 결과 보고
+
+**§1~3 슬러그 레벨 diff — 변경 없음**
+- 공식 `llms.txt` 191개 슬러그 전수 추출 → KB `80 Tooling/*.md` 30개 노트 `source_urls` 합집합(193개, deprecated 2개 포함)과 대조
+- 신규 슬러그 0, 사라진 슬러그 0(신규 발견 기준)
+- `agent-sdk/slash-commands`·`ultraplan` 두 슬러그가 여전히 공식 인덱스엔 없지만, **둘 다 이전 세션에서 이미 deprecated 콜아웃 처리 완료**(`23 Agent SDK — 핵심 기능.md`, `20 베스트 프랙티스와 워크플로우.md`) — 재검증만 하고 노트는 안 건드렸습니다.
+
+**§6b 콘텐츠 드리프트 — 발견 있음, 노트는 미수정**
+- `kb-source-hashes.py`: 260개 출처 재fetch, 마지막 스냅샷(08-24)과 대조해 구조 변경 84개 / 프로즈만 85개 / 오류 2개(네트워크 차단, 이전 해시 보존)
+- 샘플 검증: `admin-setup` 원문에 새 "WSL sessions in Claude Code Desktop" 섹션 확인 → 오탐 아님(7일치 실제 누적 변경)
+- 노트 단위 집계 → **20개 노트**를 review 큐(`runtime/radar-queue.md`)에 신규 적재(8+8+4, 3회 분할). 이미 2026-08-24부터 pending 상태인 10개 노트(04·06·11·14·25·26·27·29·00·01)는 재적재하지 않음
+- `--update`로 스냅샷 갱신 완료(다음 실행 기준선)
+- **노트 본문은 한 글자도 수정하지 않았습니다** — collect↔review 분리 원칙대로, 실제 반영은 사용자가 `/kb-sync --deep <노트>`로 결정
+
+**§6 최종 검증**
+- `kb-lint.py --online`: 노트 53개 전수 통과, 문제 없음. 온라인 대조 결과도 위와 동일(신규 0, 사라짐 2 — 둘 다 기 처리)
+
+**변경된 파일** (노트 0건)
+- `.claude/runtime/radar-queue.md` (+20 pending 항목)
+- `.claude/runtime/source-hashes.json` (스냅샷 갱신)
+
+**hot.md duty(§5)**: 해당 없음 — 이번 실행은 `80 Tooling/` 노트를 만들거나 고치지 않았으므로 duty-③(hot.md append) 대상이 아닙니다.
+
+**참고**: 인자로 주신 "변경 없으면 아무 파일도 만들지 말라"는 조건은 §1~3(슬러그 diff)엔 해당하지만, §6b(콘텐츠 드리프트)는 커맨드 정본 절차상 발견 시 큐 적재가 의무이므로 그대로 수행했습니다 — 두 층위를 구분해 보고드립니다.
