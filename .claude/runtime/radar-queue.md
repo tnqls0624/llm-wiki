@@ -13,6 +13,58 @@
      - **제안**: <무엇을 어떻게 만들지/박제할지>
 -->
 
+## 2026-09-02
+
+### [pending] kb-ingest · GitSpawn: 신뢰되지 않은 저장소가 Claude Code에서 코드 실행시키는 취약점
+- **source**: Hacker News
+- **url**: https://www.manifold.security/blog/ai-coding-agents-git-hijack
+- **근거**: automation-safety-rules.md의 "untrusted input" 원칙과 직결되는 실제 공격 사례 — 신뢰 경계 문서화에 구체적 사례 필요
+- **제안**: 80 Tooling/에 보안 노트로 박제(신규 또는 기존 보안 관련 노트에 추가), automation-safety-rules.md에서 상호 참조 검토
+
+### [pending] kb-ingest · Claude Code Auto Mode 우회 — 웹사이트 요약만으로 원격 코드 실행
+- **source**: GeekNews
+- **url**: https://news.hada.io/topic?id=33079
+- **근거**: GitSpawn과 동일 계열(untrusted content → RCE)의 국내 보도 사례. 두 건을 묶어 하나의 보안 노트로 다루면 근거가 두터워짐
+- **제안**: 위 GitSpawn 항목과 함께 80 Tooling/ 보안 노트에 병합 박제
+
+### [pending] kb-ingest · TrueForge — LLM을 실제 에이전트로 실행하는 오픈소스 하네스
+- **source**: GeekNews
+- **url**: https://news.hada.io/topic?id=33138
+- **근거**: `80 Tooling/31 하네스 엔지니어링` 토픽과 직결 — 하네스 엔지니어링을 다루는 외부 프로젝트 사례
+- **제안**: 31 하네스 엔지니어링 노트에 사례로 추가하거나 cross-link, 직접 검증 후 반영
+
+### [pending] kb-ingest · claude-code v2.1.251 — PreModelSwitch/PostModelSwitch 훅 이벤트, SessionStart 재캐시 비용
+- **source**: anthropics/claude-code releases
+- **url**: https://github.com/anthropics/claude-code/releases/tag/v2.1.251
+- **근거**: vault가 훅(kb-lint-check·session-context·stray-guard)을 프레임워크 핵심으로 쓰는데, 신규 훅 이벤트 종류가 늘어남
+- **제안**: 09 훅 노트에 신규 이벤트 반영 (/kb-sync 경유 또는 직접)
+
+### [pending] kb-ingest · claude-code v2.1.257 — Claude Fable 5.1 기본 모델화, Time format/timeZone 설정 추가
+- **source**: anthropics/claude-code releases
+- **url**: https://github.com/anthropics/claude-code/releases/tag/v2.1.257
+- **근거**: 모델 목록·설정 레퍼런스가 실제로 바뀜(Fable 5.1 1M context, timeFormat 설정)
+- **제안**: 30 설정 레퍼런스 노트 갱신
+
+### [pending] kb-ingest · claude-code v2.1.248 — --restricted 플래그, experimental.cacheTtl
+- **source**: anthropics/claude-code releases
+- **url**: https://github.com/anthropics/claude-code/releases/tag/v2.1.248
+- **근거**: `--restricted`(명령 실행 도구·WebFetch 제거, bypassPermissions 거부)는 automation-safety-rules.md의 least-authority 원칙을 CLI 레벨에서 강제하는 옵션 — 우리 무인 cron(radar-collect·study-coach)에 실제 적용 검토 가치 있음
+- **제안**: 30 설정 레퍼런스 노트 갱신 + automation-safety-rules.md에서 --restricted 적용 여부 별도 검토
+
+### [pending] kb-ingest · Claude Code를 non-Anthropic 백엔드에서 쓸 때 실제로 중요한 env var
+- **source**: dev.to #claudecode
+- **url**: https://dev.to/keheai_harvey/claude-code-on-a-non-anthropic-backend-the-env-vars-that-actually-matter-1fm5
+- **근거**: env var 레퍼런스는 30 설정 레퍼런스가 다루는 영역이나 이 각도(비-Anthropic 백엔드)는 공식 문서에 약함
+- **제안**: 30 설정 레퍼런스 노트에 env var 섹션 보강, 원문 검증 후 반영
+
+### [pending] skill · 30일간 호출 0회인 죽은 서브에이전트 자동 탐지
+- **source**: dev.to #claudecode
+- **url**: https://dev.to/bokuwalily/7-of-my-8-claude-code-agents-had-zero-calls-in-30-days-finding-dead-agents-automatically-27jf
+- **근거**: 우리 vault도 다수의 agent/skill을 운용 중이고 이미 `skill-audit`(토큰 풋프린트 집계) 스킬이 있음 — 사용 빈도(호출 로그) 축으로 보완하면 자산 정리에 실질 도움
+- **제안**: skill-audit과 유사한 위상으로 신규 skill 또는 skill-audit 확장 — 세션 로그에서 agent/skill 호출 빈도를 집계해 30일 미사용 항목 보고
+
+<!-- overflow: 1건 미적재 (이미 seen 처리되어 재출현하지 않음) — ghrel:v2.1.247 SendFeedback tool 추가 -->
+
 ## 2026-08-31
 
 ### [pending] kb-sync · 02 CLI 레퍼런스: 출처 구조 변경(interactive-mode, keybindings, terminal-config, voice-dictation) — /kb-sync --deep
