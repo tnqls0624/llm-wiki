@@ -258,3 +258,22 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] failed: Hook cancelled
 === [2026-08-31 09:22:32] exit=0 ===
 === [2026-09-03 09:07:05] kb-sync run start ===
+## `/kb-sync` 결과
+
+**슬러그 레벨 diff (§1~3)** — 신규 0개, 사라진 슬러그 2개(`agent-sdk/slash-commands`, `ultraplan`)는 **이미 이전 세션에서 deprecated 콜아웃 처리됨** → 새 파일 생성 없음.
+
+**콘텐츠 드리프트 (§6b, `kb-source-hashes.py`)** — 이 축에서는 실변경 있음:
+- 점검 259개 · 구조 변경 31개(**17개 노트**) · 프로즈만 76개(무시) · 신규/사라짐 0
+- 구조 변경 17개 노트를 `### [pending] kb-sync · <노트>: 출처 구조 변경(...) — /kb-sync --deep` 형식으로 묶어 임시 파일 3개(회당 상한 8)에 쓰고 `radar-collect.py --append-queue`로 `runtime/radar-queue.md`에 적재(총 17건 appended, 스크래치 파일은 즉시 삭제).
+- 영향 노트: `23/24 Agent SDK`, `08 서브에이전트`, `15 웹과 모바일`, `01 시작하기`, `26 변경 이력`, `27 게이트웨이`, `02 CLI`, `04 설정`, `25 트러블슈팅`, `09 훅`, `10 MCP`, `19 비용과 성능`, `05 권한`, `13 자동화와 스케줄링`, `30 설정 레퍼런스`, `00 자기진단`(외부 gist).
+- 노트 본문은 건드리지 않음(collect↔review 분리 — 실제 반영은 사용자가 `/kb-sync --deep <노트>`로 결정).
+- `--update`로 해시 스냅샷 갱신(다음 실행 기준선).
+
+**검증** — `kb-lint.py --online`: 노트 53개 전수 통과, 인덱스 191 ↔ KB 193 정합(정보성 gone-slug 2건은 위 언급대로 기존 처리분).
+
+**갱신 의무 ③** — `hot-append.py`로 `hot.md`에 영어 한 줄 기록 완료 (25 entries, 1 pruned).
+
+**변경 파일**: `runtime/hot.md`, `runtime/radar-queue.md`, `runtime/source-hashes.json`만 — least-authority 원칙대로 KB 노트·메커니즘 파일은 무변경.
+
+---
+**세션 환경 메모**: 이 세션은 임의 bash 명령(예: 스크래치 `.py` 스크립트 직접 실행, `ls`, `find`, `jobs`)이 승인 없이 차단되는 제한된 권한 모드였다 — allowlist된 스크립트(`kb-lint.py`, `kb-source-hashes.py`, `radar-collect.py`, `hot-append.py`)와 `curl`/`Read`/`Grep`/`Write`/`rm`만으로 작업을 완료했다. 무인 실행 안전 설계(automation-safety-rules)가 실제로 작동하는 걸 확인한 셈.
