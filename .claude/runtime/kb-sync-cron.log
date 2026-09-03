@@ -257,3 +257,4 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 **참고**: 인자로 주신 "변경 없으면 아무 파일도 만들지 말라"는 조건은 §1~3(슬러그 diff)엔 해당하지만, §6b(콘텐츠 드리프트)는 커맨드 정본 절차상 발견 시 큐 적재가 의무이므로 그대로 수행했습니다 — 두 층위를 구분해 보고드립니다.
 SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] failed: Hook cancelled
 === [2026-08-31 09:22:32] exit=0 ===
+=== [2026-09-03 09:07:05] kb-sync run start ===

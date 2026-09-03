@@ -13,6 +13,42 @@
      - **제안**: <무엇을 어떻게 만들지/박제할지>
 -->
 
+## 2026-09-03
+
+### [pending] kb-sync · 23 Agent SDK — 핵심 기능: 출처 구조 변경(agent-sdk/custom-tools, agent-sdk/mcp, agent-sdk/subagents) — /kb-sync --deep
+
+### [pending] kb-sync · 24 Agent SDK — 고급과 레퍼런스: 출처 구조 변경(agent-sdk/hosting, agent-sdk/modifying-system-prompts, agent-sdk/python, agent-sdk/typescript) — /kb-sync --deep
+
+### [pending] kb-sync · 08 서브에이전트와 에이전트 팀: 출처 구조 변경(agent-teams, agent-view, settings-reference, workflows) — /kb-sync --deep
+
+### [pending] kb-sync · 15 웹과 모바일: 출처 구조 변경(artifacts) — /kb-sync --deep
+
+### [pending] kb-sync · 01 시작하기: 출처 구조 변경(authentication) — /kb-sync --deep
+
+### [pending] kb-sync · 26 변경 이력과 용어집: 출처 구조 변경(changelog) — /kb-sync --deep
+
+### [pending] kb-sync · 27 게이트웨이: 출처 구조 변경(claude-apps-gateway, claude-apps-gateway-config, claude-apps-gateway-deploy, gateways) — /kb-sync --deep
+
+### [pending] kb-sync · 02 CLI 레퍼런스: 출처 구조 변경(cli-reference) — /kb-sync --deep
+
+### [pending] kb-sync · 04 설정: 출처 구조 변경(env-vars, model-config, server-managed-settings, settings) — /kb-sync --deep
+
+### [pending] kb-sync · 25 트러블슈팅: 출처 구조 변경(errors) — /kb-sync --deep
+
+### [pending] kb-sync · 09 훅: 출처 구조 변경(hooks, hooks-guide) — /kb-sync --deep
+
+### [pending] kb-sync · 10 MCP: 출처 구조 변경(mcp) — /kb-sync --deep
+
+### [pending] kb-sync · 19 비용과 성능: 출처 구조 변경(monitoring-usage) — /kb-sync --deep
+
+### [pending] kb-sync · 05 권한: 출처 구조 변경(permissions) — /kb-sync --deep
+
+### [pending] kb-sync · 13 자동화와 스케줄링: 출처 구조 변경(routines) — /kb-sync --deep
+
+### [pending] kb-sync · 30 설정 레퍼런스: 출처 구조 변경(settings-reference) — /kb-sync --deep
+
+### [pending] kb-sync · 00 LLM Wiki 아키텍처와 OKF 자기진단: 출처 구조 변경(https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — /kb-sync --deep
+
 ## 2026-09-02
 
 ### [pending] kb-ingest · GitSpawn: 신뢰되지 않은 저장소가 Claude Code에서 코드 실행시키는 취약점
