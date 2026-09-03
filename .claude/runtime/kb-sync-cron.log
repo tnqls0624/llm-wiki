@@ -277,3 +277,5 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 
 ---
 **세션 환경 메모**: 이 세션은 임의 bash 명령(예: 스크래치 `.py` 스크립트 직접 실행, `ls`, `find`, `jobs`)이 승인 없이 차단되는 제한된 권한 모드였다 — allowlist된 스크립트(`kb-lint.py`, `kb-source-hashes.py`, `radar-collect.py`, `hot-append.py`)와 `curl`/`Read`/`Grep`/`Write`/`rm`만으로 작업을 완료했다. 무인 실행 안전 설계(automation-safety-rules)가 실제로 작동하는 걸 확인한 셈.
+SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] failed: Hook cancelled
+=== [2026-09-03 09:22:27] exit=0 ===
