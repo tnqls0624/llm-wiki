@@ -280,3 +280,16 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] failed: Hook cancelled
 === [2026-09-03 09:22:27] exit=0 ===
 === [2026-09-07 09:07:02] kb-sync run start ===
+## KB Sync 결과 — 변경 없음
+
+**슬러그 레벨 diff** (`llms.txt` 138+30(agent-sdk)+22(whats-new) = 190개 슬러그 vs KB `source_urls` 합집합):
+- 신규 슬러그: **0개**
+- 사라진 슬러그: **0개** (신규 기준). 기존에 이미 처리된 2건(`agent-sdk/slash-commands` → `23 Agent SDK — 핵심 기능.md`, `ultraplan` → `20 베스트 프랙티스와 워크플로우.md`)은 과거 실행에서 `> [!warning] deprecated` 콜아웃으로 이미 표시돼 있고 이번 실행에서 상태 변화 없음.
+
+→ 노트·MOC 수정 없음. 인자 지시대로 파일 생성 없이 종료하며, §5 duty(`hot-append.py`)도 호출하지 않음("변경 없음" 종료는 갱신 의무 대상 아님).
+
+**미완료 항목 (투명하게 보고)**
+- §6b 콘텐츠 드리프트 감지(`kb-source-hashes.py --json`)가 **87분간 CPU 사용량 거의 0으로 진행이 멈춰** 강제 종료(TaskStop)했다. 슬러그 ~190개를 순차 fetch하는 구조라 정상 상황에서도 다소 걸리지만, 이 정도 정체는 비정상 — 특정 URL에서 `urllib.request.urlopen`이 20s 타임아웃을 넘어서도 안 풀린 것으로 보인다(네트워크 샌드박스 이슈 추정, 원인 미확정). 이번 실행에서는 본문 변경(structural drift) 여부를 확인하지 못했다.
+- 같은 이유로 §6 `kb-lint.py --online` 최종 검증도 스킵함(변경 자체가 없어 린트 대상도 없고, 반복 네트워크 정체 리스크를 피함).
+
+**후속 제안**: `kb-source-hashes.py`의 정체 원인 조사 필요 — `urllib.request` 대신 `curl`(subprocess) 기반으로 바꾸거나, 요청별 하드 타임아웃(예: `signal.alarm`)을 추가해 단일 URL이 전체를 블로킹하지 않게 하는 게 좋겠다. 원하면 별도로 진행할 수 있다.
