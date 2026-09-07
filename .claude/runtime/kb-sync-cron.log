@@ -293,3 +293,5 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 - 같은 이유로 §6 `kb-lint.py --online` 최종 검증도 스킵함(변경 자체가 없어 린트 대상도 없고, 반복 네트워크 정체 리스크를 피함).
 
 **후속 제안**: `kb-source-hashes.py`의 정체 원인 조사 필요 — `urllib.request` 대신 `curl`(subprocess) 기반으로 바꾸거나, 요청별 하드 타임아웃(예: `signal.alarm`)을 추가해 단일 URL이 전체를 블로킹하지 않게 하는 게 좋겠다. 원하면 별도로 진행할 수 있다.
+SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] failed: Hook cancelled
+=== [2026-09-07 12:50:43] exit=0 ===
