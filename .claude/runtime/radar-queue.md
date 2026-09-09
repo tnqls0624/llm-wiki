@@ -13,6 +13,63 @@
      - **제안**: <무엇을 어떻게 만들지/박제할지>
 -->
 
+## 2026-09-09
+
+### [pending] rule · Stop 훅으로 "done" 선언을 transcript JSONL 대조 검증
+- **source**: dev.to #claudecode
+- **url**: https://dev.to/bokuwalily/67-lines-of-bash-that-wont-let-an-llm-say-done-a-stop-hook-that-reads-the-transcript-jsonl-1co9
+- **근거**: Stop 훅이 transcript JSONL을 파싱해 "완료" 선언의 실행 근거를 검증 — 우리 `hot-append.py` 영수증 체크·claude-radar `--finish` 완주 가드와 같은 계열의 무인 완주 검증 아이디어라 교차 비교 가치가 있음.
+- **제안**: `automation-safety-rules.md`의 Defense in depth 섹션 관점에서 우리 기존 가드(영수증 패턴)와 비교 검토, 개선점 있으면 rule 갱신.
+
+### [pending] rule · Stop 훅으로 무인 세션 탐지(audit nag)
+- **source**: dev.to #claudecode
+- **url**: https://dev.to/bokuwalily/19-audit-nags-in-one-night-making-a-claude-code-stop-hook-detect-unattended-sessions-12ni
+- **근거**: 무인 실행 세션을 Stop 훅에서 탐지·감사 로그 남기는 기법 — study-coach/claude-radar 무인 cron 세션의 dead-man banner(session-context 훅)와 같은 문제를 다룸.
+- **제안**: 기존 dead-man banner 대비 개선점 있는지 검토 후 반영 여부 결정.
+
+### [pending] kb-ingest · claude-code v2.1.259 — 헤드리스 권한 자동거부(--permission-prompts none) + managedMcpServers
+- **source**: anthropics/claude-code releases
+- **url**: https://github.com/anthropics/claude-code/releases/tag/v2.1.259
+- **근거**: `--permission-prompts none`은 automation-safety의 least-authority(허용목록 스코프) 원칙과 직접 관련된 공식 신규 기능.
+- **제안**: `80 Tooling/30 설정 레퍼런스`에 반영.
+
+### [pending] kb-ingest · claude-code v2.1.260 — /diff 패널 + /cost 프롬프트캐시 미스 원인 표시
+- **source**: anthropics/claude-code releases
+- **url**: https://github.com/anthropics/claude-code/releases/tag/v2.1.260
+- **근거**: 프롬프트 캐시 미스 원인을 `/cost`에 노출 — 토큰 비용 추적(RTK·hot.md 캡 관리)에 바로 쓸 수 있는 신규 기능.
+- **제안**: `80 Tooling/30 설정 레퍼런스`에 반영.
+
+### [pending] kb-ingest · claude-code v2.1.261 — bashOutputMaxChars/taskOutputMaxChars, Organization policy 표시
+- **source**: anthropics/claude-code releases
+- **url**: https://github.com/anthropics/claude-code/releases/tag/v2.1.261
+- **근거**: 출력 상한 설정값 신설 — 기존 설정 레퍼런스 노트의 공백.
+- **제안**: `80 Tooling/30 설정 레퍼런스` 갱신.
+
+### [pending] kb-ingest · ant CLI 1.30.0 — ant apply(선언적 agent/skill/env 관리 + lock 파일)
+- **source**: Anthropic release notes
+- **url**: https://platform.claude.com/docs/en/release-notes/overview
+- **근거**: 파일 기반 선언 + plan 승인 + lock 파일 커밋 워크플로우 — 우리 `.claude/` 프레임워크(수동 파일 관리)와 대비되는 선언적 관리 모델이라 참고 가치가 큼.
+- **제안**: `80 Tooling`에 신규 노트로 박제. `.claude/` 관리 방식 자체에 적용할지는 별도 논의로 분리.
+
+### [pending] kb-ingest · 코딩 에이전트 토큰 비용 70% 절감 5가지 교훈
+- **source**: dev.to #claudecode
+- **url**: https://dev.to/yureki_lab/how-i-cut-my-ai-coding-agents-token-bill-by-70-5-lessons-3ph1
+- **근거**: RTK로 토큰 절감을 실천 중인 사용자 맥락과 직접 맞닿는 실전 교훈.
+- **제안**: `80 Tooling`에 비용 최적화 관련 노트로 박제 검토.
+
+### [pending] kb-ingest · rtk 토큰 절감 대시보드 실측 논쟁(JetBrains vs 11.6M saved)
+- **source**: dev.to #claudecode
+- **url**: https://dev.to/aidiveyt/jetbrains-says-rtk-costs-more-my-dashboard-says-116m-saved-both-are-right-l43
+- **근거**: 사용자가 실제 사용 중인 rtk(Rust Token Killer, 전역 `RTK.md`) 도구를 다루는 글 — 절감 주장 신뢰성 논쟁이라 직접 참고 가치.
+- **제안**: `80 Tooling` 또는 개인 도구 메모로 박제 검토.
+
+<!-- overflow: 5건 미적재 (이미 seen 처리되어 재출현하지 않음) — 추천 가치는 있었으나 8건 cap 초과로 제외:
+     · gh:redhat-et/ripwire (★1761) — 에이전트용 zero-dep context-search MCP, vault의 임베딩/검색 non-goal 재검토 시 참고점
+     · gh:jeremylongshore/tons-of-skills-marketplace (★2711) — 모델-어그노스틱 skills 마켓플레이스/패키지 매니저
+     · hn:49605644 "The VMs Powering Mobile Agents" (69pt) — 모바일 코딩 에이전트용 VM 인프라, `31 하네스 엔지니어링` 노트 보강 후보
+     · dev.to:4607452 "How I Review Thousands of Lines of AI-Written Code a Week Without Burning Out" — 코드리뷰 실전 교훈
+     · dev.to:4585308 "Your Hook Is Configured Correctly and Never Runs" — 훅 트러블슈팅 -->
+
 ## 2026-09-03
 
 ### [pending] kb-sync · 23 Agent SDK — 핵심 기능: 출처 구조 변경(agent-sdk/custom-tools, agent-sdk/mcp, agent-sdk/subagents) — /kb-sync --deep
