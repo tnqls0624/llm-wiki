@@ -321,3 +321,5 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 1. `/claude-radar review`로 08-24/08-31/09-03 kb-sync 백로그(약 30개 항목)부터 먼저 처리 — 이게 안 비워지면 매 `/kb-sync`가 같은 슬러그를 계속 재탐지합니다.
 2. karpathy gist 오탐 의심 건은 `.claude/kb-source-hashes.py`의 skeleton/fetch 로직을 한 번 점검할 가치가 있습니다(제가 지금 코드를 고치지는 않았습니다 — 확인 원하시면 말씀해 주세요).
 3. 위 15개 "진짜 신규" 슬러그만 골라 지금 큐에 적재할지 여부를 확인해 주시면 그 부분만 진행하겠습니다.
+SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] failed: Hook cancelled
+=== [2026-09-10 09:19:24] exit=0 ===
