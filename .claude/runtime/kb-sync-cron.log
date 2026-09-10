@@ -296,3 +296,28 @@ SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] fai
 SessionEnd hook [python3 "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-commit.py"] failed: Hook cancelled
 === [2026-09-07 12:50:43] exit=0 ===
 === [2026-09-10 09:07:01] kb-sync run start ===
+## 결과: 파일 변경 없이 종료 — 판단 근거 보고
+
+### §1~3 슬러그 레벨 diff — **변경 없음**
+- `python3 .claude/kb-lint.py --online`: 인덱스 191 ↔ KB 193, **신규 슬러그 0개**.
+- "사라진 슬러그" 2개(`agent-sdk/slash-commands`, `ultraplan`)는 이번에 새로 발견된 게 아니라 각각 2026-08-20 / 2026-08-06~08-17에 이미 감지되어 해당 노트(`23 Agent SDK — 핵심 기능`, `20 베스트 프랙티스와 워크플로우`)에 deprecated 콜아웃까지 달려 있는 기존 기록입니다.
+- 린트 자체도 문제 0건 (`문제 없음 — 모든 노트 통과`).
+
+→ 지시하신 조건("변경 없으면 파일 만들지 말고 종료")에 이 축은 정확히 해당합니다.
+
+### §6b 콘텐츠 드리프트 — 감지는 됐으나 **큐에 적재하지 않고 보류**
+`kb-source-hashes.py`가 구조 변경 59개(29개 노트)를 잡았지만, 08-24/08-31/09-03 세 번의 실행분 큐 항목과 대조한 결과:
+
+- **44개는 신규가 아닙니다** — 08-24·08-31·09-03에 이미 `[pending] kb-sync` 항목으로 큐에 올라간 슬러그가 이번에도 "구조 변경"으로 다시 잡힌 것뿐입니다. 세 배치 모두 지금까지 `--deep`/review로 한 번도 소비되지 않고 그대로 쌓여 있습니다(큐 정체).
+- 그중 `https://gist.github.com/karpathy/442a6bf...` 1건은 **08-24 → 09-03 → 09-10, 세 번 연속** "구조 변경"으로 잡혔습니다. 고정된 GitHub gist가 몇 주 간격으로 계속 구조 변경 판정을 받는 건 실제 콘텐츠 변화보다 `kb-source-hashes.py`의 skeleton 비교 로직(또는 fetch 경로) 쪽 오탐 가능성이 더 높아 보입니다.
+- 진짜 신규(3개 배치 어디에도 없던) 슬러그는 약 15개: `admin-setup`, `agent-sdk/permissions`, `agent-sdk/streaming-output`, `claude-apps-gateway-on-aws`, `desktop-quickstart`, `fullscreen`, `headless`, `llm-gateway-protocol`, `permission-modes`, `plugin-marketplaces`, `self-hosted-environments-deploy`, `settings-example`, `tools-reference`, `troubleshooting`, 그리고 외부 블로그 URL 1건(`ai-code-migration`).
+
+이 상태에서 곧바로 §6b 절차대로 새 pending 항목을 또 적재하면 미처리 큐에 중복만 더 쌓입니다. "변경 없으면 파일 만들지 말라"는 이번 지시의 취지에 비춰, **이번 실행에서는 큐 적재(`--append-queue`)와 해시 스냅샷 갱신(`--update`) 모두 보류**했습니다 — 스냅샷을 지금 갱신해버리면 09-03 이후 실제 변경분의 diff 기준선이 사라집니다.
+
+### 노트 자체는 아무것도 바꾸지 않았으므로
+`updated`/MOC/`hot.md` 갱신 의무(§5) 대상이 없습니다 — 세 단계 모두 스킵.
+
+### 권장 다음 스텝 (판단만 필요, 실행은 안 했습니다)
+1. `/claude-radar review`로 08-24/08-31/09-03 kb-sync 백로그(약 30개 항목)부터 먼저 처리 — 이게 안 비워지면 매 `/kb-sync`가 같은 슬러그를 계속 재탐지합니다.
+2. karpathy gist 오탐 의심 건은 `.claude/kb-source-hashes.py`의 skeleton/fetch 로직을 한 번 점검할 가치가 있습니다(제가 지금 코드를 고치지는 않았습니다 — 확인 원하시면 말씀해 주세요).
+3. 위 15개 "진짜 신규" 슬러그만 골라 지금 큐에 적재할지 여부를 확인해 주시면 그 부분만 진행하겠습니다.
